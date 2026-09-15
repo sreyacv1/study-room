@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deep Learning: Units II and III</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F5F3F8; --card:#FFFFFF; --ink:#1E1B26; --ink2:#5A5468; --ink3:#8A8399;
+  --line:#E2DEEA; --line2:#EFECF4; --well:#F0EDF6;
+  --accent:#6D28D9; --accent-soft:#EDE6FB; --accent-ink:#FFFFFF;
+  --warn:#B45309; --warn-soft:#FBF0DF;
+  --good:#15803D; --good-soft:#E3F1E8;
+  --bad:#BE123C; --bad-soft:#FCE7EC;
+  --grid:#D8D2E6;
+  --shadow:0 1px 2px rgba(30,27,38,.05),0 6px 20px rgba(30,27,38,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#15121C; --card:#1F1B29; --ink:#EAE6F2; --ink2:#A39CB5; --ink3:#7A7290;
+  --line:#312B40; --line2:#282335; --well:#252032;
+  --accent:#A78BFA; --accent-soft:#2A2140; --accent-ink:#17111F;
+  --warn:#F59E0B; --warn-soft:#3A2A10;
+  --good:#4ADE80; --good-soft:#12301F;
+  --bad:#FB7185; --bad-soft:#3B1520;
+  --grid:#3A3350;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 22px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --paper:#15121C; --card:#1F1B29; --ink:#EAE6F2; --ink2:#A39CB5; --ink3:#7A7290;
+  --line:#312B40; --line2:#282335; --well:#252032;
+  --accent:#A78BFA; --accent-soft:#2A2140; --accent-ink:#17111F;
+  --warn:#F59E0B; --warn-soft:#3A2A10;
+  --good:#4ADE80; --good-soft:#12301F;
+  --bad:#FB7185; --bad-soft:#3B1520;
+  --grid:#3A3350;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 22px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.62;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto;padding-inline:22px;padding-block:0 80px}
+h1,h2,h3,h4{font-family:Spectral,Georgia,"Times New Roman",serif;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:40px;font-weight:700;line-height:1.08}
+h2{font-size:27px;font-weight:600;line-height:1.2}
+h3{font-size:20px;font-weight:600}
+h4{font-size:17px;font-weight:600}
+p{margin:0 0 14px}
+ul,ol{margin:0 0 14px;padding-left:22px}
+li{margin-bottom:6px}
+a{color:var(--accent)}
+strong{font-weight:600}
+.mono,code,pre{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+code{font-size:.9em;background:var(--well);padding:1px 5px;border-radius:4px}
+pre{background:var(--well);border:1px solid var(--line);border-radius:10px;padding:14px 16px;
+  font-size:13px;line-height:1.6;overflow-x:auto;margin:0 0 14px}
+pre code{background:none;padding:0;font-size:inherit}
+.lab{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.muted{color:var(--ink2)}
+.small{font-size:14px}
+
+/* header */
+.hero{border-bottom:1px solid var(--line);background:var(--card);margin-bottom:34px}
+.hero .wrap{padding-block:44px 34px}
+.hero .eyebrow{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.09em;text-transform:uppercase;margin-bottom:12px}
+.hero p.lede{font-size:18px;color:var(--ink2);margin:14px 0 0;max-width:62ch}
+.toolbar{display:flex;gap:8px;align-items:center;margin-top:22px;flex-wrap:wrap}
+.tbtn{font:inherit;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--line);
+  background:var(--card);color:var(--ink2);border-radius:999px;padding:6px 14px}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* contents */
+.toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:38px;box-shadow:var(--shadow)}
+.toc ol{margin:12px 0 0;padding-left:0;list-style:none;counter-reset:s}
+.toc li{counter-increment:s;margin-bottom:4px;font-size:14.5px}
+.toc li a{text-decoration:none;color:var(--ink)}
+.toc li a:hover{color:var(--accent)}
+.toc li::before{content:counter(s,decimal-leading-zero);font-family:"JetBrains Mono",monospace;
+  font-size:11px;color:var(--ink3);margin-right:10px}
+.toc .u{font-family:Spectral,serif;font-weight:600;font-size:15px;margin:16px 0 6px;color:var(--accent)}
+.toc .u:first-child{margin-top:12px}
+
+/* sections */
+section{margin-bottom:46px;scroll-margin-top:16px}
+.sechead{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.secno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);font-weight:500;flex:none;padding-top:4px}
+.unitrule{display:flex;align-items:center;gap:14px;margin:52px 0 30px}
+.unitrule span{font-family:Spectral,serif;font-size:14px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.unitrule i{flex:1;height:1px;background:var(--line)}
+
+/* callouts */
+.box{border-radius:12px;padding:15px 18px;margin:0 0 16px;border:1px solid var(--line);background:var(--card)}
+.box .lab{margin-bottom:7px}
+.box p:last-child,.box ul:last-child,.box ol:last-child{margin-bottom:0}
+.box.key{border-left:3px solid var(--accent);background:var(--accent-soft);border-color:transparent}
+.box.key .lab{color:var(--accent)}
+.box.warn{border-left:3px solid var(--warn);background:var(--warn-soft);border-color:transparent}
+.box.warn .lab{color:var(--warn)}
+.box.you{border-left:3px solid var(--good);background:var(--good-soft);border-color:transparent}
+.box.you .lab{color:var(--good)}
+
+/* formula */
+.f{display:block;background:var(--well);border:1px solid var(--line);border-radius:9px;
+  padding:13px 16px;margin:0 0 14px;font-family:"JetBrains Mono",monospace;font-size:14px;
+  line-height:1.9;overflow-x:auto;white-space:pre}
+.f b{color:var(--accent);font-weight:500}
+
+/* tables */
+.tw{overflow-x:auto;margin:0 0 16px;border:1px solid var(--line);border-radius:11px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:420px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line2);vertical-align:top}
+th{font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);background:var(--well)}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+
+/* demos */
+.demo{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 18px;box-shadow:var(--shadow)}
+.demo h4{margin-bottom:4px}
+.demo .hint{font-size:13.5px;color:var(--ink2);margin-bottom:14px}
+.ctl{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.ctl button{font:inherit;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--line);
+  background:var(--card);color:var(--ink2);border-radius:8px;padding:6px 13px}
+.ctl button:hover{border-color:var(--accent)}
+.ctl button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.ctl label{font-size:13px;color:var(--ink2);display:flex;align-items:center;gap:7px}
+.ctl input[type=range]{width:110px;accent-color:var(--accent)}
+.ctl input[type=number]{width:58px;font:inherit;font-size:13px;padding:5px 7px;border:1px solid var(--line);
+  border-radius:7px;background:var(--card);color:var(--ink)}
+canvas{display:block;width:100%;height:auto;max-width:100%;border-radius:9px;background:var(--well)}
+.readout{margin-top:13px;font-size:13.5px;line-height:1.6;color:var(--ink2)}
+.readout b{color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* conv grids */
+.convwrap{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+.gridbox{text-align:center}
+.gridbox .cap{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:700;margin-bottom:7px}
+.cells{display:grid;gap:2px}
+.cells b{display:grid;place-items:center;width:30px;height:30px;border-radius:4px;font-family:"JetBrains Mono",monospace;
+  font-size:10px;font-weight:500;background:var(--well);color:var(--ink2);border:1px solid var(--line2);cursor:pointer}
+.cells.ro b{cursor:default}
+.cells b.hi{outline:2px solid var(--accent);outline-offset:-2px;z-index:2}
+@media (max-width:560px){.cells b{width:25px;height:25px;font-size:9px}}
+
+/* lstm diagram */
+.diag{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.diag svg{display:block;width:100%;height:auto;max-width:100%}
+footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px;font-size:14px;color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <div class="eyebrow">Deep learning &middot; Units II and III</div>
+  <h1>From a single neuron to a bidirectional LSTM</h1>
+  <p class="lede">Everything in your two units, in the order the syllabus lists it, with the three interactive pieces that are genuinely hard to picture from a textbook &mdash; activations and their gradients, the convolution window, and why momentum beats plain SGD.</p>
+  <div class="toolbar">
+    <button class="tbtn" id="themeBtn">Switch theme</button>
+    <span class="small muted">Written to run offline. Nothing here needs the internet except the fonts.</span>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<nav class="toc">
+  <div class="lab">Contents</div>
+  <div class="u">Unit II &mdash; Deep networks, losses, gradients, optimizers</div>
+  <ol>
+    <li><a href="#s1">What a deep network actually computes</a></li>
+    <li><a href="#s2">Activation functions &mdash; interactive</a></li>
+    <li><a href="#s3">Loss functions</a></li>
+    <li><a href="#s4">Gradient-based learning and backpropagation</a></li>
+    <li><a href="#s5">DNNs for regression, with a case study</a></li>
+    <li><a href="#s6">DNNs for classification, with a case study</a></li>
+    <li><a href="#s7">Optimization: SGD, momentum, adaptive rates &mdash; interactive</a></li>
+  </ol>
+  <div class="u">Unit III &mdash; Convolutional and recurrent networks</div>
+  <ol start="8">
+    <li><a href="#s8">Why convolution exists</a></li>
+    <li><a href="#s9">The convolution operation and kernels &mdash; interactive</a></li>
+    <li><a href="#s10">Pooling</a></li>
+    <li><a href="#s11">Designing a CNN for image recognition</a></li>
+    <li><a href="#s12">Random and unsupervised features</a></li>
+    <li><a href="#s13">Recurrent units and backpropagation through time</a></li>
+    <li><a href="#s14">LSTM</a></li>
+    <li><a href="#s15">GRU</a></li>
+    <li><a href="#s16">Recurrent layers and time-series forecasting</a></li>
+    <li><a href="#s17">Bidirectional RNNs</a></li>
+    <li><a href="#s18">What to memorise for the exam</a></li>
+  </ol>
+</nav>
+
+<div class="unitrule"><span>Unit II</span><i></i><span class="muted" style="color:var(--ink3)">12 periods</span></div>
+
+<section id="s1">
+  <div class="sechead"><span class="secno">01</span><h2>What a deep network actually computes</h2></div>
+
+  <p>A deep neural network is a chain of alternating linear maps and non-linear squashes. One layer is:</p>
+  <div class="f"><b>z</b><sup>[l]</sup> = <b>W</b><sup>[l]</sup> a<sup>[l-1]</sup> + <b>b</b><sup>[l]</sup>     (linear: a weighted sum)
+a<sup>[l]</sup> = g<sup>[l]</sup>( <b>z</b><sup>[l]</sup> )              (non-linear: the activation)</div>
+
+  <p>with <code>a<sup>[0]</sup> = x</code>, the input. Stack <em>L</em> of these and the final <code>a<sup>[L]</sup></code> is the prediction <code>&#375;</code>. That is the entire forward pass.</p>
+
+  <div class="box key">
+    <div class="lab">The one idea the whole unit rests on</div>
+    <p>Without the non-linear <em>g</em>, stacking layers is pointless. Two linear layers compose into <code>W&#8322;(W&#8321;x + b&#8321;) + b&#8322;</code>, which is just another linear map <code>W&#8242;x + b&#8242;</code>. A hundred linear layers still only draws a straight line. <strong>The activation function is what makes depth mean anything</strong> &mdash; every layer you add can then bend the decision surface again.</p>
+  </div>
+
+  <p>Two terms that get confused in vivas:</p>
+  <ul>
+    <li><strong>Parameters</strong> &mdash; <code>W</code> and <code>b</code>. Learned by gradient descent.</li>
+    <li><strong>Hyperparameters</strong> &mdash; layer count, units per layer, learning rate, batch size, choice of activation, dropout rate. <em>Not</em> learned; you set them, and that is exactly what an experiment grid like yours is searching over.</li>
+  </ul>
+
+  <p>Parameter count for a dense layer is <code>(inputs &times; units) + units</code>. A 784&rarr;128 layer is 784&times;128 + 128 = 100,480 parameters &mdash; useful to be able to compute on the spot, because examiners ask.</p>
+</section>
+
+<section id="s2">
+  <div class="sechead"><span class="secno">02</span><h2>Activation functions</h2></div>
+
+  <p>Pick a function below. The solid line is <em>g(x)</em>; the dashed line is its derivative <em>g&#8242;(x)</em> &mdash; and the derivative is the part that matters, because it is what gets multiplied down the chain during backpropagation.</p>
+
+  <div class="demo">
+    <h4>Activation explorer</h4>
+    <p class="hint">Watch the dashed line. Wherever it sits near zero, gradient stops flowing &mdash; that region is where learning dies.</p>
+    <div class="ctl" id="actBtns"></div>
+    <canvas id="actCv" width="720" height="330"></canvas>
+    <div class="readout" id="actOut"></div>
+  </div>
+
+  <div class="tw"><table>
+    <tr><th>Function</th><th>Range</th><th>Use it for</th><th>Its failure mode</th></tr>
+    <tr><td><strong>Sigmoid</strong><br><code>1/(1+e&#8315;&#739;)</code></td><td>(0, 1)</td><td>Binary classification <em>output</em> only</td><td>Saturates at both ends; max derivative is 0.25, so gradients shrink by &ge;4&times; per layer. Not zero-centred.</td></tr>
+    <tr><td><strong>Tanh</strong><br><code>(e&#739;&minus;e&#8315;&#739;)/(e&#739;+e&#8315;&#739;)</code></td><td>(&minus;1, 1)</td><td>Hidden layers in RNNs; still standard inside LSTM/GRU</td><td>Also saturates, but is zero-centred, so it converges faster than sigmoid.</td></tr>
+    <tr><td><strong>ReLU</strong><br><code>max(0, x)</code></td><td>[0, &infin;)</td><td>Default for hidden layers in CNNs and MLPs</td><td>Dying ReLU &mdash; a unit stuck at negative input has derivative exactly 0 forever.</td></tr>
+    <tr><td><strong>Leaky ReLU</strong><br><code>max(0.01x, x)</code></td><td>(&minus;&infin;, &infin;)</td><td>When you suspect dead units</td><td>The slope 0.01 is one more hyperparameter to guess.</td></tr>
+    <tr><td><strong>ELU</strong><br><code>x if x&gt;0 else &alpha;(e&#739;&minus;1)</code></td><td>(&minus;&alpha;, &infin;)</td><td>Smoother alternative to ReLU; pushes mean activation toward zero</td><td>The exponential costs more compute than ReLU.</td></tr>
+    <tr><td><strong>Softmax</strong><br><code>e&#7611;&#7522;/&Sigma;e&#7611;&#690;</code></td><td>(0,1), sums to 1</td><td>Multi-class <em>output</em> layer only</td><td>Never use it in a hidden layer &mdash; it couples all units together.</td></tr>
+  </table></div>
+
+  <div class="box warn">
+    <div class="lab">The vanishing gradient problem, stated properly</div>
+    <p>Backprop multiplies derivatives layer by layer. With sigmoid, each factor is at most 0.25. Across 10 layers the gradient reaching layer 1 is scaled by at most 0.25<sup>10</sup> &asymp; 10<sup>&minus;6</sup> &mdash; the early layers effectively stop learning. ReLU fixes this because its derivative is exactly 1 for positive inputs, so the product does not decay. <strong>This single fact is why ReLU replaced sigmoid in hidden layers, and it is the most commonly asked "why" in this unit.</strong></p>
+  </div>
+
+  <div class="box you">
+    <div class="lab">In your own CNN grid</div>
+    <p>Your MNIST/CIFAR configurations use <code>activation="relu"</code> throughout except two that switch to <code>"elu"</code>. That is the comparison this section explains: ELU allows small negative outputs, which keeps the mean activation nearer zero and can train slightly faster on deeper stacks &mdash; at the cost of an exponential per unit. Your deeper 4- and 6-layer configs are exactly where a difference would show, if one shows at all.</p>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sechead"><span class="secno">03</span><h2>Loss functions</h2></div>
+
+  <p>The loss measures how wrong one prediction is. The cost is the loss averaged over the batch. Gradient descent minimises the cost.</p>
+
+  <h3>For regression</h3>
+  <div class="f"><b>MSE</b>  = (1/n) &Sigma; (y&#7522; &minus; &#375;&#7522;)&sup2;        penalises large errors quadratically
+<b>MAE</b>  = (1/n) &Sigma; |y&#7522; &minus; &#375;&#7522;|         treats all errors linearly, robust to outliers
+<b>Huber</b> = &frac12;(y&minus;&#375;)&sup2;        if |y&minus;&#375;| &le; &delta;
+        &delta;|y&minus;&#375;| &minus; &frac12;&delta;&sup2;   otherwise</div>
+
+  <p>Huber is the compromise: quadratic near zero so it has a smooth, well-behaved gradient, linear far away so a single freak outlier cannot dominate the update. That is precisely why it is the standard choice for noisy real-world series.</p>
+
+  <h3>For classification</h3>
+  <div class="f"><b>Binary cross-entropy</b>       &minus;[ y log&#375; + (1&minus;y) log(1&minus;&#375;) ]
+<b>Categorical cross-entropy</b>  &minus; &Sigma;&#8342; y&#8342; log &#375;&#8342;</div>
+
+  <div class="box key">
+    <div class="lab">Why not just use MSE for classification?</div>
+    <p>Two reasons, and examiners want both. <strong>(1) Gradient quality:</strong> pair sigmoid/softmax with MSE and the derivative contains a <code>g&#8242;(z)</code> factor that vanishes exactly when the prediction is confidently wrong &mdash; the network learns slowest when it most needs to learn. Cross-entropy is constructed so that factor cancels, leaving the clean gradient <code>(&#375; &minus; y)</code>. <strong>(2) Principle:</strong> cross-entropy is the negative log-likelihood of the correct class, so minimising it is maximum-likelihood estimation. MSE assumes Gaussian noise, which is the wrong model for a categorical label.</p>
+  </div>
+
+  <div class="box you">
+    <div class="lab">categorical vs sparse_categorical &mdash; the difference in your notebook</div>
+    <p>Your configs switch between <code>"categorical_crossentropy"</code> and <code>"sparse_categorical_crossentropy"</code>. They compute the <em>same</em> quantity. The only difference is the label format: <code>categorical</code> needs one-hot labels (<code>[0,0,1,0]</code>), <code>sparse</code> takes the plain integer (<code>2</code>). Sparse saves memory on CIFAR-100. Getting this pairing wrong is the single most common silent bug in a Keras classifier &mdash; it will either crash on shape or train to nonsense.</p>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sechead"><span class="secno">04</span><h2>Gradient-based learning and backpropagation</h2></div>
+
+  <p>Training is one loop, repeated:</p>
+  <ol>
+    <li><strong>Forward pass</strong> &mdash; push a batch through, get <code>&#375;</code>.</li>
+    <li><strong>Compute the loss</strong> &mdash; how wrong were we.</li>
+    <li><strong>Backward pass</strong> &mdash; get <code>&part;L/&part;W</code> for every weight.</li>
+    <li><strong>Update</strong> &mdash; step every weight downhill.</li>
+  </ol>
+
+  <p>Step 3 is backpropagation, and it is nothing but the chain rule applied efficiently. For a weight in layer <em>l</em>:</p>
+  <div class="f">&part;L/&part;<b>W</b><sup>[l]</sup> = &part;L/&part;a<sup>[L]</sup> &middot; &part;a<sup>[L]</sup>/&part;z<sup>[L]</sup> &middot; ... &middot; &part;a<sup>[l]</sup>/&part;z<sup>[l]</sup> &middot; &part;z<sup>[l]</sup>/&part;<b>W</b><sup>[l]</sup></div>
+
+  <p>The clever part is that the shared prefix of that product is reused for every layer, so the whole gradient costs about as much as one extra forward pass rather than one pass per weight. Define the error signal <code>&delta;<sup>[l]</sup> = &part;L/&part;z<sup>[l]</sup></code> and it becomes a clean two-line recursion:</p>
+  <div class="f">&delta;<sup>[L]</sup> = &nabla;<sub>a</sub>L &odot; g&#8242;(z<sup>[L]</sup>)                 at the output
+&delta;<sup>[l]</sup> = (<b>W</b><sup>[l+1]T</sup> &delta;<sup>[l+1]</sup>) &odot; g&#8242;(z<sup>[l]</sup>)      propagate backwards
+&part;L/&part;<b>W</b><sup>[l]</sup> = &delta;<sup>[l]</sup> a<sup>[l-1]T</sup>     &part;L/&part;<b>b</b><sup>[l]</sup> = &delta;<sup>[l]</sup></div>
+
+  <p>Then the update, with learning rate <em>&eta;</em>:</p>
+  <div class="f"><b>W</b> &larr; <b>W</b> &minus; &eta; &middot; &part;L/&part;<b>W</b></div>
+
+  <p>Notice <code>g&#8242;(z)</code> appearing in every backward step. That is the same factor from section 2 &mdash; the link between "which activation did I pick" and "does this network train at all" runs straight through this recursion.</p>
+</section>
+
+<section id="s5">
+  <div class="sechead"><span class="secno">05</span><h2>DNNs for regression</h2></div>
+
+  <p>Regression predicts a continuous number. Three design rules follow from that and they are not negotiable:</p>
+  <ol>
+    <li><strong>Output layer:</strong> one unit, <strong>linear</strong> activation (i.e. none). Any squashing function would cap the range.</li>
+    <li><strong>Loss:</strong> MSE, MAE, or Huber.</li>
+    <li><strong>Scale your inputs.</strong> Features on wildly different scales produce an ill-conditioned loss surface, which is exactly the situation the optimizer demo in section 7 shows going badly.</li>
+  </ol>
+
+<pre><code>from tensorflow.keras import layers, models
+
+model = models.Sequential([
+    layers.Input(shape=(n_features,)),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(64, activation="relu"),
+    layers.Dense(1)                      # linear: no activation
+])
+model.compile(optimizer="adam", loss="mse", metrics=["mae"])</code></pre>
+
+  <h4>Case study &mdash; house price prediction (Boston / California housing)</h4>
+  <p>Inputs are a dozen numeric features: rooms, age, distance to employment centres, median income. Target is a price in lakhs or thousands of dollars. Standardise every input to zero mean and unit variance first. Report <strong>MAE</strong> rather than MSE when you present it, because MAE is in the same unit as the target and therefore means something to a reader &mdash; "off by &#8377;2.3 lakh on average" is interpretable; "MSE 5.29" is not.</p>
+
+  <div class="box warn">
+    <div class="lab">The scaling trap</div>
+    <p>Fit the scaler on the <em>training set only</em>, then apply it to validation and test. Fitting it on everything leaks information about the test distribution into training, and your reported error becomes optimistic and wrong. This gets marked in lab vivas.</p>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="sechead"><span class="secno">06</span><h2>DNNs for classification</h2></div>
+
+  <p>Classification predicts a class label. The design rules mirror regression exactly:</p>
+
+  <div class="tw"><table>
+    <tr><th>Problem</th><th>Output layer</th><th>Loss</th></tr>
+    <tr><td>Binary (2 classes)</td><td>1 unit, <code>sigmoid</code></td><td><code>binary_crossentropy</code></td></tr>
+    <tr><td>Multi-class, one label</td><td><em>k</em> units, <code>softmax</code></td><td><code>categorical_crossentropy</code> (one-hot) or <code>sparse_categorical_crossentropy</code> (integer)</td></tr>
+    <tr><td>Multi-label, several at once</td><td><em>k</em> units, <code>sigmoid</code></td><td><code>binary_crossentropy</code></td></tr>
+  </table></div>
+
+  <p>That last row is the one people get wrong. Softmax forces the outputs to sum to 1, so it cannot express "this image contains both a cat and a dog". Independent sigmoids can.</p>
+
+<pre><code>model = models.Sequential([
+    layers.Input(shape=(784,)),
+    layers.Dense(128, activation="relu"),
+    layers.Dropout(0.3),
+    layers.Dense(10, activation="softmax")     # k units, softmax
+])
+model.compile(optimizer="adam",
+              loss="sparse_categorical_crossentropy",
+              metrics=["accuracy"])</code></pre>
+
+  <h4>Case study &mdash; MNIST digits with a plain DNN</h4>
+  <p>Flatten each 28&times;28 image to a 784-vector, two hidden layers, softmax over 10 classes. This reaches roughly 97&ndash;98% test accuracy. Worth knowing as a baseline, because Unit III's whole argument is that a CNN beats it while using <em>fewer</em> parameters &mdash; and the reason is that flattening throws away the fact that neighbouring pixels are related.</p>
+
+  <div class="box key">
+    <div class="lab">Accuracy is not always the metric</div>
+    <p>On a balanced set like MNIST, accuracy is fine. On an imbalanced one &mdash; say 2% of samples are the disease-positive class &mdash; a model predicting "negative" every single time scores 98% accuracy and is useless. Then you report <strong>precision, recall and F1</strong>, and you look at the confusion matrix. For a bioinformatics dataset this is nearly always the case, so expect it as a viva follow-up.</p>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="sechead"><span class="secno">07</span><h2>Optimization: SGD, momentum, adaptive learning rates</h2></div>
+
+  <p>Plain gradient descent uses the whole dataset for one step &mdash; accurate but far too slow. The variants:</p>
+
+  <div class="tw"><table>
+    <tr><th>Variant</th><th>Batch used per update</th><th>Character</th></tr>
+    <tr><td>Batch GD</td><td>All <em>n</em> samples</td><td>Smooth, slow, memory-hungry</td></tr>
+    <tr><td>Stochastic GD</td><td>1 sample</td><td>Very noisy, but the noise can escape shallow local minima</td></tr>
+    <tr><td><strong>Mini-batch SGD</strong></td><td>32&ndash;256 samples</td><td>The practical default &mdash; what "SGD" means in every framework</td></tr>
+  </table></div>
+
+  <h3>Momentum</h3>
+  <p>Plain SGD oscillates across a narrow valley instead of running along it. Momentum accumulates a velocity so that consistent directions build up and oscillating ones cancel:</p>
+  <div class="f">v &larr; &beta;v + (1&minus;&beta;) &nabla;W        &beta; typically 0.9
+W &larr; W &minus; &eta;v</div>
+  <p>The physical reading is a ball rolling downhill with inertia rather than a hiker recomputing the steepest direction at every footstep. <strong>Nesterov momentum</strong> refines it by evaluating the gradient at the point the velocity is about to carry you to &mdash; a look-ahead correction.</p>
+
+  <h3>Adaptive learning rates</h3>
+  <p>One global <em>&eta;</em> is wrong when different parameters need different step sizes. These give every parameter its own:</p>
+  <div class="f"><b>AdaGrad</b>  divides &eta; by &radic;(sum of all past squared gradients)
+          &rarr; rare features get big steps. But the sum only grows,
+            so the rate decays to zero and learning stalls.
+
+<b>RMSProp</b>  same idea with an exponentially decaying average instead
+            of a raw sum, so it never stalls. Standard for RNNs.
+
+<b>Adam</b>     RMSProp + momentum, with bias correction:
+            m &larr; &beta;&#8321;m + (1&minus;&beta;&#8321;)&nabla;W          (1st moment, the direction)
+            v &larr; &beta;&#8322;v + (1&minus;&beta;&#8322;)(&nabla;W)&sup2;       (2nd moment, the scale)
+            m&#770; = m/(1&minus;&beta;&#8321;&#7511;)   v&#770; = v/(1&minus;&beta;&#8322;&#7511;)
+            W &larr; W &minus; &eta; &middot; m&#770;/(&radic;v&#770; + &epsilon;)
+            defaults &beta;&#8321;=0.9, &beta;&#8322;=0.999, &epsilon;=10&#8315;&#8312;, &eta;=0.001</div>
+
+  <div class="demo">
+    <h4>Optimizer race on an ill-conditioned bowl</h4>
+    <p class="hint">The valley is 12&times; steeper across than along &mdash; the classic hard case. All three start at the same point with the same learning rate. Watch how plain SGD zig-zags while momentum straightens out.</p>
+    <div class="ctl">
+      <button id="optRun" class="on">Run</button>
+      <button id="optReset">Reset</button>
+      <label>learning rate <input type="range" id="optLr" min="1" max="60" value="18"><span class="mono" id="optLrV" style="font-size:12px">0.018</span></label>
+    </div>
+    <canvas id="optCv" width="720" height="360"></canvas>
+    <div class="readout" id="optOut"></div>
+  </div>
+
+  <div class="box you">
+    <div class="lab">Why your sunspots grid has one SGD run at lr = 1e-5</div>
+    <p>Eleven of your twelve RNN configs use Adam at <code>1e-3</code>; config 12 switches to <code>SGD(learning_rate=1e-5, momentum=0.9)</code>. That is not a typo &mdash; it is the point of the comparison. Adam's per-parameter scaling means its <em>&eta;</em> is not comparable to SGD's, and recurrent networks have notoriously badly scaled gradients, so a raw SGD step that works at all has to be roughly a hundred times smaller. Running it is how you demonstrate that adaptivity is doing real work, not just cosmetic tuning.</p>
+  </div>
+</section>
+
+<div class="unitrule"><span>Unit III</span><i></i><span class="muted" style="color:var(--ink3)">12 periods</span></div>
+
+<section id="s8">
+  <div class="sechead"><span class="secno">08</span><h2>Why convolution exists</h2></div>
+
+  <p>Feed a 224&times;224 colour image to a dense layer of 1000 units and you need 224&times;224&times;3&times;1000 &asymp; <strong>150 million weights in the first layer alone</strong>. It will not fit, will not train, and will not generalise. Convolution fixes this with three ideas:</p>
+
+  <ul>
+    <li><strong>Local receptive fields.</strong> A pixel's meaning comes from its neighbours, not from a pixel on the other side of the image. So connect each unit to a small patch only.</li>
+    <li><strong>Parameter sharing.</strong> An edge detector that works in the top-left works in the bottom-right, so slide <em>one</em> set of weights across the whole image instead of learning separate ones per position. This is where the enormous parameter saving comes from.</li>
+    <li><strong>Translation equivariance.</strong> Shift the input, and the feature map shifts the same way. The network does not have to relearn a cat that moved.</li>
+  </ul>
+
+  <p>A 3&times;3 kernel over 3 channels producing 32 feature maps costs 3&times;3&times;3&times;32 + 32 = <strong>896 parameters</strong> &mdash; regardless of whether the image is 32&times;32 or 4000&times;4000.</p>
+</section>
+
+<section id="s9">
+  <div class="sechead"><span class="secno">09</span><h2>The convolution operation and kernels</h2></div>
+
+  <p>Slide a small kernel over the input; at each position compute the element-wise product and sum it. Click cells in the input below to redraw the shape, and change the kernel to see what each one detects.</p>
+
+  <div class="demo">
+    <h4>Convolution playground</h4>
+    <p class="hint">Click any input cell to toggle it. The highlighted 3&times;3 window shows which input patch produced the highlighted output cell &mdash; hover the output to move it.</p>
+    <div class="ctl" id="kBtns"></div>
+    <div class="convwrap">
+      <div class="gridbox"><div class="cap">Input 7&times;7</div><div class="cells" id="cvIn"></div></div>
+      <div class="gridbox"><div class="cap">Kernel 3&times;3</div><div class="cells ro" id="cvK"></div></div>
+      <div class="gridbox"><div class="cap">Output 5&times;5</div><div class="cells ro" id="cvOut"></div></div>
+    </div>
+    <div class="readout" id="cvNote"></div>
+  </div>
+
+  <h3>Output size &mdash; the formula you will be asked to apply</h3>
+  <div class="f">O = floor( (W &minus; K + 2P) / S ) + 1
+
+  W = input width    K = kernel size
+  P = padding        S = stride</div>
+
+  <div class="demo">
+    <h4>Output size calculator</h4>
+    <div class="ctl">
+      <label>W <input type="number" id="szW" value="32" min="1"></label>
+      <label>K <input type="number" id="szK" value="3" min="1"></label>
+      <label>P <input type="number" id="szP" value="1" min="0"></label>
+      <label>S <input type="number" id="szS" value="1" min="1"></label>
+    </div>
+    <div class="readout" id="szOut"></div>
+  </div>
+
+  <p><strong>"same" padding</strong> means choosing <em>P</em> so the output matches the input size &mdash; for stride 1 that is <code>P = (K&minus;1)/2</code>, so 1 for a 3&times;3 kernel and 2 for a 5&times;5. <strong>"valid"</strong> means no padding, and the map shrinks by <em>K&minus;1</em> each layer.</p>
+
+  <div class="box key">
+    <div class="lab">Kernel size: what your 3 vs 5 vs 7 comparison is really testing</div>
+    <p>Two stacked 3&times;3 layers see the same 5&times;5 region as one 5&times;5 layer, but use 2&times;(3&times;3)=18 weights per channel pair instead of 25, <em>and</em> apply a non-linearity in between &mdash; more expressive, fewer parameters. Three stacked 3&times;3s match a 7&times;7 at 27 weights versus 49. This is why modern architectures are almost entirely 3&times;3, and why your <code>kernels=[7,7]</code> and <code>[7,7,7]</code> configs are expected to underperform the deep 3&times;3 stacks at similar cost. Being able to state that trade-off is a guaranteed exam answer.</p>
+  </div>
+</section>
+
+<section id="s10">
+  <div class="sechead"><span class="secno">10</span><h2>Pooling</h2></div>
+
+  <p>Pooling downsamples a feature map by summarising each small window with a single number.</p>
+  <ul>
+    <li><strong>Max pooling</strong> takes the largest value in the window &mdash; "was this feature present anywhere here?" This is the default.</li>
+    <li><strong>Average pooling</strong> takes the mean &mdash; smoother, now mostly used as <em>global</em> average pooling at the end of a network, replacing the flatten-plus-dense head and cutting a large number of parameters.</li>
+  </ul>
+
+  <p>A 2&times;2 pool with stride 2 halves both spatial dimensions and so quarters the number of activations. It has <strong>no learnable parameters</strong> &mdash; a frequent one-mark question.</p>
+
+  <p>What pooling buys you: a wider receptive field for later layers, less computation, and a degree of <strong>translation invariance</strong> &mdash; shift the input by one pixel and a max-pooled output often does not change at all.</p>
+
+  <div class="box warn">
+    <div class="lab">Equivariance vs invariance</div>
+    <p>These are examined as a pair and they are not the same. <strong>Convolution is equivariant</strong>: shift the input, the output shifts identically. <strong>Pooling adds invariance</strong>: shift the input slightly, the output does not change. Convolution tracks <em>where</em>; pooling lets the network stop caring exactly where.</p>
+  </div>
+</section>
+
+<section id="s11">
+  <div class="sechead"><span class="secno">11</span><h2>Designing a CNN for image recognition</h2></div>
+
+  <p>The standard pattern, repeated in blocks:</p>
+  <div class="f">[ Conv &rarr; BatchNorm &rarr; Activation &rarr; (Conv &rarr; BN &rarr; Act) &rarr; MaxPool &rarr; Dropout ] &times; N
+&rarr; Flatten or GlobalAveragePooling
+&rarr; Dense &rarr; Dropout
+&rarr; Dense(k, softmax)</div>
+
+  <p>Filters double as spatial size halves &mdash; 32, 64, 128, 256 &mdash; keeping roughly constant computation per block while the features become more abstract: edges, then textures, then parts, then objects.</p>
+
+<pre><code>model = models.Sequential([
+    layers.Input(shape=(32, 32, 3)),
+
+    layers.Conv2D(32, (3,3), padding="same", use_bias=False),
+    layers.BatchNormalization(),
+    layers.Activation("relu"),
+    layers.MaxPooling2D((2,2)),          # 32x32 -> 16x16
+    layers.Dropout(0.2),
+
+    layers.Conv2D(64, (3,3), padding="same", use_bias=False),
+    layers.BatchNormalization(),
+    layers.Activation("relu"),
+    layers.MaxPooling2D((2,2)),          # 16x16 -> 8x8
+    layers.Dropout(0.3),
+
+    layers.Flatten(),
+    layers.Dense(128), layers.BatchNormalization(), layers.Activation("relu"),
+    layers.Dropout(0.4),
+    layers.Dense(10, activation="softmax"),
+])</code></pre>
+
+  <h4>The two regularisers in that stack</h4>
+  <ul>
+    <li><strong>Batch normalisation</strong> standardises each layer's pre-activations per mini-batch, then rescales with two learned parameters. It stabilises training, permits higher learning rates, and mildly regularises. Note <code>use_bias=False</code> on the conv beneath it &mdash; BN has its own shift parameter, so the conv bias is redundant. Your notebook does exactly this.</li>
+    <li><strong>Dropout</strong> randomly zeroes a fraction of units during training only, forcing redundant representations. At test time everything is active and outputs are scaled. Typical: 0.2&ndash;0.3 after conv blocks, 0.4&ndash;0.5 before the final layer &mdash; which is the ramp your configs use.</li>
+  </ul>
+
+  <div class="box you">
+    <div class="lab">Reading your own results table</div>
+    <p>Your grid varies depth, kernel size, filter count, dropout, batch norm and activation. When you write it up, the defensible claims are comparisons between <em>neighbouring</em> rows that differ in one thing &mdash; that is how the grid was built. Expect: MNIST saturates around 99%+ so differences there are noise; CIFAR-10 is where depth and batch norm separate the configurations; CIFAR-100 is where every configuration struggles, because 100 classes over the same 50,000 images means only 500 examples per class. If your no-dropout, no-augmentation configs show training accuracy far above validation accuracy, that gap <em>is</em> the overfitting result &mdash; report it rather than hiding it.</p>
+  </div>
+</section>
+
+<section id="s12">
+  <div class="sechead"><span class="secno">12</span><h2>Random and unsupervised features</h2></div>
+
+  <p>This syllabus line asks a real question: <em>must</em> convolution kernels be learned by supervised backpropagation?</p>
+
+  <ul>
+    <li><strong>Random features.</strong> Freeze randomly initialised convolution kernels, train only the classifier on top. This works surprisingly well &mdash; a random projection followed by a non-linearity and pooling already separates classes better than raw pixels. It is the honest baseline that proves learned kernels are actually earning their place.</li>
+    <li><strong>Unsupervised features.</strong> Learn kernels without labels, then reuse them. Classical routes: <strong>k-means</strong> on image patches to form a dictionary of filters; <strong>autoencoders</strong>, which compress the input to a bottleneck and reconstruct it, making the bottleneck a learned feature vector; <strong>sparse coding</strong> and <strong>RBMs</strong> historically. Modern practice is <strong>self-supervised learning</strong> &mdash; invent a label-free task (predict a rotation, match two augmented views of the same image, as SimCLR does) and the features learned transfer.</li>
+    <li><strong>Transfer learning</strong> is the version you will actually use: take a network trained on ImageNet, freeze the early layers, retrain the head on your data. Early layers learn generic edges and textures that transfer across domains &mdash; which is why this works even for microscopy or histopathology images that look nothing like ImageNet photographs.</li>
+  </ul>
+
+  <div class="box key">
+    <div class="lab">Why this matters in bioinformatics specifically</div>
+    <p>Labelled biological images are scarce and expensive &mdash; someone has to annotate them. Unlabelled ones are abundant. Unsupervised and self-supervised pretraining is how the field gets around that, and it is a strong point to make if this comes up as a discussion question.</p>
+  </div>
+</section>
+
+<section id="s13">
+  <div class="sechead"><span class="secno">13</span><h2>Recurrent units and backpropagation through time</h2></div>
+
+  <p>A CNN sees a fixed-size input all at once. Sequences &mdash; text, speech, a time series &mdash; have variable length and order that carries meaning. An RNN handles this by keeping a hidden state that it carries forward:</p>
+  <div class="f">h&#8348; = tanh( W&#8341;&#8341; h&#8348;&#8331;&#8321; + W&#8339;&#8341; x&#8348; + b )
+y&#8348; = W&#8341;&#8342; h&#8348; + b&#8342;</div>
+
+  <p><code>h&#8348;</code> is a summary of everything seen up to time <em>t</em>. Crucially the same <code>W</code> matrices are reused at every timestep &mdash; parameter sharing across <em>time</em>, exactly as convolution shares across <em>space</em>.</p>
+
+  <p>Training unrolls the loop into a deep feedforward network, one layer per timestep, and backpropagates through it. That is <strong>backpropagation through time (BPTT)</strong>. And it inherits a serious problem: the gradient across <em>k</em> steps contains <code>W&#8341;&#8341;</code> raised to the power <em>k</em>.</p>
+
+  <div class="box warn">
+    <div class="lab">Why a simple RNN cannot hold long-range information</div>
+    <p>If the dominant eigenvalue of <code>W&#8341;&#8341;</code> is below 1, the gradient <strong>vanishes</strong> exponentially and the network cannot learn dependencies more than roughly 10 steps back. If it is above 1, the gradient <strong>explodes</strong> into NaNs. Exploding gradients have a cheap fix &mdash; <em>gradient clipping</em>, rescale any gradient whose norm exceeds a threshold. Vanishing gradients do not; they need an architectural change, and that change is the LSTM.</p>
+  </div>
+</section>
+
+<section id="s14">
+  <div class="sechead"><span class="secno">14</span><h2>LSTM &mdash; Long Short-Term Memory</h2></div>
+
+  <p>The LSTM adds a second state: a <strong>cell state</strong> <code>C&#8348;</code> that runs straight through the unit with only element-wise multiplication and addition on its path. No repeated matrix multiplication means no exponential decay &mdash; gradients can flow across hundreds of steps. Three gates, each a sigmoid producing values in (0,1), decide what passes.</p>
+
+  <div class="diag">
+  <svg viewBox="0 0 700 250" role="img" aria-label="LSTM cell showing the cell state running across the top through a forget-gate multiplication and an input-gate addition, with the output gate producing the hidden state below.">
+    <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <path d="M0 0l7 3-7 3z" fill="currentColor"/></marker></defs>
+    <g style="color:var(--ink3)" stroke="currentColor" stroke-width="1.6" fill="none">
+      <rect x="120" y="32" width="470" height="190" rx="14" stroke-dasharray="5 6"/>
+    </g>
+    <text x="130" y="24" font-size="11" fill="var(--ink3)" font-family="JetBrains Mono, monospace">LSTM cell at time t</text>
+
+    <g stroke="var(--accent)" stroke-width="3.5" fill="none" marker-end="url(#ar)" style="color:var(--accent)">
+      <path d="M40 66h560"/>
+    </g>
+    <text x="40" y="56" font-size="12" fill="var(--accent)" font-family="JetBrains Mono, monospace">C(t-1)</text>
+    <text x="556" y="56" font-size="12" fill="var(--accent)" font-family="JetBrains Mono, monospace">C(t)</text>
+
+    <circle cx="230" cy="66" r="15" fill="var(--card)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="230" y="71" font-size="15" text-anchor="middle" fill="var(--accent)">&times;</text>
+    <circle cx="380" cy="66" r="15" fill="var(--card)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="380" y="71" font-size="15" text-anchor="middle" fill="var(--accent)">+</text>
+
+    <g fill="var(--well)" stroke="var(--ink3)" stroke-width="1.4">
+      <rect x="196" y="140" width="68" height="34" rx="7"/>
+      <rect x="300" y="140" width="68" height="34" rx="7"/>
+      <rect x="392" y="140" width="68" height="34" rx="7"/>
+      <rect x="492" y="140" width="68" height="34" rx="7"/>
+    </g>
+    <g font-size="12" text-anchor="middle" fill="var(--ink)" font-family="JetBrains Mono, monospace">
+      <text x="230" y="162">f&#8348; &sigma;</text>
+      <text x="334" y="162">i&#8348; &sigma;</text>
+      <text x="426" y="162">g&#8348; tanh</text>
+      <text x="526" y="162">o&#8348; &sigma;</text>
+    </g>
+    <g font-size="9.5" text-anchor="middle" fill="var(--ink3)">
+      <text x="230" y="190">forget</text>
+      <text x="334" y="190">input</text>
+      <text x="426" y="190">candidate</text>
+      <text x="526" y="190">output</text>
+    </g>
+
+    <g stroke="var(--ink3)" stroke-width="1.6" fill="none" marker-end="url(#ar)" style="color:var(--ink3)">
+      <path d="M230 140V88"/>
+      <path d="M334 140v-32h46v-20"/>
+      <path d="M426 140v-20h-46"/>
+      <path d="M526 140V96h-90"/>
+    </g>
+    <circle cx="526" cy="96" r="13" fill="var(--card)" stroke="var(--accent)" stroke-width="2"/>
+    <text x="526" y="101" font-size="13" text-anchor="middle" fill="var(--accent)">&times;</text>
+    <g stroke="var(--accent)" stroke-width="2.2" fill="none" marker-end="url(#ar)" style="color:var(--accent)">
+      <path d="M440 66v18h72"/>
+      <path d="M526 110v104h64"/>
+    </g>
+    <text x="596" y="222" font-size="12" fill="var(--accent)" font-family="JetBrains Mono, monospace">h(t)</text>
+    <text x="446" y="82" font-size="9.5" fill="var(--ink3)">tanh</text>
+
+    <g stroke="var(--ink3)" stroke-width="1.6" fill="none" marker-end="url(#ar)" style="color:var(--ink3)">
+      <path d="M40 214h150v-40"/>
+    </g>
+    <text x="40" y="232" font-size="12" fill="var(--ink2)" font-family="JetBrains Mono, monospace">h(t-1), x(t)</text>
+  </svg>
+  </div>
+
+  <div class="f">f&#8348; = &sigma;( W&#8332;&middot;[h&#8348;&#8331;&#8321;, x&#8348;] + b&#8332; )        <b>forget gate</b>   what to erase from memory
+i&#8348; = &sigma;( W&#7522;&middot;[h&#8348;&#8331;&#8321;, x&#8348;] + b&#7522; )        <b>input gate</b>    how much new info to admit
+g&#8348; = tanh( W_C&middot;[h&#8348;&#8331;&#8321;, x&#8348;] + b_C )     <b>candidate</b>     the new info itself
+o&#8348; = &sigma;( W&#8338;&middot;[h&#8348;&#8331;&#8321;, x&#8348;] + b&#8338; )        <b>output gate</b>   how much memory to expose
+
+C&#8348; = f&#8348; &odot; C&#8348;&#8331;&#8321;  +  i&#8348; &odot; g&#8348;       <b>update the cell state</b>
+h&#8348; = o&#8348; &odot; tanh( C&#8348; )               <b>produce the hidden state</b></div>
+
+  <div class="box key">
+    <div class="lab">The sentence to write in an exam</div>
+    <p>"The cell state is modified only by element-wise multiplication by the forget gate and element-wise addition of the gated candidate. Because there is no repeated matrix multiplication along that path, the gradient does not decay exponentially, so the LSTM can learn dependencies over hundreds of timesteps where a simple RNN manages about ten."</p>
+  </div>
+
+  <p>One practical note: initialise the forget-gate bias to 1 so the cell <em>remembers</em> by default at the start of training. Keras does this for you via <code>unit_forget_bias=True</code>.</p>
+</section>
+
+<section id="s15">
+  <div class="sechead"><span class="secno">15</span><h2>GRU &mdash; Gated Recurrent Unit</h2></div>
+
+  <p>The GRU is a simplification of the LSTM. Two changes: there is no separate cell state &mdash; <code>h&#8348;</code> does both jobs &mdash; and the forget and input gates are merged into a single <strong>update gate</strong>, since deciding how much to keep already decides how much to admit.</p>
+
+  <div class="f">z&#8348; = &sigma;( W&#7611;&middot;[h&#8348;&#8331;&#8321;, x&#8348;] )              <b>update gate</b>  keep vs replace
+r&#8348; = &sigma;( W&#691;&middot;[h&#8348;&#8331;&#8321;, x&#8348;] )              <b>reset gate</b>   how much past to use
+h&#771;&#8348; = tanh( W&middot;[ r&#8348; &odot; h&#8348;&#8331;&#8321; , x&#8348; ] )       candidate state
+h&#8348; = (1 &minus; z&#8348;) &odot; h&#8348;&#8331;&#8321;  +  z&#8348; &odot; h&#771;&#8348;    the single interpolation</div>
+
+  <div class="tw"><table>
+    <tr><th></th><th>LSTM</th><th>GRU</th></tr>
+    <tr><td>Gates</td><td>3 (forget, input, output)</td><td>2 (update, reset)</td></tr>
+    <tr><td>States</td><td>2 (cell <code>C</code> and hidden <code>h</code>)</td><td>1 (<code>h</code> only)</td></tr>
+    <tr><td>Parameters</td><td>4 weight blocks</td><td>3 blocks &mdash; about 25% fewer</td></tr>
+    <tr><td>Speed</td><td>Slower</td><td>Faster to train</td></tr>
+    <tr><td>When to prefer</td><td>Long sequences, plenty of data</td><td>Smaller datasets, tighter compute</td></tr>
+  </table></div>
+
+  <p>Empirically they perform comparably on most tasks, and there is no reliable rule for which wins &mdash; which is exactly why configs 1, 2 and 3 of your sunspots grid swap <code>SimpleRNN &rarr; LSTM &rarr; GRU</code> with everything else held fixed. That three-row comparison <em>is</em> the experiment; the honest write-up says which won on your data and does not over-generalise from it.</p>
+</section>
+
+<section id="s16">
+  <div class="sechead"><span class="secno">16</span><h2>Recurrent layers and time-series forecasting</h2></div>
+
+  <p>An RNN layer either returns its output at every timestep or only the last one. This is the single detail that breaks most student implementations:</p>
+
+  <div class="tw"><table>
+    <tr><th><code>return_sequences</code></th><th>Output shape</th><th>Use when</th></tr>
+    <tr><td><code>False</code> (default)</td><td><code>(batch, units)</code></td><td>It is the last recurrent layer, feeding a Dense head</td></tr>
+    <tr><td><code>True</code></td><td><code>(batch, timesteps, units)</code></td><td>Another recurrent layer follows, or you need an output per step</td></tr>
+  </table></div>
+
+  <p><strong>Stacking rule: every recurrent layer except the last needs <code>return_sequences=True</code>.</strong></p>
+
+  <h3>Turning a series into a supervised problem</h3>
+  <p>A forecasting model needs <code>(X, y)</code> pairs, so you slide a window across the series: the previous <em>w</em> values are the input, the next value is the target. Window 30 on monthly data means "predict from the last 30 months".</p>
+
+<pre><code>def windowed_dataset(series, window_size, batch_size):
+    ds = tf.data.Dataset.from_tensor_slices(series)
+    ds = ds.window(window_size + 1, shift=1, drop_remainder=True)
+    ds = ds.flat_map(lambda w: w.batch(window_size + 1))
+    ds = ds.map(lambda w: (w[:-1], w[-1]))        # inputs, label
+    return ds.batch(batch_size).prefetch(1)</code></pre>
+
+  <div class="box warn">
+    <div class="lab">Never shuffle a time series before splitting</div>
+    <p>Split chronologically &mdash; train on the earliest portion, validate on the most recent. A random split lets the model see the future while training, which is data leakage; your validation error will look excellent and the model will be worthless. Shuffling <em>within</em> the already-split training windows is fine and helps optimisation; shuffling <em>before</em> the split is the error.</p>
+  </div>
+
+  <div class="box you">
+    <div class="lab">Your sunspots design, decoded</div>
+    <p>Train on months 0&ndash;3000, validate on the last 235 &mdash; correctly chronological. Then the interesting choices:</p>
+    <ul>
+      <li><strong>Window 30 &rarr; 60 &rarr; 132.</strong> Not arbitrary. The solar cycle is about 11 years = 132 months, so window 132 is the one that lets the model see a full cycle. Whether that actually beats 60 is the empirical question worth reporting.</li>
+      <li><strong>Huber instead of MSE</strong> from config 4 on &mdash; sunspot peaks are extreme, and MSE lets those few outliers dominate the gradient.</li>
+      <li><strong>A Conv1D front-end</strong> from config 7 on. A 1-D convolution smooths and extracts local shape before the recurrent layer ever sees it, which usually helps and trains faster.</li>
+      <li><strong>Metric <code>mae</code></strong> alongside the loss, because MAE is in sunspot units and is what you quote in a conclusion.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s17">
+  <div class="sechead"><span class="secno">17</span><h2>Bidirectional RNNs</h2></div>
+
+  <p>A standard RNN reads left to right, so at time <em>t</em> it knows only the past. A bidirectional RNN runs two independent recurrent layers &mdash; one forward, one backward over the reversed sequence &mdash; and concatenates their hidden states:</p>
+  <div class="f">h&#8348; = [ h&#8407;&#8348; ; h&#8406;&#8348; ]       forward state concatenated with backward state
+                        &rarr; output dimension doubles</div>
+
+<pre><code>layers.Bidirectional(layers.LSTM(64, return_sequences=True))</code></pre>
+
+  <p>Every output now depends on the <em>entire</em> sequence, past and future. That resolves ambiguities a forward-only model cannot: in "the <em>bank</em> of the river", the disambiguating word arrives afterwards.</p>
+
+  <div class="box warn">
+    <div class="lab">The limitation that decides whether you may use it</div>
+    <p>A bidirectional model needs the whole sequence before it can produce any output. So it is excellent for <strong>offline, complete sequences</strong> &mdash; named-entity recognition, sentiment classification, protein secondary-structure prediction from a full sequence, sentence translation. It is <strong>unusable for real-time forecasting</strong>, because the "future" it wants to read is the thing you are trying to predict. For genuine live prediction it is cheating; for a retrospective study it is not.</p>
+    <p>This is worth being careful about in your own sunspots work: config 9 is bidirectional, and it may well score best on the leaderboard. If it does, the correct write-up says it is <em>not</em> a valid forecaster despite the number, because within each 60-month window it is reading months that would not have happened yet at prediction time. Saying that yourself is a stronger result than the score.</p>
+  </div>
+
+  <p>In bioinformatics the offline case is the common one: a BiLSTM over a protein sequence is standard for secondary-structure and binding-site prediction, precisely because the whole sequence is already known.</p>
+</section>
+
+<section id="s18">
+  <div class="sechead"><span class="secno">18</span><h2>What to memorise for the exam</h2></div>
+
+  <h3>Formulas that must be reproducible from memory</h3>
+  <ol>
+    <li>Conv output size: <code>O = floor((W &minus; K + 2P)/S) + 1</code></li>
+    <li>Conv parameter count: <code>(K &times; K &times; C_in &times; C_out) + C_out</code></li>
+    <li>Dense parameter count: <code>(inputs &times; units) + units</code></li>
+    <li>The four LSTM gate equations plus the two state updates</li>
+    <li>The two GRU gates plus the interpolation <code>h&#8348; = (1&minus;z)&odot;h&#8348;&#8331;&#8321; + z&odot;h&#771;&#8348;</code></li>
+    <li>Adam's <code>m</code>, <code>v</code>, bias correction, and update</li>
+    <li>Cross-entropy, both binary and categorical</li>
+  </ol>
+
+  <h3>Questions that come up almost every year</h3>
+  <ul>
+    <li>Why is a non-linear activation necessary? (Section 1.)</li>
+    <li>What is the vanishing gradient problem, and how do ReLU and the LSTM each address it? (Sections 2 and 13&ndash;14.)</li>
+    <li>Why cross-entropy rather than MSE for classification? (Section 3.)</li>
+    <li>Compare batch, stochastic and mini-batch gradient descent. (Section 7.)</li>
+    <li>How does momentum differ from AdaGrad? One accelerates a direction, the other rescales per parameter. (Section 7.)</li>
+    <li>Why does a CNN need fewer parameters than a dense network for images? (Section 8.)</li>
+    <li>Difference between equivariance and invariance. (Section 10.)</li>
+    <li>Compare LSTM and GRU. (Section 15 table.)</li>
+    <li>When can a bidirectional RNN <em>not</em> be used, and why? (Section 17.)</li>
+    <li>Given a 32&times;32&times;3 input and a stated stack, compute the output shape and parameter count at each layer. Practise this one with the calculator in section 9 &mdash; it is the most reliable full-mark question in the paper.</li>
+  </ul>
+
+  <div class="box key">
+    <div class="lab">If you have one evening</div>
+    <p>Work through section 9's output-size calculator until the arithmetic is automatic, then write out the LSTM equations from memory three times. Those two things between them cover more marks than anything else in these two units.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Written for BIN318 Units II and III. The interactive demos are plain canvas and run offline. The three boxes marked in green tie the theory back to the CNN and sunspots experiment grids in your own notebooks.</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+"use strict";
+var root = document.documentElement;
+try { var t = localStorage.getItem("dlnotes.theme"); if (t) root.setAttribute("data-theme", t); } catch (e) {}
+document.getElementById("themeBtn").onclick = function () {
+  var cur = root.getAttribute("data-theme");
+  if (!cur) cur = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  var nx = cur === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", nx);
+  try { localStorage.setItem("dlnotes.theme", nx); } catch (e) {}
+  drawAct(); drawOpt();
+};
+function css(v) { return getComputedStyle(root).getPropertyValue(v).trim(); }
+function dpr(cv) {
+  var r = window.devicePixelRatio || 1, w = cv.clientWidth || cv.width;
+  var h = Math.round(w * (cv.height / cv.width));
+  if (cv.width !== Math.round(w * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); }
+  cv.style.height = h + "px";
+  var c = cv.getContext("2d"); c.setTransform(r, 0, 0, r, 0, 0);
+  return {c: c, w: w, h: h};
+}
+
+/* ---------- 1. activation explorer ---------- */
+var ACTS = {
+  sigmoid:{n:"Sigmoid", f:function(x){return 1/(1+Math.exp(-x));},
+    d:function(x){var s=1/(1+Math.exp(-x));return s*(1-s);},
+    note:"Range (0,1). Peak derivative is only <b>0.25</b>, at x=0. Beyond about |x|&gt;5 the derivative is essentially zero — that flat dashed line is a saturated unit that has stopped learning. Use it only as a binary output."},
+  tanh:{n:"Tanh", f:function(x){return Math.tanh(x);}, d:function(x){var t=Math.tanh(x);return 1-t*t;},
+    note:"Range (−1,1), and <b>zero-centred</b>, which is why it converges faster than sigmoid. Peak derivative is 1.0. Still saturates at the ends, but it remains the activation used inside LSTM and GRU cells."},
+  relu:{n:"ReLU", f:function(x){return Math.max(0,x);}, d:function(x){return x>0?1:0;},
+    note:"Derivative is exactly <b>1</b> for all positive x — so the chain of multiplications in backprop does not shrink, and the vanishing gradient problem disappears. The cost: for x&lt;0 the derivative is exactly 0, and a unit that lands there can never recover. That is the <b>dying ReLU</b>."},
+  leaky:{n:"Leaky ReLU", f:function(x){return x>0?x:0.01*x;}, d:function(x){return x>0?1:0.01;},
+    note:"Same as ReLU but with a small slope (0.01) for negative inputs, so the gradient is never exactly zero and no unit dies permanently. The slope is a hyperparameter you now have to choose."},
+  elu:{n:"ELU", f:function(x){return x>0?x:1*(Math.exp(x)-1);}, d:function(x){return x>0?1:Math.exp(x);},
+    note:"Smooth everywhere, saturates to −α for very negative inputs instead of going to zero. Negative outputs pull the mean activation toward zero, which can speed training on deep stacks. Costs an exponential per unit. <b>This is the alternative your CIFAR configs 5 and 13 test.</b>"}
+};
+var actKey = "relu";
+var actBtns = document.getElementById("actBtns");
+Object.keys(ACTS).forEach(function (k) {
+  var b = document.createElement("button");
+  b.textContent = ACTS[k].n; b.dataset.k = k;
+  b.onclick = function () { actKey = k; syncAct(); };
+  actBtns.appendChild(b);
+});
+function syncAct() {
+  Array.prototype.forEach.call(actBtns.children, function (b) { b.classList.toggle("on", b.dataset.k === actKey); });
+  document.getElementById("actOut").innerHTML =
+    "<b>" + ACTS[actKey].n + ".</b> " + ACTS[actKey].note;
+  drawAct();
+}
+function drawAct() {
+  var cv = document.getElementById("actCv"), g = dpr(cv), c = g.c, W = g.w, H = g.h;
+  var A = ACTS[actKey], pad = 34;
+  var xmin = -6, xmax = 6, ymin = -1.6, ymax = 2.2;
+  var px = function (x) { return pad + (x - xmin) / (xmax - xmin) * (W - pad * 2); };
+  var py = function (y) { return H - pad - (y - ymin) / (ymax - ymin) * (H - pad * 2); };
+  c.clearRect(0, 0, W, H);
+  /* grid */
+  c.strokeStyle = css("--grid"); c.lineWidth = 1; c.globalAlpha = .55;
+  for (var x = xmin; x <= xmax; x += 1) { c.beginPath(); c.moveTo(px(x), pad); c.lineTo(px(x), H - pad); c.stroke(); }
+  for (var y = -1; y <= 2; y += .5) { c.beginPath(); c.moveTo(pad, py(y)); c.lineTo(W - pad, py(y)); c.stroke(); }
+  c.globalAlpha = 1;
+  /* axes */
+  c.strokeStyle = css("--ink3"); c.lineWidth = 1.4;
+  c.beginPath(); c.moveTo(pad, py(0)); c.lineTo(W - pad, py(0)); c.stroke();
+  c.beginPath(); c.moveTo(px(0), pad); c.lineTo(px(0), H - pad); c.stroke();
+  c.fillStyle = css("--ink3"); c.font = '11px "JetBrains Mono", monospace';
+  c.fillText("0", px(0) + 4, py(0) + 13); c.fillText("1", px(0) + 4, py(1) - 4);
+  c.fillText("x", W - pad + 6, py(0) + 4); c.textAlign = "right";
+  c.fillText("-6", px(-6) + 14, py(0) + 15); c.fillText("6", px(6), py(0) + 15);
+  c.textAlign = "left";
+  /* derivative (dashed) */
+  c.strokeStyle = css("--warn"); c.lineWidth = 2; c.setLineDash([5, 5]);
+  c.beginPath();
+  for (var i = 0; i <= 600; i++) { var xv = xmin + (xmax - xmin) * i / 600;
+    var yv = A.d(xv); if (i) c.lineTo(px(xv), py(yv)); else c.moveTo(px(xv), py(yv)); }
+  c.stroke(); c.setLineDash([]);
+  /* function (solid) */
+  c.strokeStyle = css("--accent"); c.lineWidth = 3;
+  c.beginPath();
+  for (i = 0; i <= 600; i++) { xv = xmin + (xmax - xmin) * i / 600;
+    yv = Math.max(ymin, Math.min(ymax, A.f(xv))); if (i) c.lineTo(px(xv), py(yv)); else c.moveTo(px(xv), py(yv)); }
+  c.stroke();
+  /* legend */
+  c.font = '12px "Public Sans", sans-serif';
+  c.fillStyle = css("--accent"); c.fillRect(pad + 6, pad - 16, 18, 3);
+  c.fillText("g(x)", pad + 30, pad - 10);
+  c.fillStyle = css("--warn"); c.fillRect(pad + 76, pad - 16, 18, 3);
+  c.fillText("g'(x)  — the gradient", pad + 100, pad - 10);
+}
+
+/* ---------- 2. convolution playground ---------- */
+var KERNELS = {
+  edge:{n:"Edge detect", k:[[-1,-1,-1],[-1,8,-1],[-1,-1,-1]],
+    note:"Centre weight +8 against eight &minus;1s. On a flat region the sum is zero; only where brightness changes does it fire. This is a <b>Laplacian</b> — the classic edge detector."},
+  sobelx:{n:"Sobel X", k:[[1,0,-1],[2,0,-2],[1,0,-1]],
+    note:"Left column positive, right column negative, so it responds to <b>vertical</b> edges and ignores horizontal ones. A learned first-layer CNN kernel usually ends up looking very like this."},
+  sobely:{n:"Sobel Y", k:[[1,2,1],[0,0,0],[-1,-2,-1]],
+    note:"The same detector rotated — responds to <b>horizontal</b> edges. Sobel X and Y together give edge magnitude and direction."},
+  blur:{n:"Blur", k:[[1,1,1],[1,1,1],[1,1,1]],
+    note:"A plain average over the window. Smooths noise and destroys detail — the opposite job to an edge detector. Divided by 9 in practice to preserve brightness."},
+  sharpen:{n:"Sharpen", k:[[0,-1,0],[-1,5,-1],[0,-1,0]],
+    note:"The identity plus an edge detector: keeps the original value and adds the local contrast back, which exaggerates edges."},
+  identity:{n:"Identity", k:[[0,0,0],[0,1,0],[0,0,0]],
+    note:"Copies the centre pixel and ignores its neighbours. Proves the mechanics of the sliding window without changing anything — a useful sanity check."}
+};
+var kKey = "edge";
+var inGrid = [
+  [0,0,0,0,0,0,0],
+  [0,0,9,9,9,0,0],
+  [0,9,9,9,9,9,0],
+  [0,9,9,0,9,9,0],
+  [0,9,9,9,9,9,0],
+  [0,0,9,9,9,0,0],
+  [0,0,0,0,0,0,0]
+];
+var kBtns = document.getElementById("kBtns");
+Object.keys(KERNELS).forEach(function (k) {
+  var b = document.createElement("button");
+  b.textContent = KERNELS[k].n; b.dataset.k = k;
+  b.onclick = function () { kKey = k; drawConv(); };
+  kBtns.appendChild(b);
+});
+var hiR = -1, hiC = -1;
+function drawConv() {
+  Array.prototype.forEach.call(kBtns.children, function (b) { b.classList.toggle("on", b.dataset.k === kKey); });
+  var K = KERNELS[kKey].k;
+  var gi = document.getElementById("cvIn"), gk = document.getElementById("cvK"), go = document.getElementById("cvOut");
+  gi.style.gridTemplateColumns = "repeat(7,1fr)";
+  gk.style.gridTemplateColumns = "repeat(3,1fr)";
+  go.style.gridTemplateColumns = "repeat(5,1fr)";
+
+  /* input */
+  gi.innerHTML = "";
+  for (var r = 0; r < 7; r++) for (var cc = 0; cc < 7; cc++) {
+    var b = document.createElement("b");
+    var v = inGrid[r][cc];
+    b.textContent = v;
+    b.style.background = shade(v / 9);
+    b.style.color = v > 5 ? css("--card") : css("--ink2");
+    if (hiR >= 0 && r >= hiR && r < hiR + 3 && cc >= hiC && cc < hiC + 3) b.classList.add("hi");
+    (function (rr, c2) { b.onclick = function () { inGrid[rr][c2] = inGrid[rr][c2] ? 0 : 9; drawConv(); }; })(r, cc);
+    gi.appendChild(b);
+  }
+  /* kernel */
+  gk.innerHTML = "";
+  for (r = 0; r < 3; r++) for (cc = 0; cc < 3; cc++) {
+    var kb = document.createElement("b");
+    kb.textContent = K[r][cc];
+    kb.style.background = css("--accent-soft");
+    kb.style.color = css("--accent");
+    kb.style.borderColor = "transparent";
+    gk.appendChild(kb);
+  }
+  /* output */
+  var out = [], mx = 0;
+  for (r = 0; r < 5; r++) { out[r] = [];
+    for (cc = 0; cc < 5; cc++) { var s = 0;
+      for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) s += inGrid[r+i][cc+j] * K[i][j];
+      if (kKey === "blur") s = Math.round(s / 9);
+      out[r][cc] = s; mx = Math.max(mx, Math.abs(s));
+    } }
+  go.innerHTML = "";
+  for (r = 0; r < 5; r++) for (cc = 0; cc < 5; cc++) {
+    var ob = document.createElement("b");
+    var val = out[r][cc];
+    ob.textContent = val;
+    var m = mx ? Math.abs(val) / mx : 0;
+    ob.style.background = val < 0 ? mixBad(m) : shade(m);
+    ob.style.color = m > .55 ? css("--card") : css("--ink2");
+    if (r === hiR && cc === hiC) ob.classList.add("hi");
+    (function (rr, c2) {
+      ob.onmouseenter = function () { hiR = rr; hiC = c2; drawConv(); };
+    })(r, cc);
+    go.appendChild(ob);
+  }
+  go.onmouseleave = function () { hiR = -1; hiC = -1; drawConv(); };
+  document.getElementById("cvNote").innerHTML =
+    "<b>" + KERNELS[kKey].n + ".</b> " + KERNELS[kKey].note +
+    " &nbsp;Input 7&times;7 with a 3&times;3 kernel, stride 1, no padding gives <b>(7 &minus; 3 + 0)/1 + 1 = 5</b>, so the output is 5&times;5.";
+}
+function shade(t) {
+  t = Math.max(0, Math.min(1, t));
+  var a = css("--accent");
+  return "color-mix(in srgb, " + a + " " + Math.round(t * 88) + "%, " + css("--well") + ")";
+}
+function mixBad(t) {
+  return "color-mix(in srgb, " + css("--bad") + " " + Math.round(t * 80) + "%, " + css("--well") + ")";
+}
+
+/* output size calculator */
+function szCalc() {
+  var W = +document.getElementById("szW").value, K = +document.getElementById("szK").value,
+      P = +document.getElementById("szP").value, S = +document.getElementById("szS").value;
+  var o = document.getElementById("szOut");
+  if (!W || !K || !S || S < 1) { o.textContent = "Enter positive values."; return; }
+  var raw = (W - K + 2 * P) / S + 1, val = Math.floor((W - K + 2 * P) / S) + 1;
+  if (val < 1) { o.innerHTML = "<b style='color:var(--bad)'>Invalid</b> — the kernel is larger than the padded input, so no window fits."; return; }
+  o.innerHTML = "O = floor((<b>" + W + "</b> &minus; <b>" + K + "</b> + 2&times;<b>" + P + "</b>) / <b>" + S +
+    "</b>) + 1 = floor(" + (Math.round(((W - K + 2 * P) / S) * 100) / 100) + ") + 1 = <b style='font-size:16px'>" + val + "</b>" +
+    "<br><span class='small'>" + (P === Math.floor((K - 1) / 2) && S === 1
+      ? "That is <b>‘same’ padding</b> — output matches input, which is why stacks stay a constant size until a pooling layer."
+      : P === 0 && S === 1 ? "That is <b>‘valid’ padding</b> — the map shrinks by K&minus;1 = " + (K - 1) + " each layer."
+      : S > 1 ? "Stride " + S + " downsamples by roughly " + S + "×, which is sometimes used instead of pooling."
+      : "") + "</span>";
+}
+["szW","szK","szP","szS"].forEach(function (id) {
+  document.getElementById(id).addEventListener("input", szCalc);
+});
+
+/* ---------- 3. optimizer race ---------- */
+var optT = null;
+var A_ = 1, B_ = 12;                       /* ill-conditioned: 12x steeper in y */
+function fgrad(x, y) { return [A_ * x, B_ * y]; }
+function floss(x, y) { return .5 * (A_ * x * x + B_ * y * y); }
+var runners, steps;
+function resetOpt() {
+  var lr = +document.getElementById("optLr").value / 1000;
+  document.getElementById("optLrV").textContent = lr.toFixed(3);
+  runners = [
+    {n:"SGD", col:"--bad", x:-2.6, y:.95, path:[], lr:lr},
+    {n:"Momentum", col:"--warn", x:-2.6, y:.95, vx:0, vy:0, path:[], lr:lr},
+    {n:"Adam", col:"--accent", x:-2.6, y:.95, mx:0, my:0, vx:0, vy:0, t:0, path:[], lr:lr*6}
+  ];
+  runners.forEach(function (r) { r.path.push([r.x, r.y]); });
+  steps = 0;
+  drawOpt();
+}
+function stepOpt() {
+  steps++;
+  runners.forEach(function (r) {
+    var g = fgrad(r.x, r.y);
+    if (r.n === "SGD") { r.x -= r.lr * g[0]; r.y -= r.lr * g[1]; }
+    else if (r.n === "Momentum") {
+      r.vx = .9 * r.vx + .1 * g[0]; r.vy = .9 * r.vy + .1 * g[1];
+      r.x -= r.lr * 10 * r.vx; r.y -= r.lr * 10 * r.vy;
+    } else {
+      r.t++;
+      r.mx = .9 * r.mx + .1 * g[0]; r.my = .9 * r.my + .1 * g[1];
+      r.vx = .999 * r.vx + .001 * g[0] * g[0]; r.vy = .999 * r.vy + .001 * g[1] * g[1];
+      var mhx = r.mx / (1 - Math.pow(.9, r.t)), mhy = r.my / (1 - Math.pow(.9, r.t));
+      var vhx = r.vx / (1 - Math.pow(.999, r.t)), vhy = r.vy / (1 - Math.pow(.999, r.t));
+      r.x -= r.lr * mhx / (Math.sqrt(vhx) + 1e-8);
+      r.y -= r.lr * mhy / (Math.sqrt(vhy) + 1e-8);
+    }
+    if (!isFinite(r.x) || Math.abs(r.x) > 20) { r.x = 20 * Math.sign(r.x || 1); r.diverged = true; }
+    if (!isFinite(r.y) || Math.abs(r.y) > 20) { r.y = 20 * Math.sign(r.y || 1); r.diverged = true; }
+    r.path.push([r.x, r.y]);
+  });
+  drawOpt();
+  if (steps > 220) { clearInterval(optT); optT = null; document.getElementById("optRun").textContent = "Run"; document.getElementById("optRun").classList.remove("on"); }
+}
+function drawOpt() {
+  if (!runners) return;
+  var cv = document.getElementById("optCv"), g = dpr(cv), c = g.c, W = g.w, H = g.h;
+  var xmin = -3.2, xmax = 3.2, ymin = -1.35, ymax = 1.35;
+  var px = function (x) { return (x - xmin) / (xmax - xmin) * W; };
+  var py = function (y) { return H - (y - ymin) / (ymax - ymin) * H; };
+  c.clearRect(0, 0, W, H);
+  /* contours of the elongated bowl */
+  c.strokeStyle = css("--grid"); c.lineWidth = 1.2;
+  for (var lv = 1; lv <= 9; lv++) {
+    var L = lv * lv * .12;
+    var rx = Math.sqrt(2 * L / A_), ry = Math.sqrt(2 * L / B_);
+    c.beginPath();
+    c.ellipse(px(0), py(0), (rx / (xmax - xmin)) * W, (ry / (ymax - ymin)) * H, 0, 0, Math.PI * 2);
+    c.stroke();
+  }
+  c.fillStyle = css("--ink3");
+  c.beginPath(); c.arc(px(0), py(0), 3.5, 0, Math.PI * 2); c.fill();
+  c.font = '11px "JetBrains Mono", monospace';
+  c.fillText("minimum", px(0) + 9, py(0) + 4);
+  /* paths */
+  runners.forEach(function (r) {
+    c.strokeStyle = css(r.col); c.lineWidth = 2.2; c.globalAlpha = .95;
+    c.beginPath();
+    r.path.forEach(function (p, i) { if (i) c.lineTo(px(p[0]), py(p[1])); else c.moveTo(px(p[0]), py(p[1])); });
+    c.stroke();
+    var last = r.path[r.path.length - 1];
+    c.fillStyle = css(r.col);
+    c.beginPath(); c.arc(px(last[0]), py(last[1]), 4.5, 0, Math.PI * 2); c.fill();
+    c.globalAlpha = 1;
+  });
+  /* legend */
+  c.font = '12px "Public Sans", sans-serif';
+  var lx = 12;
+  runners.forEach(function (r) {
+    c.fillStyle = css(r.col); c.fillRect(lx, 14, 16, 3);
+    c.fillText(r.n, lx + 22, 20);
+    lx += 22 + c.measureText(r.n).width + 20;
+  });
+  document.getElementById("optOut").innerHTML =
+    "Step <b>" + steps + "</b>. &nbsp;" + runners.map(function (r) {
+      return "<b style='color:" + css(r.col) + "'>" + r.n + "</b> loss " +
+        (r.diverged ? "diverged" : floss(r.x, r.y).toFixed(4));
+    }).join(" &nbsp;·&nbsp; ") +
+    "<br><span class='small'>The bowl is 12&times; steeper vertically than horizontally. Plain SGD must use a small step to avoid overshooting the steep axis, which leaves it crawling along the shallow one — that is the zig-zag. Momentum cancels the opposing vertical moves and accumulates the consistent horizontal one. Adam rescales each axis by its own gradient history, so the conditioning stops mattering. Push the learning rate up and watch SGD destabilise first.</span>";
+}
+document.getElementById("optRun").onclick = function () {
+  if (optT) { clearInterval(optT); optT = null; this.textContent = "Run"; this.classList.remove("on"); return; }
+  if (steps > 220) resetOpt();
+  this.textContent = "Pause"; this.classList.add("on");
+  optT = setInterval(stepOpt, 32);
+};
+document.getElementById("optReset").onclick = function () {
+  if (optT) { clearInterval(optT); optT = null; }
+  document.getElementById("optRun").textContent = "Run";
+  document.getElementById("optRun").classList.remove("on");
+  resetOpt();
+};
+document.getElementById("optLr").addEventListener("input", function () {
+  if (optT) { clearInterval(optT); optT = null; document.getElementById("optRun").textContent = "Run"; document.getElementById("optRun").classList.remove("on"); }
+  resetOpt();
+});
+
+/* boot */
+syncAct(); drawConv(); szCalc(); resetOpt();
+addEventListener("resize", function () { drawAct(); drawOpt(); });
+})();
+</script>
+</body>
+</html>

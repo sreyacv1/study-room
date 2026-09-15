@@ -1,0 +1,1854 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drill Room</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light dark}
+[hidden]{display:none!important}
+img{max-width:100%}
+:root{
+  --paper:#F0F1F4; --card:#FFFFFF; --ink:#1C1D22; --ink2:#5C6070; --ink3:#878CA0;
+  --line:#D9DCE4; --line2:#E9EBF1;
+  --accent:#2D4B9A; --accent-soft:#E4E8F5; --accent-ink:#FFFFFF;
+  --urgent:#C2410C; --urgent-soft:#FBE8DF;
+  --good:#15803D; --good-soft:#E0F0E6;
+  --bad:#B3261E; --bad-soft:#FBE4E2;
+  --bubble:#EDEEF3;
+  --shadow:0 1px 2px rgba(28,29,34,.06),0 4px 14px rgba(28,29,34,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#131419; --card:#1C1E26; --ink:#E7E8ED; --ink2:#9AA0B0; --ink3:#767C8E;
+  --line:#2C2F3A; --line2:#242731;
+  --accent:#7B96E8; --accent-soft:#1E2740; --accent-ink:#0E1320;
+  --urgent:#F97316; --urgent-soft:#3A2110;
+  --good:#4ADE80; --good-soft:#12301F;
+  --bad:#F87171; --bad-soft:#3A1917;
+  --bubble:#262935;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.3);
+}}
+:root[data-theme="dark"]{
+  --paper:#131419; --card:#1C1E26; --ink:#E7E8ED; --ink2:#9AA0B0; --ink3:#767C8E;
+  --line:#2C2F3A; --line2:#242731;
+  --accent:#7B96E8; --accent-soft:#1E2740; --accent-ink:#0E1320;
+  --urgent:#F97316; --urgent-soft:#3A2110;
+  --good:#4ADE80; --good-soft:#12301F;
+  --bad:#F87171; --bad-soft:#3A1917;
+  --bubble:#262935;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 16px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;margin:0;text-wrap:balance;letter-spacing:-.015em}
+h1{font-size:30px;font-weight:800;line-height:1.1}
+h2{font-size:20px;font-weight:700}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.wrap{max-width:680px;margin:0 auto;padding-inline:20px;padding-block:20px 56px}
+.lab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.muted{color:var(--ink2)}
+.small{font-size:13px}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:10px 20px;flex-wrap:wrap}
+.bar .brand{font-family:Archivo;font-weight:800;font-size:15px;letter-spacing:-.01em}
+.bar .sp{flex:1}
+.bar .chip{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink2)}
+.clock{font-size:15px;font-weight:600;padding:3px 10px;border-radius:8px;background:var(--bubble)}
+.clock.is-urgent{background:var(--urgent-soft);color:var(--urgent)}
+
+/* ---- buttons ---- */
+.btn{font:inherit;font-weight:500;cursor:pointer;border:1px solid var(--line);background:var(--card);
+  color:var(--ink);border-radius:10px;padding:9px 16px;transition:background .12s,border-color .12s}
+.btn:hover:not(:disabled){border-color:var(--ink3)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-accent{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn-accent:hover:not(:disabled){filter:brightness(1.08);border-color:var(--accent)}
+.btn-quiet{background:transparent;border-color:transparent;color:var(--ink2);padding:9px 12px}
+.btn-quiet:hover{background:var(--bubble);border-color:transparent}
+.btn-lg{padding:13px 22px;font-size:16px;width:100%}
+kbd{font-family:"IBM Plex Mono",monospace;font-size:10px;border:1px solid currentColor;border-radius:4px;
+  padding:0 4px;opacity:.6;margin-left:5px;vertical-align:1px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- cards ---- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* ---- today ---- */
+.today{display:flex;flex-direction:column;gap:14px}
+.today-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.streak-n{font-family:Archivo;font-weight:800;font-size:34px;line-height:1;color:var(--accent)}
+.strip{display:grid;grid-template-columns:repeat(30,1fr);gap:3px}
+.strip i{display:block;aspect-ratio:1;border-radius:2px;background:var(--bubble);border:1px solid var(--line2)}
+.strip i.on{background:var(--accent);border-color:var(--accent)}
+.strip i.today{outline:2px solid var(--urgent);outline-offset:1px}
+.done-row{display:flex;gap:8px;flex-wrap:wrap}
+.tick{font-size:12px;border-radius:999px;padding:3px 10px;border:1px solid var(--line);color:var(--ink3)}
+.tick.on{background:var(--good-soft);border-color:transparent;color:var(--good);font-weight:600}
+
+/* ---- mode tiles ---- */
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:520px){.tiles{grid-template-columns:1fr}}
+.tile{text-align:left;display:flex;flex-direction:column;gap:5px;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:14px 15px;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .12s,transform .12s}
+.tile:hover{border-color:var(--accent)}
+.tile .t{font-family:Archivo;font-weight:700;font-size:15px}
+.tile .d{font-size:12.5px;color:var(--ink2);line-height:1.4}
+.tile .meta{font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* ---- OMR question ---- */
+.qnum{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.qtext{font-size:17px;line-height:1.5;white-space:pre-wrap}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.opt{display:flex;align-items:flex-start;gap:12px;text-align:left;font:inherit;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 14px;cursor:pointer;
+  transition:border-color .12s,background .12s}
+.opt:hover:not(:disabled){border-color:var(--ink3)}
+.opt .bub{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--ink3);
+  display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;color:var(--ink2)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .bub{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.right .bub{background:var(--good);border-color:var(--good);color:var(--card)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .bub{background:var(--bad);border-color:var(--bad);color:var(--card)}
+.sol{margin-top:16px;border-left:3px solid var(--accent);background:var(--accent-soft);
+  border-radius:0 10px 10px 0;padding:12px 14px;font-size:14px;line-height:1.55}
+.sol .lab{margin-bottom:4px}
+.prog{height:3px;background:var(--line2);border-radius:2px;overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .2s}
+
+/* ---- results ---- */
+.score-big{font-family:Archivo;font-weight:800;font-size:48px;line-height:1;letter-spacing:-.03em}
+.bars{display:flex;flex-direction:column;gap:9px}
+.barrow{display:grid;grid-template-columns:1fr 46px;gap:10px;align-items:center}
+.barrow .nm{font-size:13px}
+.barrow .tr{height:7px;background:var(--bubble);border-radius:4px;overflow:hidden;margin-top:4px}
+.barrow .tr i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.barrow .tr i.weak{background:var(--urgent)}
+.barrow .pc{font-size:12px;text-align:right;color:var(--ink2)}
+
+/* ---- game ---- */
+.g-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.g-stat{display:flex;flex-direction:column;line-height:1.2}
+.g-lab{font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.g-stat b{font-size:17px}
+.g-stat b.is-urgent{color:var(--urgent)}
+.g-note{font-size:13px;color:var(--ink2);margin-bottom:12px}
+.g-grid{display:grid;gap:8px}
+.g-tile{aspect-ratio:1;font:inherit;font-family:"IBM Plex Mono",monospace;font-size:clamp(13px,3.6vw,18px);font-weight:500;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;cursor:pointer;color:var(--ink);
+  display:grid;place-items:center;transition:background .1s,border-color .1s}
+.g-tile:hover:not(:disabled){border-color:var(--accent)}
+.g-tile.is-done{background:var(--good-soft);border-color:transparent;color:var(--good);opacity:.55}
+.g-tile.is-wrong{background:var(--bad-soft);border-color:var(--bad)}
+.g-meter{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.g-meter-bar{flex:1;height:12px;background:var(--bubble);border-radius:6px;overflow:hidden}
+.g-meter-bar div{height:100%;background:var(--accent);width:100%;border-radius:6px;transition:width .1s linear}
+.g-meter-bar div.is-low{background:var(--urgent)}
+.g-hold{flex:none;padding:7px 14px}
+.g-prompt{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.g-prompt-q{font-size:15px;min-height:24px}
+.g-prompt-btns{display:flex;gap:8px;margin-top:9px}
+.g-prompt-btns .btn{flex:1;padding:7px}
+.g-prompt-bar{height:4px;background:var(--bubble);border-radius:2px;margin-top:10px;overflow:hidden}
+.g-prompt-bar div{height:100%;background:var(--urgent);width:0;border-radius:2px;transition:width .1s linear}
+.g-flash{min-height:22px;font-size:13px;font-weight:600;margin-top:10px}
+.g-flash.is-good{color:var(--good)}
+.g-flash.is-bad{color:var(--bad)}
+
+/* ---- essay ---- */
+.escenes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.escenes{grid-template-columns:1fr}}
+.escene{padding:0;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--card);
+  cursor:pointer;font:inherit;color:var(--ink);text-align:left;transition:border-color .12s}
+.escene:hover{border-color:var(--accent)}
+.escene svg{display:block;width:100%;height:auto;max-width:100%;background:var(--bubble)}
+.escene .cap{padding:10px 13px;font-size:12px;color:var(--ink2)}
+.ta{width:100%;min-height:300px;font:inherit;font-size:15px;line-height:1.65;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px;resize:vertical}
+.wc{font-size:13px;color:var(--ink2)}
+.wc.over{color:var(--urgent);font-weight:600}
+
+/* ---- cards drill ---- */
+.pre{font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.6;background:var(--bubble);
+  border-radius:9px;padding:12px 14px;white-space:pre-wrap;overflow-x:auto;margin:0}
+.badge{font-size:11px;font-weight:600;border-radius:999px;padding:2px 9px;background:var(--bubble);color:var(--ink2)}
+.badge.Easy{background:var(--good-soft);color:var(--good)}
+.badge.Medium{background:var(--accent-soft);color:var(--accent)}
+.badge.Hard{background:var(--urgent-soft);color:var(--urgent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chipbtn{font:inherit;font-size:13px;cursor:pointer;border:1px solid var(--line);background:var(--card);
+  color:var(--ink2);border-radius:999px;padding:5px 13px}
+.chipbtn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.fb{border:1px solid var(--line);border-radius:11px;padding:13px 15px;font-size:14px;line-height:1.6;white-space:pre-wrap;background:var(--card)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span class="brand">Drill Room</span>
+  <span id="barCtx" class="chip" hidden></span>
+  <span class="sp"></span>
+  <span id="barClock" class="clock mono" hidden>0:00</span>
+  <button id="barHome" class="btn btn-quiet" hidden>Home</button>
+</div>
+<div class="wrap"><div id="app"></div></div>
+
+<script>
+/* Question bank. Everything the drill app asks you.
+   Add more by pushing objects into these arrays - the shapes are stable. */
+window.BANK = (function () {
+
+  /* ---------- APTITUDE ----------
+     {id, topic, q, opts:[4], a:index, sol} */
+  var APT_TOPICS = {
+    "profit-loss":   "Profit & Loss",
+    "percentage":    "Percentages",
+    "ratio":         "Ratio & Proportion",
+    "average":       "Averages",
+    "tsd":           "Time, Speed & Distance",
+    "time-work":     "Time & Work",
+    "interest":      "Simple & Compound Interest",
+    "numbers":       "Numbers",
+    "series":        "Series",
+    "reasoning":     "Logical Reasoning"
+  };
+
+  var APTITUDE = [
+    /* --- Profit & Loss --- */
+    {id:"pl1", topic:"profit-loss", q:"A shopkeeper buys an article for ₹450 and sells it for ₹540. What is the profit percentage?",
+     opts:["15%","18%","20%","22%"], a:2,
+     sol:"Profit = 540 − 450 = ₹90. Profit% = 90/450 × 100 = 20%. Shortcut: 90 is a fifth of 450, and a fifth is 20%."},
+    {id:"pl2", topic:"profit-loss", q:"An article is sold for ₹720 at a loss of 10%. What was the cost price?",
+     opts:["₹780","₹792","₹800","₹810"], a:2,
+     sol:"SP = 90% of CP, so CP = 720 / 0.9 = ₹800. Never subtract 10% of the SP — the percentage is always on CP."},
+    {id:"pl3", topic:"profit-loss", q:"Selling an article at ₹102 gives the same profit as the loss when it is sold at ₹78. What is the cost price?",
+     opts:["₹88","₹90","₹92","₹95"], a:1,
+     sol:"Equal profit and loss means CP sits exactly halfway: (102 + 78)/2 = ₹90."},
+    {id:"pl4", topic:"profit-loss", q:"A man sells two articles at ₹1200 each — one at 20% profit, the other at 20% loss. What is the net result?",
+     opts:["No profit, no loss","Loss of ₹100","Profit of ₹100","Loss of ₹50"], a:1,
+     sol:"CP1 = 1200/1.2 = 1000, CP2 = 1200/0.8 = 1500. Total CP 2500 vs total SP 2400 → loss ₹100. Equal % profit and loss on the same SP is ALWAYS a net loss."},
+    {id:"pl5", topic:"profit-loss", q:"The marked price of an article is ₹1200. After a 20% discount the seller still makes 20% profit. What is the cost price?",
+     opts:["₹800","₹850","₹900","₹960"], a:0,
+     sol:"SP = 1200 × 0.8 = ₹960. CP = 960 / 1.2 = ₹800."},
+    {id:"pl6", topic:"profit-loss", q:"The cost price of 20 articles equals the selling price of 16 articles. What is the profit percentage?",
+     opts:["16%","20%","25%","30%"], a:2,
+     sol:"20 CP = 16 SP → SP/CP = 20/16 = 1.25 → 25% profit. General rule: (more − less)/less × 100."},
+
+    /* --- Percentages --- */
+    {id:"pc1", topic:"percentage", q:"If 30% of a number is 96, what is the number?",
+     opts:["280","300","320","360"], a:2,
+     sol:"0.30 × n = 96 → n = 96/0.3 = 320."},
+    {id:"pc2", topic:"percentage", q:"A's salary is 20% more than B's. By what percentage is B's salary less than A's?",
+     opts:["16⅔%","20%","18%","25%"], a:0,
+     sol:"Let B = 100, so A = 120. Difference 20, taken on A: 20/120 = 16⅔%. The base changes when the direction reverses — that's the whole trick."},
+    {id:"pc3", topic:"percentage", q:"The price of rice rises by 25%. By what percentage must a family cut consumption so the expenditure stays the same?",
+     opts:["25%","22%","20%","15%"], a:2,
+     sol:"Reduction = increase/(100 + increase) × 100 = 25/125 × 100 = 20%."},
+    {id:"pc4", topic:"percentage", q:"In an exam 35% failed in Maths, 45% failed in English and 20% failed in both. What percentage passed in both subjects?",
+     opts:["30%","35%","40%","45%"], a:2,
+     sol:"Failed in at least one = 35 + 45 − 20 = 60%. Passed both = 100 − 60 = 40%."},
+    {id:"pc5", topic:"percentage", q:"A number is increased by 20% and then decreased by 20%. What is the net change?",
+     opts:["No change","4% decrease","4% increase","2% decrease"], a:1,
+     sol:"1.2 × 0.8 = 0.96 → a 4% decrease. For successive changes of +x% then −x%, the net is always a loss of x²/100 percent."},
+    {id:"pc6", topic:"percentage", q:"In an election between two candidates, the winner got 60% of the votes and won by 1200 votes. How many votes were polled?",
+     opts:["4000","5000","6000","7500"], a:2,
+     sol:"Winner 60%, loser 40%, margin 20% = 1200 → total = 1200/0.2 = 6000."},
+
+    /* --- Ratio --- */
+    {id:"rt1", topic:"ratio", q:"₹1080 is divided among A, B and C in the ratio 2 : 3 : 4. How much does C receive?",
+     opts:["₹240","₹360","₹480","₹540"], a:2,
+     sol:"Total parts = 9, so one part = 120. C gets 4 parts = ₹480."},
+    {id:"rt2", topic:"ratio", q:"If a : b = 3 : 4 and b : c = 8 : 9, then a : c is",
+     opts:["2 : 3","3 : 4","1 : 2","4 : 9"], a:0,
+     sol:"Make b common: a:b = 6:8 and b:c = 8:9 → a:c = 6:9 = 2:3."},
+    {id:"rt3", topic:"ratio", q:"The ratio of the present ages of two people is 5 : 7. Six years from now it will be 3 : 4. What is the present age of the younger one?",
+     opts:["25 years","30 years","35 years","42 years"], a:1,
+     sol:"(5x+6)/(7x+6) = 3/4 → 20x + 24 = 21x + 18 → x = 6. Younger = 5 × 6 = 30 years."},
+    {id:"rt4", topic:"ratio", q:"Two numbers are in the ratio 3 : 5. If each is increased by 10, the ratio becomes 5 : 7. What is the smaller number?",
+     opts:["9","12","15","18"], a:2,
+     sol:"(3x+10)/(5x+10) = 5/7 → 21x + 70 = 25x + 50 → x = 5. Smaller = 15."},
+    {id:"rt5", topic:"ratio", q:"A mixture of 60 litres has milk and water in the ratio 2 : 1. How much water must be added to make the ratio 1 : 2?",
+     opts:["40 litres","50 litres","60 litres","70 litres"], a:2,
+     sol:"Milk = 40 L, water = 20 L. Milk stays 40; for 1:2 we need water = 80 L. Add 80 − 20 = 60 litres."},
+
+    /* --- Averages --- */
+    {id:"av1", topic:"average", q:"The average of 5 numbers is 27. If one number is removed the average of the rest is 25. Which number was removed?",
+     opts:["30","33","35","37"], a:2,
+     sol:"Total before = 135, total after = 4 × 25 = 100. Removed = 35."},
+    {id:"av2", topic:"average", q:"The average age of 30 students is 14 years. Including the teacher it becomes 15. How old is the teacher?",
+     opts:["40","44","45","46"], a:2,
+     sol:"31 × 15 − 30 × 14 = 465 − 420 = 45 years."},
+    {id:"av3", topic:"average", q:"A batsman has an average of 36 over 16 innings. What must he score in the 17th innings to raise his average to 38?",
+     opts:["60","66","70","74"], a:2,
+     sol:"17 × 38 − 16 × 36 = 646 − 576 = 70. Shortcut: new average + (innings already played × rise) = 38 + 16 × 2 = 70."},
+    {id:"av4", topic:"average", q:"The average of the first 10 natural numbers is",
+     opts:["5","5.5","6","6.5"], a:1,
+     sol:"Sum = 10 × 11/2 = 55; average = 5.5. For consecutive numbers the average is just the midpoint."},
+
+    /* --- Time, Speed, Distance --- */
+    {id:"ts1", topic:"tsd", q:"A train 150 m long crosses a pole in 15 seconds. What is its speed?",
+     opts:["30 km/h","36 km/h","40 km/h","45 km/h"], a:1,
+     sol:"Speed = 150/15 = 10 m/s. Multiply by 18/5 → 36 km/h. Crossing a pole means the train covers only its own length."},
+    {id:"ts2", topic:"tsd", q:"A 200 m train crosses a 300 m platform in 25 seconds. What is its speed?",
+     opts:["60 km/h","66 km/h","72 km/h","80 km/h"], a:2,
+     sol:"Distance = 200 + 300 = 500 m in 25 s = 20 m/s = 72 km/h."},
+    {id:"ts3", topic:"tsd", q:"A man travels to a place at 6 km/h and returns at 4 km/h. What is his average speed for the whole journey?",
+     opts:["4.8 km/h","5 km/h","5.2 km/h","5.5 km/h"], a:0,
+     sol:"Equal distances → harmonic mean: 2ab/(a+b) = 2 × 6 × 4/10 = 4.8 km/h. It is never the plain average of 5."},
+    {id:"ts4", topic:"tsd", q:"A boat covers 20 km downstream in 2 hours and returns in 4 hours. What is the speed of the stream?",
+     opts:["2 km/h","2.5 km/h","3 km/h","5 km/h"], a:1,
+     sol:"Downstream = 10 km/h, upstream = 5 km/h. Stream = (10 − 5)/2 = 2.5 km/h."},
+    {id:"ts5", topic:"tsd", q:"Two trains of lengths 140 m and 160 m run in opposite directions at 60 km/h and 40 km/h. How long do they take to cross each other?",
+     opts:["9.8 s","10.8 s","12 s","15 s"], a:1,
+     sol:"Relative speed = 100 km/h = 250/9 m/s. Total length = 300 m. Time = 300 ÷ 250/9 = 10.8 s."},
+
+    /* --- Time & Work --- */
+    {id:"tw1", topic:"time-work", q:"A can finish a job in 12 days and B in 18 days. Working together they finish it in",
+     opts:["6 days","7.2 days","7.5 days","8 days"], a:1,
+     sol:"Take LCM 36 units. A does 3/day, B does 2/day, together 5/day → 36/5 = 7.2 days. The LCM method beats fractions every time."},
+    {id:"tw2", topic:"time-work", q:"A and B together finish a job in 8 days. A alone takes 12 days. How long does B alone take?",
+     opts:["16 days","20 days","24 days","28 days"], a:2,
+     sol:"1/8 − 1/12 = (3 − 2)/24 = 1/24 → B alone takes 24 days."},
+    {id:"tw3", topic:"time-work", q:"10 men complete a job in 15 days. How long would 15 men take?",
+     opts:["8 days","10 days","12 days","12.5 days"], a:1,
+     sol:"Men × days is constant: 10 × 15 = 150 man-days ÷ 15 men = 10 days."},
+    {id:"tw4", topic:"time-work", q:"A is twice as efficient as B. Together they finish a job in 12 days. How long would A alone take?",
+     opts:["16 days","18 days","20 days","24 days"], a:1,
+     sol:"Efficiencies 2 : 1, so together 3 units/day × 12 = 36 units total. A does 2/day → 36/2 = 18 days."},
+    {id:"tw5", topic:"time-work", q:"A pipe fills a tank in 6 hours and another empties it in 9 hours. With both open, how long to fill the tank?",
+     opts:["15 hours","18 hours","20 hours","24 hours"], a:1,
+     sol:"LCM 18 units: fill 3/hr, empty 2/hr, net 1/hr → 18 hours."},
+
+    /* --- Interest --- */
+    {id:"in1", topic:"interest", q:"Find the simple interest on ₹5000 at 8% per annum for 3 years.",
+     opts:["₹1000","₹1200","₹1300","₹1500"], a:1,
+     sol:"SI = PRT/100 = 5000 × 8 × 3/100 = ₹1200."},
+    {id:"in2", topic:"interest", q:"A sum doubles itself in 8 years under simple interest. What is the rate?",
+     opts:["10%","12%","12.5%","15%"], a:2,
+     sol:"To double, SI must equal P, so 100 = R × 8 → R = 12.5%. General: rate = 100/years to double."},
+    {id:"in3", topic:"interest", q:"What is the compound interest on ₹10,000 at 10% per annum for 2 years?",
+     opts:["₹2000","₹2100","₹2200","₹2310"], a:1,
+     sol:"Amount = 10000 × 1.1² = ₹12,100 → CI = ₹2100."},
+    {id:"in4", topic:"interest", q:"The difference between CI and SI on a sum for 2 years at 10% per annum is ₹50. Find the sum.",
+     opts:["₹4000","₹5000","₹6000","₹8000"], a:1,
+     sol:"For 2 years, difference = P(R/100)² = P × 0.01 = 50 → P = ₹5000. Memorise this one — it appears constantly."},
+
+    /* --- Numbers --- */
+    {id:"nm1", topic:"numbers", q:"What is the LCM of 12, 15 and 20?",
+     opts:["30","60","120","180"], a:1,
+     sol:"12 = 2²·3, 15 = 3·5, 20 = 2²·5. LCM = 2² · 3 · 5 = 60."},
+    {id:"nm2", topic:"numbers", q:"What is the largest three-digit number exactly divisible by 7?",
+     opts:["991","994","997","999"], a:1,
+     sol:"999 ÷ 7 = 142 remainder 5, so 999 − 5 = 994."},
+    {id:"nm3", topic:"numbers", q:"What is the unit digit of 7⁹⁵?",
+     opts:["1","3","7","9"], a:1,
+     sol:"Unit digits of 7 cycle 7, 9, 3, 1 with period 4. 95 mod 4 = 3 → third in the cycle = 3."},
+    {id:"nm4", topic:"numbers", q:"The HCF of two numbers is 12 and their LCM is 180. If one number is 36, the other is",
+     opts:["48","60","72","90"], a:1,
+     sol:"HCF × LCM = product of the numbers: 12 × 180 = 36 × n → n = 60."},
+    {id:"nm5", topic:"numbers", q:"A number when divided by 342 leaves a remainder of 47. What remainder does it leave when divided by 19?",
+     opts:["0","5","9","13"], a:2,
+     sol:"342 is divisible by 19, so only the remainder matters: 47 ÷ 19 = 2 remainder 9."},
+
+    /* --- Series --- */
+    {id:"sr1", topic:"series", q:"2, 6, 12, 20, 30, ?",
+     opts:["36","40","42","46"], a:2,
+     sol:"Differences are 4, 6, 8, 10, so next difference is 12 → 42. (Each term is n(n+1).)"},
+    {id:"sr2", topic:"series", q:"3, 8, 18, 38, ?",
+     opts:["58","68","76","78"], a:3,
+     sol:"Each term is the previous × 2 + 2: 38 × 2 + 2 = 78."},
+    {id:"sr3", topic:"series", q:"5, 11, 23, 47, ?",
+     opts:["85","91","94","95"], a:3,
+     sol:"Each term is previous × 2 + 1: 47 × 2 + 1 = 95."},
+    {id:"sr4", topic:"series", q:"AZ, BY, CX, ?",
+     opts:["DV","DW","EW","DX"], a:1,
+     sol:"First letter moves forward A, B, C, D; second moves backward Z, Y, X, W → DW."},
+    {id:"sr5", topic:"series", q:"1, 4, 9, 16, 25, ?",
+     opts:["30","34","36","49"], a:2,
+     sol:"Perfect squares: 6² = 36."},
+    {id:"sr6", topic:"series", q:"120, 99, 80, 63, 48, ?",
+     opts:["35","36","38","40"], a:0,
+     sol:"Differences are −21, −19, −17, −15, so next is −13 → 35. (Terms are n² − 1 running downward.)"},
+
+    /* --- Logical reasoning --- */
+    {id:"lr1", topic:"reasoning", q:"Pointing to a photograph a man says, “She is the daughter of my grandfather’s only son.” How is she related to him?",
+     opts:["Daughter","Sister","Niece","Cousin"], a:1,
+     sol:"Grandfather’s only son = his own father. His father’s daughter = his sister."},
+    {id:"lr2", topic:"reasoning", q:"A is B’s brother, C is A’s mother, D is C’s father. How is B related to D?",
+     opts:["Grandchild","Grandfather","Daughter","Son-in-law"], a:0,
+     sol:"C is the mother of A and B; D is C’s father, so D is their grandfather — B is D’s grandchild. B’s gender is never stated, so ‘grandchild’ is the only safe answer."},
+    {id:"lr3", topic:"reasoning", q:"If TEACHER is coded as VGCEJGT, how is CHILD coded?",
+     opts:["EJKNF","EJKMF","DJKNF","EIKNF"], a:0,
+     sol:"Every letter shifts forward by 2: C→E, H→J, I→K, L→N, D→F → EJKNF."},
+    {id:"lr4", topic:"reasoning", q:"A man walks 5 km north, turns right and walks 3 km, then turns right and walks 5 km. How far is he from the start and in which direction?",
+     opts:["3 km east","3 km west","5 km south","8 km north"], a:0,
+     sol:"North 5, east 3, south 5. The north and south cancel, leaving 3 km due east."},
+    {id:"lr5", topic:"reasoning", q:"Statements: All pens are books. All books are papers. Conclusions: I. All pens are papers. II. Some papers are pens. Which follows?",
+     opts:["Only I","Only II","Both I and II","Neither"], a:2,
+     sol:"The chain gives all pens are papers (I). If all pens are papers then at least some papers are pens (II), since pens exist. Both follow."},
+    {id:"lr6", topic:"reasoning", q:"Statements: Some birds are trees. No tree is a stone. Conclusions: I. Some birds are not stones. II. No bird is a stone. Which follows?",
+     opts:["Only I","Only II","Both","Neither"], a:0,
+     sol:"The birds that are trees cannot be stones, so I follows. Nothing rules out the OTHER birds being stones, so II does not."},
+    {id:"lr7", topic:"reasoning", q:"Five people P, Q, R, S, T sit in a row. Q is to the right of R, S is to the left of R but to the right of P, and T is at the extreme right. Who is in the middle?",
+     opts:["P","S","R","Q"], a:2,
+     sol:"Order works out as P, S, R, Q, T. The middle seat is R."},
+    {id:"lr8", topic:"reasoning", q:"A man walks 10 m south, turns left and walks 5 m, then turns left and walks 10 m. Where is he relative to the start?",
+     opts:["5 m east","5 m west","10 m north","15 m east"], a:0,
+     sol:"South 10, east 5, north 10. Vertical cancels → 5 m east."}
+  ];
+
+  /* ---------- SCIENCE SECTION ----------
+     Zifo announces the topic ~2 days before the test, so drill by topic. */
+  var SCI_TOPICS = {
+    "molbio":    "Molecular Biology",
+    "genetics":  "Genetics",
+    "biochem":   "Biochemistry",
+    "cellbio":   "Cell Biology",
+    "bioinfo":   "Bioinformatics"
+  };
+
+  var SCIENCE = [
+    /* Molecular biology */
+    {id:"mb1", topic:"molbio", q:"Which enzyme unwinds the DNA double helix during replication?",
+     opts:["DNA polymerase","Helicase","Ligase","Primase"], a:1,
+     sol:"Helicase breaks the hydrogen bonds between strands. Polymerase extends, ligase seals nicks, primase lays RNA primers."},
+    {id:"mb2", topic:"molbio", q:"Okazaki fragments are synthesised on",
+     opts:["The leading strand","The lagging strand","Both strands equally","Neither strand"], a:1,
+     sol:"Polymerase only works 5′→3′, so the lagging strand is built in short discontinuous pieces that ligase later joins."},
+    {id:"mb3", topic:"molbio", q:"Which of these is NOT a stop codon?",
+     opts:["UAA","UAG","UGA","UGG"], a:3,
+     sol:"UAA, UAG and UGA terminate translation. UGG codes for tryptophan — the only codon for it."},
+    {id:"mb4", topic:"molbio", q:"Reverse transcriptase catalyses the synthesis of",
+     opts:["RNA from DNA","DNA from RNA","Protein from RNA","RNA from RNA"], a:1,
+     sol:"It makes complementary DNA from an RNA template — the basis of cDNA libraries and RT-PCR."},
+    {id:"mb5", topic:"molbio", q:"The 5′ cap added to eukaryotic mRNA is",
+     opts:["7-methylguanosine","Poly-A","A thymine dimer","N-formylmethionine"], a:0,
+     sol:"A 7-methylguanosine cap joined by an unusual 5′→5′ triphosphate linkage. It protects the transcript and helps ribosome recruitment."},
+    {id:"mb6", topic:"molbio", q:"The removal of introns from pre-mRNA is called",
+     opts:["Capping","Splicing","Editing","Polyadenylation"], a:1,
+     sol:"Splicing, carried out by the spliceosome. Alternative splicing lets one gene yield several proteins."},
+    {id:"mb7", topic:"molbio", q:"In PCR, the step at which primers bind the template is",
+     opts:["Denaturation","Annealing","Extension","Ligation"], a:1,
+     sol:"Denaturation (~95°C) separates strands, annealing (~50–65°C) binds primers, extension (~72°C) is where Taq polymerase builds the new strand."},
+
+    /* Genetics */
+    {id:"gn1", topic:"genetics", q:"Mendel’s law of segregation states that",
+     opts:["Alleles separate during gamete formation","Genes on different chromosomes assort independently","Dominant alleles mask recessive ones","Traits blend in the offspring"], a:0,
+     sol:"Each parent carries two alleles that separate so each gamete receives exactly one. Independent assortment is his second law."},
+    {id:"gn2", topic:"genetics", q:"A cross between two heterozygous tall plants (Tt × Tt) gives a phenotypic ratio of",
+     opts:["1 : 1","1 : 2 : 1","3 : 1","9 : 3 : 3 : 1"], a:2,
+     sol:"Phenotypes are 3 tall : 1 short. The 1 : 2 : 1 is the genotypic ratio — read the question carefully."},
+    {id:"gn3", topic:"genetics", q:"Red-green colour blindness is inherited as",
+     opts:["Autosomal dominant","Autosomal recessive","X-linked recessive","Y-linked"], a:2,
+     sol:"X-linked recessive, which is why it is far more common in males — they have only one X to express."},
+    {id:"gn4", topic:"genetics", q:"How many chromosomes are present in a normal human gamete?",
+     opts:["22","23","44","46"], a:1,
+     sol:"23 — the haploid number. Somatic cells carry 46."},
+    {id:"gn5", topic:"genetics", q:"A test cross is carried out with an individual that is",
+     opts:["Homozygous dominant","Homozygous recessive","Heterozygous","Of unknown genotype"], a:1,
+     sol:"Crossing with a homozygous recessive exposes the unknown genotype directly in the offspring ratio."},
+    {id:"gn6", topic:"genetics", q:"A population in Hardy–Weinberg equilibrium has p = 0.7. What is the frequency of heterozygotes?",
+     opts:["0.09","0.21","0.42","0.49"], a:2,
+     sol:"q = 0.3, and heterozygotes are 2pq = 2 × 0.7 × 0.3 = 0.42."},
+
+    /* Biochemistry */
+    {id:"bc1", topic:"biochem", q:"A peptide bond forms between",
+     opts:["Two amino groups","Two carboxyl groups","The carboxyl of one amino acid and the amino group of the next","Two side chains"], a:2,
+     sol:"A condensation reaction releasing water, forming the –CO–NH– backbone linkage."},
+    {id:"bc2", topic:"biochem", q:"Besides methionine, which amino acid contains sulfur?",
+     opts:["Serine","Cysteine","Threonine","Tyrosine"], a:1,
+     sol:"Cysteine — its thiol group forms the disulfide bridges that stabilise tertiary structure."},
+    {id:"bc3", topic:"biochem", q:"The net ATP yield from glycolysis per molecule of glucose is",
+     opts:["2","4","30","38"], a:0,
+     sol:"Four ATP are produced but two are consumed, giving a net of 2 ATP plus 2 NADH."},
+    {id:"bc4", topic:"biochem", q:"In enzyme kinetics, Km is",
+     opts:["The maximum reaction rate","The substrate concentration at half of Vmax","The enzyme concentration","The turnover number"], a:1,
+     sol:"Km is the substrate concentration giving half-maximal velocity. A low Km means high apparent affinity."},
+    {id:"bc5", topic:"biochem", q:"The secondary structure of a protein is stabilised mainly by",
+     opts:["Disulfide bonds","Hydrogen bonds","Ionic bonds","Hydrophobic interactions"], a:1,
+     sol:"Hydrogen bonds along the backbone create α-helices and β-sheets. Hydrophobic packing and disulfides act at the tertiary level."},
+    {id:"bc6", topic:"biochem", q:"A competitive inhibitor affects enzyme kinetics by",
+     opts:["Increasing Km, Vmax unchanged","Decreasing Vmax, Km unchanged","Decreasing both","Increasing both"], a:0,
+     sol:"It competes for the active site, so more substrate is needed for half-max (Km rises), but enough substrate still reaches Vmax."},
+
+    /* Cell biology */
+    {id:"cb1", topic:"cellbio", q:"The enzyme complexes of oxidative phosphorylation are located in the",
+     opts:["Cytosol","Outer mitochondrial membrane","Inner mitochondrial membrane","Mitochondrial matrix"], a:2,
+     sol:"The electron transport chain and ATP synthase sit in the inner membrane; its cristae folds maximise surface area."},
+    {id:"cb2", topic:"cellbio", q:"Prokaryotic ribosomes are made up of which two subunits?",
+     opts:["40S and 60S","30S and 50S","20S and 40S","50S and 70S"], a:1,
+     sol:"30S + 50S = 70S in prokaryotes; 40S + 60S = 80S in eukaryotes. That difference is what many antibiotics exploit."},
+    {id:"cb3", topic:"cellbio", q:"Which organelle contains hydrolytic enzymes for intracellular digestion?",
+     opts:["Peroxisome","Lysosome","Golgi apparatus","Smooth ER"], a:1,
+     sol:"Lysosomes hold acid hydrolases active at low pH. Peroxisomes handle hydrogen peroxide and fatty acid oxidation."},
+    {id:"cb4", topic:"cellbio", q:"DNA replication takes place during which phase of the cell cycle?",
+     opts:["G1","S","G2","M"], a:1,
+     sol:"S phase (synthesis). G1 and G2 are growth and checkpoint phases; M is division."},
+    {id:"cb5", topic:"cellbio", q:"Proteins destined for secretion are first synthesised on",
+     opts:["Free ribosomes","The rough endoplasmic reticulum","The Golgi apparatus","The nuclear envelope"], a:1,
+     sol:"A signal peptide directs the ribosome to the rough ER; the protein then moves to the Golgi for sorting."},
+
+    /* Bioinformatics */
+    {id:"bi1", topic:"bioinfo", q:"BLAST is primarily used for",
+     opts:["Sequence similarity searching","Protein crystallisation","Gene knockout","PCR primer synthesis"], a:0,
+     sol:"Basic Local Alignment Search Tool — it finds local similarity between a query and a sequence database, fast, using a heuristic seed-and-extend approach."},
+    {id:"bi2", topic:"bioinfo", q:"In FASTA format, the header line begins with which character?",
+     opts:["@","#",">","+"], a:2,
+     sol:"A '>' begins the FASTA header. FASTQ uses '@' for its header and '+' before the quality line."},
+    {id:"bi3", topic:"bioinfo", q:"The Needleman–Wunsch algorithm performs",
+     opts:["Local alignment","Global alignment","Multiple alignment","Structure prediction"], a:1,
+     sol:"Needleman–Wunsch aligns sequences end to end (global). Smith–Waterman finds the best local stretch."},
+    {id:"bi4", topic:"bioinfo", q:"In a BLAST result, the E-value represents",
+     opts:["Percentage identity","The number of hits of that quality expected by chance","The alignment length","Sequence entropy"], a:1,
+     sol:"Expect value — how many hits that good you would see purely by chance in a database of that size. Lower is better; near 0 is a strong hit."},
+    {id:"bi5", topic:"bioinfo", q:"Which database is the primary repository for experimentally determined protein structures?",
+     opts:["GenBank","PDB","SwissProt","Pfam"], a:1,
+     sol:"The Protein Data Bank holds 3D coordinates. GenBank and SwissProt are sequence databases; Pfam is protein families."},
+    {id:"bi6", topic:"bioinfo", q:"UPGMA tree construction assumes",
+     opts:["Variable rates of evolution","A constant molecular clock","Maximum parsimony","Bayesian priors"], a:1,
+     sol:"UPGMA assumes a constant rate of change across lineages, producing an ultrametric (equal root-to-tip) tree. Neighbour-joining does not require this."},
+    {id:"bi7", topic:"bioinfo", q:"GenBank is maintained by",
+     opts:["EMBL-EBI","NCBI","DDBJ","UniProt"], a:1,
+     sol:"NCBI in the USA. EMBL-EBI (Europe) and DDBJ (Japan) are its partner databases in the INSDC collaboration."},
+    {id:"bi8", topic:"bioinfo", q:"A substitution matrix such as BLOSUM62 is used to",
+     opts:["Score amino acid replacements in an alignment","Store DNA sequences","Predict protein folding","Normalise microarray data"], a:0,
+     sol:"It gives a log-odds score for each amino acid pair. BLOSUM62 is derived from blocks of sequences with up to 62% identity and is BLAST's protein default."}
+  ];
+
+  /* ---------- ZOHO RAPID-FIRE ---------- */
+  var ZOHO = [
+    {id:"zh1", topic:"zoho", q:"What is the output?\n\nint i = 5;\nprintf(\"%d %d\", i++, ++i);",
+     opts:["5 7","5 6","Undefined behaviour","6 7"], a:2,
+     sol:"Modifying a variable twice between sequence points is undefined behaviour in C. Compilers differ. Zoho likes this one — say 'undefined' and explain why."},
+    {id:"zh2", topic:"zoho", q:"What does this print?\n\nchar s[] = \"hello\";\nprintf(\"%d\", sizeof(s));",
+     opts:["5","6","4","8"], a:1,
+     sol:"6 — five characters plus the '\\0' terminator. strlen(s) would give 5. Know the difference cold."},
+    {id:"zh3", topic:"zoho", q:"Time complexity of searching in a balanced binary search tree",
+     opts:["O(1)","O(log n)","O(n)","O(n log n)"], a:1,
+     sol:"O(log n) when balanced. An unbalanced BST degrades to O(n) — a linked list in the worst case."},
+    {id:"zh4", topic:"zoho", q:"Which data structure does a recursive function call use internally?",
+     opts:["Queue","Stack","Heap","Tree"], a:1,
+     sol:"The call stack. Each call pushes a frame; too deep and you get stack overflow."},
+    {id:"zh5", topic:"zoho", q:"What is the worst-case time complexity of quicksort?",
+     opts:["O(n)","O(n log n)","O(n²)","O(log n)"], a:2,
+     sol:"O(n²) when the pivot is always the smallest or largest (already-sorted input with a naive pivot). Average is O(n log n)."},
+    {id:"zh6", topic:"zoho", q:"Which sorting algorithm is stable?",
+     opts:["Quick sort","Heap sort","Merge sort","Selection sort"], a:2,
+     sol:"Merge sort preserves the relative order of equal elements. Quick, heap and selection sort are not stable in their usual forms."},
+    {id:"zh7", topic:"zoho", q:"In a max-heap of n elements, where is the smallest element?",
+     opts:["At the root","At the last index","Somewhere among the leaves","At index n/2"], a:2,
+     sol:"It must be a leaf, but which leaf is not fixed — so finding it takes O(n) over the leaf half of the array."},
+    {id:"zh8", topic:"zoho", q:"What does this print?\n\nint a[] = {1,2,3,4,5};\nprintf(\"%d\", *(a+3));",
+     opts:["3","4","Address of a[3]","Compile error"], a:1,
+     sol:"*(a+3) is exactly a[3] = 4. Pointer arithmetic scales by element size automatically."},
+    {id:"zh9", topic:"zoho", q:"Which is NOT a valid way to detect a loop in a linked list?",
+     opts:["Floyd’s cycle detection","Hashing visited nodes","Reversing the list","Counting nodes up to a fixed limit"], a:2,
+     sol:"Reversing destroys the structure without detecting anything. Floyd's tortoise-and-hare is the expected answer at O(n) time, O(1) space."},
+    {id:"zh10", topic:"zoho", q:"The number of comparisons to find both the maximum and minimum of n elements, optimally",
+     opts:["2n − 2","3n/2 − 2","n log n","n²"], a:1,
+     sol:"Compare elements in pairs first, then each winner to max and each loser to min: about 3n/2 − 2 comparisons instead of 2n − 2."},
+    {id:"zh11", topic:"zoho", q:"What is the output?\n\nprintf(\"%d\", 10 == 10.0);",
+     opts:["0","1","Compile error","Undefined"], a:1,
+     sol:"1 — the int is promoted to double and the comparison is true. Beware: this does NOT generalise to values like 0.1 that cannot be represented exactly."},
+    {id:"zh12", topic:"zoho", q:"A queue implemented with two stacks has what amortised dequeue cost?",
+     opts:["O(1)","O(log n)","O(n)","O(n²)"], a:0,
+     sol:"Amortised O(1): each element is moved from the in-stack to the out-stack at most once, even though a single dequeue may cost O(n)."},
+    {id:"zh13", topic:"zoho", q:"Which traversal of a binary search tree yields sorted order?",
+     opts:["Pre-order","In-order","Post-order","Level-order"], a:1,
+     sol:"In-order (left, root, right) visits BST keys in ascending order. Ask yourself this before any BST question."},
+    {id:"zh14", topic:"zoho", q:"What is the space complexity of merge sort on an array?",
+     opts:["O(1)","O(log n)","O(n)","O(n log n)"], a:2,
+     sol:"O(n) for the auxiliary array. On a linked list merge sort can be done in O(1) extra space — a good follow-up answer."},
+    {id:"zh15", topic:"zoho", q:"Which of these is passed by value in C?",
+     opts:["An array name","A struct","A function name","A label"], a:1,
+     sol:"Structs are copied wholesale when passed. An array name decays to a pointer to its first element, so the array itself is not copied."}
+  ];
+
+  /* ---------- DSA PROBLEMS (Zoho round 2 / 3 staples) ---------- */
+  var DSA = [
+    {id:"d1", t:"Second largest element", lvl:"Easy", tags:["array"],
+     s:"Given an unsorted array of n integers, find the second largest element in a single pass. Handle duplicates: for [5, 5, 4] the answer is 4.",
+     io:"Input: [12, 35, 1, 10, 34, 1]\nOutput: 34",
+     hint:"Carry two variables, not a sort. The tricky part is deciding what to do when the new element equals the current largest.",
+     app:"Track `first` and `second`, both initialised to -infinity. For each x: if x > first, then second = first and first = x; else if x > second AND x != first, second = x. The `x != first` guard is what handles duplicates correctly. If second is still -infinity at the end, there is no distinct second largest.",
+     cx:"O(n) time, O(1) space."},
+
+    {id:"d2", t:"Check if two strings are anagrams", lvl:"Easy", tags:["string","hashing"],
+     s:"Given two strings, decide whether one is an anagram of the other (same characters, same counts, any order).",
+     io:"Input: \"listen\", \"silent\"\nOutput: true",
+     hint:"Sorting works but is not the best answer. What is the size of the alphabet?",
+     app:"If lengths differ, return false immediately. Otherwise keep an int count[256] (or a hash map for Unicode). Increment for each character of the first string, decrement for each of the second, then check every counter is zero. Mention the sorting solution as the naive one, then give this — interviewers want to see you improve it yourself.",
+     cx:"O(n) time, O(1) space for a fixed alphabet. The sorting solution is O(n log n)."},
+
+    {id:"d3", t:"Print a matrix in spiral order", lvl:"Medium", tags:["matrix"],
+     s:"Given an m × n matrix, print all elements in spiral order — left to right along the top row, down the right column, right to left along the bottom, up the left column, then inward.",
+     io:"Input: [[1,2,3],[4,5,6],[7,8,9]]\nOutput: 1 2 3 6 9 8 7 4 5",
+     hint:"Four boundaries, shrinking. The bug everyone hits is on the last single row or column.",
+     app:"Maintain top, bottom, left, right. Loop while top <= bottom and left <= right: traverse the top row and top++; traverse the right column and right--; then, ONLY IF top <= bottom, traverse the bottom row and bottom--; then, ONLY IF left <= right, traverse the left column and left++. Those two guards are what stops a single leftover row or column being printed twice.",
+     cx:"O(m×n) time, O(1) extra space."},
+
+    {id:"d4", t:"Rearrange positives and negatives alternately", lvl:"Medium", tags:["array"],
+     s:"Given an array with both positive and negative numbers, rearrange it so signs alternate, starting with a positive. If one sign runs out, append the rest in order. Relative order need not be preserved unless asked.",
+     io:"Input: [1, 2, 3, -4, -1, 4]\nOutput: [1, -4, 2, -1, 3, 4]",
+     hint:"Partition first, then interleave. Ask the interviewer whether relative order must be kept — it changes the whole solution.",
+     app:"Simple version: partition the array like a quicksort step so negatives sit before positives, then swap alternate elements from each half. If the interviewer demands stable relative order with O(1) space, that is a much harder rotation-based problem — say so explicitly rather than silently giving the easy answer.",
+     cx:"O(n) time, O(1) space for the unstable version."},
+
+    {id:"d5", t:"Move all zeros to the end", lvl:"Easy", tags:["array","two-pointer"],
+     s:"Move all zeros in an array to the end while keeping the relative order of the non-zero elements. Do it in place.",
+     io:"Input: [0, 1, 0, 3, 12]\nOutput: [1, 3, 12, 0, 0]",
+     hint:"One write pointer.",
+     app:"Keep an index j = 0. Scan i over the array; whenever a[i] != 0, write a[j++] = a[i]. After the scan, fill positions j..n-1 with zeros. One pass, order preserved.",
+     cx:"O(n) time, O(1) space."},
+
+    {id:"d6", t:"Find the missing number in 1..n", lvl:"Easy", tags:["array","math"],
+     s:"An array holds n−1 distinct numbers from the range 1 to n. Find the one that is missing.",
+     io:"Input: [1, 2, 4, 5, 6], n = 6\nOutput: 3",
+     hint:"Two standard answers — one can overflow, the other cannot.",
+     app:"Sum method: expected = n(n+1)/2, subtract the actual sum. XOR method: XOR all of 1..n and all array elements together; pairs cancel and the missing number survives. Prefer XOR when n is large, because the sum can overflow — mentioning that is what separates a good answer from a correct one.",
+     cx:"O(n) time, O(1) space."},
+
+    {id:"d7", t:"Rotate a matrix by 90 degrees", lvl:"Medium", tags:["matrix"],
+     s:"Rotate an n × n matrix 90 degrees clockwise, in place.",
+     io:"Input: [[1,2],[3,4]]\nOutput: [[3,1],[4,2]]",
+     hint:"Two simple operations compose into the rotation.",
+     app:"Transpose the matrix (swap a[i][j] with a[j][i] for j > i), then reverse each row. For anticlockwise, transpose then reverse each column instead. Deriving it as transpose-plus-reverse is far safer under time pressure than working out index formulas.",
+     cx:"O(n²) time, O(1) space."},
+
+    {id:"d8", t:"Maximum sum of non-adjacent elements", lvl:"Medium", tags:["dp"],
+     s:"Given an array of positive integers, pick a subset with the maximum sum such that no two chosen elements are adjacent.",
+     io:"Input: [5, 5, 10, 100, 10, 5]\nOutput: 110",
+     hint:"At every element you make one binary choice. What do you need to remember?",
+     app:"Classic DP with two rolling variables: `incl` (best sum including the current element) and `excl` (best excluding it). For each x: newIncl = excl + x; newExcl = max(incl, excl). Answer is max(incl, excl) at the end. You never need the full DP array.",
+     cx:"O(n) time, O(1) space."},
+
+    {id:"d9", t:"Longest palindromic substring", lvl:"Medium", tags:["string"],
+     s:"Find the longest contiguous substring of a string that reads the same forwards and backwards.",
+     io:"Input: \"babad\"\nOutput: \"bab\" (or \"aba\")",
+     hint:"Every palindrome has a centre. How many centres are there?",
+     app:"Expand around centres: for each of the 2n−1 possible centres (n single characters plus n−1 gaps between them), expand outward while the characters match, tracking the longest found. Handles odd and even lengths with the same loop. Manacher's algorithm gets O(n) but is rarely expected — name it, do not attempt it under pressure.",
+     cx:"O(n²) time, O(1) space."},
+
+    {id:"d10", t:"Break an amount into denominations", lvl:"Medium", tags:["greedy","zoho-classic"],
+     s:"Given an amount and the Indian note denominations (2000, 500, 200, 100, 50, 20, 10, 5, 2, 1), print how many of each note are needed to make the amount using the fewest notes.",
+     io:"Input: 2760\nOutput: 2000×1, 500×1, 200×1, 50×1, 10×1",
+     hint:"Greedy works here, but say WHY it works.",
+     app:"Sort denominations descending; for each, take count = amount / denom and set amount = amount % denom. Greedy gives the true minimum only because this denomination set is canonical — for an arbitrary set like {1, 3, 4} making 6, greedy gives 4+1+1 while the optimum is 3+3, and you need DP. Zoho asks this constantly and the follow-up is exactly that DP version.",
+     cx:"O(d) time for d denominations."},
+
+    {id:"d11", t:"Merge two sorted arrays without extra space", lvl:"Medium", tags:["array"],
+     s:"Given two sorted arrays of sizes m and n, merge them so the first array holds the m smallest elements and the second holds the rest, both sorted, using no extra array.",
+     io:"Input: [1, 5, 9, 10, 15, 20], [2, 3, 8, 13]\nOutput: [1, 2, 3, 5, 8, 9], [10, 13, 15, 20]",
+     hint:"Compare the largest of the first with the smallest of the second.",
+     app:"Simple approach: for i from the end of arr1 and j from the start of arr2, while arr1[i] > arr2[j], swap them, then re-sort both arrays. O((m+n)log(m+n)). The elegant answer is the gap method (a shell-sort-style shrinking gap across the concatenated logical array), which reaches O((m+n)log(m+n)) without re-sorting — mention it if you have time.",
+     cx:"Gap method: O((m+n) log(m+n)) time, O(1) space."},
+
+    {id:"d12", t:"Pairs with a given sum", lvl:"Easy", tags:["array","hashing"],
+     s:"Count the pairs in an array whose elements add up to a given target k.",
+     io:"Input: [1, 5, 7, -1, 5], k = 6\nOutput: 3  — (1,5), (7,-1), (1,5)",
+     hint:"If the array were sorted you would not need extra space.",
+     app:"Hash map: for each x, look up k−x in a map of counts seen so far, add that count to the answer, then increment the count of x. Alternatively sort and use two pointers from both ends — O(n log n) time but O(1) space. Know both and state the trade-off.",
+     cx:"Hashing: O(n) time, O(n) space. Two-pointer: O(n log n) time, O(1) space."},
+
+    {id:"d13", t:"String compression (run-length)", lvl:"Easy", tags:["string"],
+     s:"Compress a string by replacing runs of repeated characters with the character followed by the run length. Return the original if the compressed form is not shorter.",
+     io:"Input: \"aabcccccaaa\"\nOutput: \"a2b1c5a3\"",
+     hint:"Watch the final run — it is the classic off-by-one.",
+     app:"Walk the string tracking the current character and a counter. When the character changes, append char + count and reset. Critically, append the LAST run after the loop ends — forgetting that is the bug interviewers watch for. Build with a string builder, not repeated concatenation, or you turn an O(n) solution into O(n²).",
+     cx:"O(n) time, O(n) space."},
+
+    {id:"d14", t:"Kth largest element", lvl:"Medium", tags:["heap","sorting"],
+     s:"Find the kth largest element in an unsorted array.",
+     io:"Input: [3, 2, 1, 5, 6, 4], k = 2\nOutput: 5",
+     hint:"Sorting is O(n log n). Can you avoid sorting what you do not need?",
+     app:"Min-heap of size k: push elements, and whenever the heap exceeds k, pop the minimum. The root at the end is the kth largest — O(n log k). Quickselect gives O(n) average using a partition step but O(n²) worst case. Give the heap answer first, then offer quickselect.",
+     cx:"Heap: O(n log k) time, O(k) space."},
+
+    {id:"d15", t:"Print a number in words", lvl:"Medium", tags:["string","zoho-classic"],
+     s:"Given an integer up to 99,999, print it in English words.",
+     io:"Input: 12345\nOutput: Twelve Thousand Three Hundred Forty Five",
+     hint:"The numbers 10–19 are irregular. Handle them as a lookup table, not a rule.",
+     app:"Keep three tables: ones (0–9), teens (10–19) and tens (20, 30, ... 90). Write a helper that converts any two-digit number: if under 20, index the teens/ones table directly, otherwise tens plus ones. Then break the number into thousands and the remainder, and handle the hundreds digit separately. Zoho likes this because it is pure careful case work — test 10, 15, 20, 100, 1000 and 99999 before you say you are done.",
+     cx:"O(1) time for a bounded range."},
+
+    {id:"d16", t:"Remove duplicates from a sorted array", lvl:"Easy", tags:["array","two-pointer"],
+     s:"Remove duplicates in place from a sorted array and return the new length. Elements beyond the new length do not matter.",
+     io:"Input: [1, 1, 2, 2, 3]\nOutput: 3, array becomes [1, 2, 3, ...]",
+     hint:"Because it is sorted, duplicates are always adjacent.",
+     app:"Two pointers: j = 0 as the write position. For i from 1: if a[i] != a[j], then a[++j] = a[i]. Return j + 1. Only works because the array is sorted — say that out loud, because the unsorted version needs a hash set.",
+     cx:"O(n) time, O(1) space."},
+
+    {id:"d17", t:"Pascal's triangle", lvl:"Easy", tags:["pattern","matrix"],
+     s:"Print the first n rows of Pascal's triangle, each row centred.",
+     io:"Input: 4\nOutput:\n   1\n  1 1\n 1 2 1\n1 3 3 1",
+     hint:"Each entry is the sum of the two above it — but there is also a direct formula.",
+     app:"Row-by-row: each row starts and ends with 1, and the interior entry j is prev[j-1] + prev[j]. Alternatively compute each entry from the previous one in the same row: C(n, k) = C(n, k−1) × (n−k+1)/k, which needs only O(1) extra space per row. Zoho often bundles this with a printing-alignment requirement, so get the leading spaces right too.",
+     cx:"O(n²) time."},
+
+    {id:"d18", t:"First non-repeating character", lvl:"Easy", tags:["string","hashing"],
+     s:"Find the first character in a string that does not repeat.",
+     io:"Input: \"swiss\"\nOutput: 'w'",
+     hint:"Two passes are cleaner than one.",
+     app:"First pass fills a frequency table of size 256. Second pass walks the string in order and returns the first character whose count is 1. Two passes, still O(n) — do not contort yourself into one pass with a linked hash map unless asked.",
+     cx:"O(n) time, O(1) space for a fixed alphabet."},
+
+    {id:"d19", t:"Detect a loop in a linked list", lvl:"Medium", tags:["linked-list"],
+     s:"Determine whether a singly linked list contains a cycle, and if so find the node where the cycle begins.",
+     io:"Input: 1 → 2 → 3 → 4 → back to 2\nOutput: cycle starts at node 2",
+     hint:"Two pointers at different speeds.",
+     app:"Floyd's cycle detection: slow moves one step, fast moves two. If they ever meet there is a cycle. To find the start, reset slow to the head and advance both one step at a time — they meet at the cycle entry. That second half is the part candidates forget, so practise stating it.",
+     cx:"O(n) time, O(1) space."},
+
+    {id:"d20", t:"Sort an array of 0s, 1s and 2s", lvl:"Medium", tags:["array","dutch-flag"],
+     s:"Sort an array containing only the values 0, 1 and 2, in a single pass without counting sort.",
+     io:"Input: [0, 1, 2, 0, 1, 2]\nOutput: [0, 0, 1, 1, 2, 2]",
+     hint:"Three regions, three pointers.",
+     app:"Dutch national flag: low = 0, mid = 0, high = n−1. While mid <= high: if a[mid] == 0 swap a[low++] and a[mid++]; if a[mid] == 1 just mid++; if a[mid] == 2 swap a[mid] and a[high--] WITHOUT advancing mid, because the value swapped in is unexamined. That last detail is the whole problem.",
+     cx:"O(n) time, O(1) space, single pass."}
+  ];
+
+  /* ---------- SQL ---------- */
+  var SQL_SCHEMA =
+    "employees(emp_id, name, dept_id, salary, manager_id, hire_date)\n" +
+    "departments(dept_id, dept_name)";
+
+  var SQL = [
+    {id:"s1", lvl:"Easy", q:"Find the second highest salary from the employees table.",
+     a:"SELECT MAX(salary) AS second_highest\nFROM employees\nWHERE salary < (SELECT MAX(salary) FROM employees);",
+     note:"The subquery approach returns NULL cleanly when there is no second salary. The window-function version is SELECT DISTINCT salary ... DENSE_RANK() OVER (ORDER BY salary DESC) = 2. Interviewers usually want you to produce both."},
+
+    {id:"s2", lvl:"Medium", q:"List employees who earn more than the average salary of their own department.",
+     a:"SELECT e.name, e.salary, e.dept_id\nFROM employees e\nWHERE e.salary > (\n  SELECT AVG(salary) FROM employees\n  WHERE dept_id = e.dept_id\n);",
+     note:"A correlated subquery — the inner query re-runs per row, referencing e.dept_id from outside. The faster alternative joins against a grouped derived table."},
+
+    {id:"s3", lvl:"Easy", q:"Count the employees in each department, including departments that have none.",
+     a:"SELECT d.dept_name, COUNT(e.emp_id) AS headcount\nFROM departments d\nLEFT JOIN employees e ON d.dept_id = e.dept_id\nGROUP BY d.dept_name;",
+     note:"Two traps: the LEFT JOIN must start from departments, and you must COUNT(e.emp_id) not COUNT(*) — COUNT(*) would return 1 for an empty department because the outer join produces one all-NULL row."},
+
+    {id:"s4", lvl:"Easy", q:"Find duplicate names in the employees table.",
+     a:"SELECT name, COUNT(*) AS occurrences\nFROM employees\nGROUP BY name\nHAVING COUNT(*) > 1;",
+     note:"HAVING filters after grouping; WHERE filters before it and cannot see aggregates. That distinction is itself a favourite interview question."},
+
+    {id:"s5", lvl:"Easy", q:"Find all employees who do not have a manager.",
+     a:"SELECT name FROM employees WHERE manager_id IS NULL;",
+     note:"Must be IS NULL, never = NULL. Any comparison with NULL yields UNKNOWN, so = NULL silently matches nothing — a classic planted bug."},
+
+    {id:"s6", lvl:"Hard", q:"Find the top 3 highest-paid employees in each department.",
+     a:"SELECT name, dept_id, salary FROM (\n  SELECT name, dept_id, salary,\n         DENSE_RANK() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS rnk\n  FROM employees\n) t\nWHERE rnk <= 3;",
+     note:"You cannot filter on a window function in the same SELECT's WHERE — window functions are computed after WHERE, so it must be wrapped in a subquery or CTE."},
+
+    {id:"s7", lvl:"Medium", q:"Show each employee alongside their manager's name.",
+     a:"SELECT e.name AS employee, m.name AS manager\nFROM employees e\nLEFT JOIN employees m ON e.manager_id = m.emp_id;",
+     note:"A self-join with two aliases of the same table. Use LEFT JOIN so employees with no manager still appear, with NULL."},
+
+    {id:"s8", lvl:"Medium", q:"Which department has the highest total payroll?",
+     a:"SELECT d.dept_name, SUM(e.salary) AS payroll\nFROM employees e\nJOIN departments d ON e.dept_id = d.dept_id\nGROUP BY d.dept_name\nORDER BY payroll DESC\nLIMIT 1;",
+     note:"LIMIT is MySQL/Postgres. SQL Server uses SELECT TOP 1, Oracle uses FETCH FIRST 1 ROWS ONLY — ask which dialect before you write."},
+
+    {id:"s9", lvl:"Hard", q:"Delete duplicate rows from employees, keeping only the one with the lowest emp_id for each name.",
+     a:"DELETE FROM employees\nWHERE emp_id NOT IN (\n  SELECT MIN(emp_id) FROM (SELECT * FROM employees) AS tmp\n  GROUP BY name\n);",
+     note:"MySQL will not let you read the same table you are deleting from directly — hence the derived table wrapper. In Postgres you can use a simpler USING clause or a CTE with ROW_NUMBER()."},
+
+    {id:"s10", lvl:"Medium", q:"Find the Nth highest salary, generically.",
+     a:"SELECT DISTINCT salary\nFROM employees e1\nWHERE N - 1 = (\n  SELECT COUNT(DISTINCT salary) FROM employees e2\n  WHERE e2.salary > e1.salary\n);",
+     note:"Reads as: the salary that has exactly N−1 distinct salaries above it. The modern answer uses DENSE_RANK() = N; give both."},
+
+    {id:"s11", lvl:"Easy", q:"List employees hired in the last 6 months.",
+     a:"SELECT name, hire_date\nFROM employees\nWHERE hire_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH);",
+     note:"MySQL syntax. Postgres: hire_date >= CURRENT_DATE - INTERVAL '6 months'. Avoid wrapping hire_date in a function — that prevents the index being used."},
+
+    {id:"s12", lvl:"Medium", q:"Explain the difference between RANK(), DENSE_RANK() and ROW_NUMBER().",
+     a:"-- salaries 100, 90, 90, 80\n-- ROW_NUMBER(): 1, 2, 3, 4  (always unique, ties broken arbitrarily)\n-- RANK():       1, 2, 2, 4  (ties share a rank, then a gap)\n-- DENSE_RANK(): 1, 2, 2, 3  (ties share a rank, no gap)",
+     note:"Being able to produce that four-row example instantly is worth more than a paragraph of prose. Use DENSE_RANK for 'Nth highest salary' questions."},
+
+    {id:"s13", lvl:"Easy", q:"What is the difference between INNER JOIN and LEFT JOIN?",
+     a:"-- INNER JOIN: only rows with a match on both sides.\n-- LEFT JOIN:  every row from the left table; unmatched right columns are NULL.",
+     note:"The practical tell: if you LEFT JOIN and then put a condition on the right table in WHERE, you silently convert it back to an inner join. Put that condition in the ON clause instead."},
+
+    {id:"s14", lvl:"Medium", q:"Find departments where every employee earns more than 50,000.",
+     a:"SELECT dept_id\nFROM employees\nGROUP BY dept_id\nHAVING MIN(salary) > 50000;",
+     note:"'Every row satisfies X' becomes 'the minimum satisfies X' after grouping. Recognising that rewrite is the whole trick and it generalises widely."},
+
+    {id:"s15", lvl:"Easy", q:"List employee names starting with 'A' whose salary is between 30,000 and 60,000, highest first.",
+     a:"SELECT name, salary\nFROM employees\nWHERE name LIKE 'A%'\n  AND salary BETWEEN 30000 AND 60000\nORDER BY salary DESC;",
+     note:"BETWEEN is inclusive on both ends. LIKE 'A%' can use an index; LIKE '%A' cannot, because a leading wildcard forces a full scan."}
+  ];
+
+  /* ---------- ESSAY PROMPTS ----------
+     Zifo shows two images and asks for an essay of up to 600 words on one. */
+  var ESSAYS = [
+    {id:"e1", t:"The last shoot",
+     alt:"A cracked, dry plain under a low sun, with a single bare tree and one small green shoot growing from a fissure.",
+     angles:["Resilience and what makes recovery possible","Environmental degradation and its human cost","Small beginnings against long odds"]},
+    {id:"e2", t:"The still figure",
+     alt:"A busy night crossing streaked with light trails from traffic, with one person standing motionless in the middle of the movement.",
+     angles:["Individual identity inside mass systems","The pace of urban life and mental health","Choosing stillness as a deliberate act"]},
+    {id:"e3", t:"The unfinished bridge",
+     alt:"Two cliff edges separated by a gap, with a bridge built out from one side and stopping in mid-air.",
+     angles:["Incomplete infrastructure and public accountability","The gap between ambition and execution","Connection, and what it costs to build"]},
+    {id:"e4", t:"The open cage",
+     alt:"An open birdcage on a windowsill, its door swung wide, with birds in flight against the sky outside.",
+     angles:["Freedom and the fear that comes with it","Institutions that hold and institutions that release","What we do with an opportunity once it arrives"]},
+    {id:"e5", t:"The ladder",
+     alt:"A tall ladder leaning against a blank wall, several rungs missing near the bottom, the top disappearing out of frame.",
+     angles:["Access and inequality of opportunity","Career progression and its invisible barriers","Who repairs the missing rungs, and for whom"]},
+    {id:"e6", t:"The handover",
+     alt:"Two pairs of hands meeting, one passing a small seedling in soil to the other.",
+     angles:["Mentorship and the transfer of knowledge","Intergenerational responsibility","Trust as the basis of collaboration"]}
+  ];
+
+  return {
+    APT_TOPICS: APT_TOPICS, APTITUDE: APTITUDE,
+    SCI_TOPICS: SCI_TOPICS, SCIENCE: SCIENCE,
+    ZOHO: ZOHO, DSA: DSA,
+    SQL_SCHEMA: SQL_SCHEMA, SQL: SQL,
+    ESSAYS: ESSAYS
+  };
+})();
+
+</script>
+<script>
+/* The multitasking round: 13 levels, 20-minute cap, mirroring Zifo's gamified section.
+   Three demands run at once - an ordering task, a draining meter, and an interrupting prompt.
+   The levels add them one at a time, which is the whole point: it tests switching, not skill. */
+window.GAME = (function () {
+
+  var LEVELS = [
+    {cols:3, rows:3, kind:"num",   meter:0,   prompt:0,   secs:55, note:"Tap the numbers in ascending order."},
+    {cols:4, rows:3, kind:"num",   meter:0,   prompt:0,   secs:55, note:"Same task, more tiles."},
+    {cols:3, rows:3, kind:"num",   meter:1,   prompt:0,   secs:60, note:"Keep the charge above zero while you tap."},
+    {cols:3, rows:3, kind:"expr",  meter:0,   prompt:0,   secs:60, note:"Order by the VALUE of each expression."},
+    {cols:4, rows:3, kind:"num",   meter:1,   prompt:0,   secs:60, note:"More tiles, charge still draining."},
+    {cols:4, rows:3, kind:"expr",  meter:1,   prompt:0,   secs:65, note:"Arithmetic and charge together."},
+    {cols:4, rows:3, kind:"num",   meter:0,   prompt:1,   secs:65, note:"Answer the prompt the moment it appears."},
+    {cols:4, rows:3, kind:"expr",  meter:0,   prompt:1,   secs:65, note:"Arithmetic plus interruptions."},
+    {cols:4, rows:3, kind:"num",   meter:1,   prompt:1,   secs:70, note:"All three demands at once."},
+    {cols:4, rows:3, kind:"expr",  meter:1,   prompt:1,   secs:70, note:"All three, with arithmetic."},
+    {cols:4, rows:4, kind:"expr",  meter:1.3, prompt:1,   secs:70, note:"Sixteen tiles. Faster drain."},
+    {cols:4, rows:4, kind:"expr",  meter:1.6, prompt:1.3, secs:75, note:"Everything accelerates."},
+    {cols:4, rows:4, kind:"expr2", meter:2,   prompt:1.6, secs:75, note:"Final level. Two-step arithmetic."}
+  ];
+
+  var TOTAL_CAP = 20 * 60;           /* Zifo gives 20 minutes for the whole round */
+  var STROOP = [
+    {w:"RED",   c:"#C2410C"}, {w:"BLUE",  c:"#2D4B9A"},
+    {w:"GREEN", c:"#15803D"}, {w:"BLACK", c:"#1C1D22"}
+  ];
+
+  function rnd(n) { return Math.floor(Math.random() * n); }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) { var j = rnd(i + 1); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function isPrime(n) {
+    if (n < 2) return false;
+    for (var i = 2; i * i <= n; i++) if (n % i === 0) return false;
+    return true;
+  }
+
+  /* Build the tiles for a level. Every tile carries a distinct VALUE;
+     the label may hide that value behind arithmetic. */
+  function makeTiles(cfg) {
+    var count = cfg.cols * cfg.rows, vals = [], used = {}, i;
+    while (vals.length < count) {
+      var v = 2 + rnd(60);
+      if (!used[v]) { used[v] = 1; vals.push(v); }
+    }
+    vals.sort(function (a, b) { return a - b; });
+    var tiles = vals.map(function (v) {
+      var label = String(v);
+      if (cfg.kind === "expr") {
+        var b = 1 + rnd(Math.min(9, v - 1));
+        label = (v - b) + "+" + b;
+        if (rnd(2) === 0) { var c = 1 + rnd(9); label = (v + c) + "−" + c; }
+      } else if (cfg.kind === "expr2") {
+        var f = [2, 3, 4][rnd(3)];
+        var base = Math.floor(v / f), rem = v - base * f;
+        label = base + "×" + f + (rem >= 0 ? "+" + rem : "");
+      }
+      return {val: v, label: label, cleared: false};
+    });
+    return shuffle(tiles);
+  }
+
+  function makePrompt() {
+    var t = rnd(4), n, a, b;
+    if (t === 0) { n = 11 + rnd(80); return {q: "Is " + n + " a prime number?", yes: isPrime(n), html: null}; }
+    if (t === 1) { a = 3 + rnd(12); b = 3 + rnd(12); n = a * b;
+      var g = 10 + rnd(140);
+      return {q: "Is " + a + " × " + b + " greater than " + g + "?", yes: n > g, html: null}; }
+    if (t === 2) { n = 100 + rnd(900); return {q: "Is " + n + " divisible by 3?", yes: n % 3 === 0, html: null}; }
+    var w = STROOP[rnd(4)], c = STROOP[rnd(4)];
+    return {
+      q: null,
+      html: '<span style="color:' + c.c + ';font-weight:700;letter-spacing:.06em">' + w.w + '</span>'
+            + ' — does the word match its colour?',
+      yes: w.w === c.w
+    };
+  }
+
+  function start(root, onDone) {
+    var li = 0, score = 0, tilesRight = 0, tilesWrong = 0, pRight = 0, pWrong = 0, meterFails = 0;
+    var startedAt = Date.now(), finished = false;
+    var cfg, tiles, nextIdx, levelLeft, meter, prompt, promptLeft, tick = null;
+
+    root.innerHTML =
+      '<div class="g-head">' +
+        '<div class="g-stat"><span class="g-lab">Level</span><b id="gLvl" class="mono">1/13</b></div>' +
+        '<div class="g-stat"><span class="g-lab">Score</span><b id="gScore" class="mono">0</b></div>' +
+        '<div class="g-stat"><span class="g-lab">Level time</span><b id="gLt" class="mono">0:00</b></div>' +
+        '<div class="g-stat"><span class="g-lab">Round left</span><b id="gTot" class="mono">20:00</b></div>' +
+        '<button id="gQuit" class="btn btn-quiet">End round</button>' +
+      '</div>' +
+      '<p id="gNote" class="g-note"></p>' +
+      '<div id="gMeterWrap" class="g-meter" hidden>' +
+        '<div class="g-meter-bar"><div id="gMeterFill"></div></div>' +
+        '<button id="gHold" class="btn btn-accent g-hold">Recharge <kbd>H</kbd></button>' +
+      '</div>' +
+      '<div id="gPromptWrap" class="g-prompt" hidden>' +
+        '<div id="gPromptQ" class="g-prompt-q"></div>' +
+        '<div class="g-prompt-btns">' +
+          '<button id="gYes" class="btn">Yes <kbd>Y</kbd></button>' +
+          '<button id="gNo" class="btn">No <kbd>N</kbd></button>' +
+        '</div>' +
+        '<div class="g-prompt-bar"><div id="gPromptFill"></div></div>' +
+      '</div>' +
+      '<div id="gGrid" class="g-grid"></div>' +
+      '<p id="gFlash" class="g-flash" aria-live="polite"></p>';
+
+    var $ = function (id) { return root.querySelector("#" + id); };
+    var elGrid = $("gGrid"), elFlash = $("gFlash");
+
+    function flash(msg, good) {
+      elFlash.textContent = msg;
+      elFlash.className = "g-flash " + (good ? "is-good" : "is-bad");
+      clearTimeout(flash._t);
+      flash._t = setTimeout(function () { elFlash.textContent = ""; }, 900);
+    }
+    function fmt(s) {
+      s = Math.max(0, Math.ceil(s));
+      return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
+    }
+    function totalLeft() { return TOTAL_CAP - (Date.now() - startedAt) / 1000; }
+
+    function loadLevel() {
+      cfg = LEVELS[li];
+      tiles = makeTiles(cfg);
+      nextIdx = 0;
+      levelLeft = cfg.secs;
+      meter = 100;
+      prompt = null;
+      promptLeft = 0;
+
+      $("gLvl").textContent = (li + 1) + "/13";
+      $("gNote").textContent = cfg.note;
+      $("gMeterWrap").hidden = !cfg.meter;
+      $("gPromptWrap").hidden = !cfg.prompt;
+
+      elGrid.style.gridTemplateColumns = "repeat(" + cfg.cols + ", 1fr)";
+      elGrid.innerHTML = "";
+      tiles.forEach(function (t, i) {
+        var b = document.createElement("button");
+        b.className = "g-tile";
+        b.textContent = t.label;
+        b.setAttribute("aria-label", "Tile " + t.label);
+        b.addEventListener("click", function () { tapTile(i, b); });
+        elGrid.appendChild(b);
+      });
+    }
+
+    var order = function () {
+      return tiles.map(function (t, i) { return {v: t.val, i: i}; })
+                  .sort(function (a, b) { return a.v - b.v; });
+    };
+    var sorted;
+
+    function tapTile(i, btn) {
+      if (finished || tiles[i].cleared) return;
+      if (i === sorted[nextIdx].i) {
+        tiles[i].cleared = true;
+        btn.classList.add("is-done");
+        btn.disabled = true;
+        nextIdx++;
+        score += 10; tilesRight++;
+        if (nextIdx >= tiles.length) {
+          score += Math.round(levelLeft * 2);
+          flash("Level clear  +" + Math.round(levelLeft * 2) + " bonus", true);
+          nextLevel();
+        }
+      } else {
+        score -= 5; tilesWrong++;
+        btn.classList.add("is-wrong");
+        setTimeout(function () { btn.classList.remove("is-wrong"); }, 260);
+        flash("Not next in order", false);
+      }
+      paint();
+    }
+
+    function nextLevel() {
+      li++;
+      if (li >= LEVELS.length) return end("You cleared all 13 levels.");
+      setTimeout(function () { if (!finished) { loadLevel(); sorted = order(); paint(); } }, 550);
+    }
+
+    function newPrompt() {
+      prompt = makePrompt();
+      promptLeft = 6 / (cfg.prompt || 1);
+      var q = $("gPromptQ");
+      if (prompt.html) { q.innerHTML = prompt.html; } else { q.textContent = prompt.q; }
+    }
+
+    function answerPrompt(said) {
+      if (!prompt || finished) return;
+      if (said === prompt.yes) { score += 15; pRight++; flash("Correct", true); }
+      else { score -= 10; pWrong++; flash("Wrong", false); }
+      prompt = null;
+      promptLeft = 1.2 + Math.random() * 2;   /* short gap before the next one */
+      paint();
+    }
+
+    function paint() {
+      $("gScore").textContent = score;
+      $("gLt").textContent = fmt(levelLeft);
+      var tl = totalLeft();
+      var elTot = $("gTot");
+      elTot.textContent = fmt(tl);
+      elTot.classList.toggle("is-urgent", tl < 120);
+      if (cfg.meter) {
+        $("gMeterFill").style.width = Math.max(0, meter) + "%";
+        $("gMeterFill").className = meter < 30 ? "is-low" : "";
+      }
+      if (cfg.prompt) {
+        var frac = prompt ? Math.max(0, promptLeft) / (6 / (cfg.prompt || 1)) : 0;
+        $("gPromptFill").style.width = (frac * 100) + "%";
+        $("gYes").disabled = !prompt;
+        $("gNo").disabled = !prompt;
+        if (!prompt) $("gPromptQ").textContent = "—";
+      }
+    }
+
+    function step() {
+      if (finished) return;
+      var dt = 0.1;
+      levelLeft -= dt;
+
+      if (cfg.meter) {
+        meter -= 6 * cfg.meter * dt;
+        if (meter <= 0) { meter = 60; score -= 12; meterFails++; flash("Charge ran out  −12", false); }
+      }
+      if (cfg.prompt) {
+        promptLeft -= dt;
+        if (promptLeft <= 0) {
+          if (prompt) { score -= 10; pWrong++; flash("Prompt timed out  −10", false); prompt = null; promptLeft = 1.5; }
+          else newPrompt();
+        }
+      }
+      if (levelLeft <= 0) { flash("Out of time on this level", false); nextLevel(); return; }
+      if (totalLeft() <= 0) return end("The 20-minute round is over.");
+      paint();
+    }
+
+    function end(why) {
+      if (finished) return;
+      finished = true;
+      clearInterval(tick);
+      document.removeEventListener("keydown", onKey);
+      onDone({
+        score: score, levelsCleared: li, tilesRight: tilesRight, tilesWrong: tilesWrong,
+        promptsRight: pRight, promptsWrong: pWrong, meterFails: meterFails,
+        seconds: Math.round((Date.now() - startedAt) / 1000), why: why
+      });
+    }
+
+    function onKey(e) {
+      if (finished) return;
+      var k = e.key.toLowerCase();
+      if (k === "h" && cfg.meter) { meter = Math.min(100, meter + 35); paint(); e.preventDefault(); }
+      else if (k === "y" && cfg.prompt) { answerPrompt(true); e.preventDefault(); }
+      else if (k === "n" && cfg.prompt) { answerPrompt(false); e.preventDefault(); }
+    }
+
+    $("gHold").addEventListener("click", function () { meter = Math.min(100, meter + 35); paint(); });
+    $("gYes").addEventListener("click", function () { answerPrompt(true); });
+    $("gNo").addEventListener("click", function () { answerPrompt(false); });
+    $("gQuit").addEventListener("click", function () { end("You ended the round early."); });
+    document.addEventListener("keydown", onKey);
+
+    loadLevel();
+    sorted = order();
+    paint();
+    tick = setInterval(step, 100);
+
+    return {stop: function () { end("Stopped."); }};
+  }
+
+  return {start: start, LEVELS: LEVELS};
+})();
+
+</script>
+<script>
+(function () {
+"use strict";
+var B = window.BANK, G = window.GAME;
+var app = document.getElementById("app");
+var barCtx = document.getElementById("barCtx"), barClock = document.getElementById("barClock"),
+    barHome = document.getElementById("barHome");
+
+/* Topics the downloaded R.S. Aggarwal Quantitative Aptitude actually covers.
+   The rest live in his Verbal & Non-Verbal Reasoning, a separate book. */
+var BOOK = {
+  "profit-loss":"Profit and Loss", "percentage":"Percentage", "ratio":"Ratio and Proportion",
+  "average":"Average", "tsd":"Time and Distance", "time-work":"Time and Work",
+  "interest":"Simple Interest / Compound Interest", "numbers":"Number System",
+  "series":null, "reasoning":null
+};
+
+/* ---------------- state ---------------- */
+var LS = "drillroom.v1";
+var S = {v:1, days:{}, topics:{}, qstats:{}, mistakes:[], essays:[], gameBest:0, cards:{}, updatedAt:0};
+try {
+  var raw = localStorage.getItem(LS);
+  if (raw) { var p = JSON.parse(raw); if (p && p.v === 1) S = Object.assign(S, p); }
+} catch (e) {}
+
+var dbDoc = null, sampler = null, saveT = null;
+function today() {
+  var d = new Date();
+  return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2);
+}
+function dayKey(offset) {
+  var d = new Date(); d.setDate(d.getDate() - offset);
+  return d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0"+d.getDate()).slice(-2);
+}
+function save() {
+  S.updatedAt = Date.now();
+  try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+  if (!dbDoc) return;
+  clearTimeout(saveT);
+  saveT = setTimeout(function () {
+    dbDoc.set(JSON.parse(JSON.stringify(S))).catch(function () {});
+  }, 800);
+}
+function touchDay(patch) {
+  var k = today(), d = S.days[k] || (S.days[k] = {});
+  Object.keys(patch).forEach(function (f) {
+    if (typeof patch[f] === "number") d[f] = (d[f] || 0) + patch[f];
+    else d[f] = patch[f];
+  });
+  save();
+}
+function streak() {
+  var n = 0;
+  for (var i = 0; i < 400; i++) {
+    var k = dayKey(i);
+    if (S.days[k]) n++;
+    else if (i > 0) break;          /* today not yet done doesn't break the streak */
+  }
+  return n;
+}
+
+/* ---------------- question selection ---------------- */
+function weightPick(pool, n) {
+  var mis = {}; S.mistakes.forEach(function (m) { mis[m] = 1; });
+  var scored = pool.map(function (q) {
+    var st = S.qstats[q.id], w = 2;                 /* unseen */
+    if (mis[q.id]) w = 5;                            /* got it wrong before */
+    else if (st) w = st.c > st.t - st.c ? 1 : 3;     /* mostly right = low priority */
+    return {q: q, k: Math.random() / w};             /* smaller k wins */
+  });
+  scored.sort(function (a, b) { return a.k - b.k; });
+  return scored.slice(0, n).map(function (x) { return x.q; });
+}
+function byTopic(pool, topic) {
+  return topic === "all" ? pool.slice() : pool.filter(function (q) { return q.topic === topic; });
+}
+function recordAnswer(q, ok) {
+  var st = S.qstats[q.id] || (S.qstats[q.id] = {c:0, t:0});
+  st.t++; if (ok) st.c++;
+  if (q.topic) {
+    var tp = S.topics[q.topic] || (S.topics[q.topic] = {c:0, t:0});
+    tp.t++; if (ok) tp.c++;
+  }
+  var i = S.mistakes.indexOf(q.id);
+  if (!ok) { if (i < 0) S.mistakes.push(q.id); }
+  else if (i >= 0) S.mistakes.splice(i, 1);
+  if (S.mistakes.length > 300) S.mistakes = S.mistakes.slice(-300);
+}
+function allQ() { return B.APTITUDE.concat(B.SCIENCE, B.ZOHO); }
+function findQ(id) {
+  var a = allQ();
+  for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i];
+  return null;
+}
+
+/* ---------------- chrome ---------------- */
+var clockT = null;
+function setChrome(ctx, onHome) {
+  barCtx.hidden = !ctx; barCtx.textContent = ctx || "";
+  barHome.hidden = !onHome;
+  barHome.onclick = onHome || null;
+  if (!onHome) { barClock.hidden = true; clearInterval(clockT); clockT = null; }
+}
+function fmt(s) { s = Math.max(0, Math.ceil(s)); return Math.floor(s/60) + ":" + ("0"+(s%60)).slice(-2); }
+function runClock(getLeft, onZero) {
+  clearInterval(clockT);
+  barClock.hidden = false;
+  var f = function () {
+    var l = getLeft();
+    barClock.textContent = fmt(l);
+    barClock.classList.toggle("is-urgent", l < 60);
+    if (l <= 0) { clearInterval(clockT); clockT = null; onZero(); }
+  };
+  f(); clockT = setInterval(f, 250);
+}
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
+  });
+}
+
+/* ---------------- HOME ---------------- */
+function home() {
+  setChrome("", null);
+  clearInterval(clockT); clockT = null; barClock.hidden = true;
+  var k = today(), d = S.days[k] || {};
+  var st = streak();
+
+  var strip = "";
+  for (var i = 29; i >= 0; i--) {
+    var key = dayKey(i);
+    strip += '<i class="' + (S.days[key] ? "on" : "") + (i === 0 ? " today" : "") + '" title="' + key + '"></i>';
+  }
+
+  var ticks = [
+    ["Aptitude", d.apt], ["Science", d.sci], ["Game", d.game],
+    ["Essay", d.essay], ["DSA", d.dsa], ["SQL", d.sql], ["Zoho", d.zoho]
+  ].map(function (x) {
+    return '<span class="tick ' + (x[1] ? "on" : "") + '">' + x[0] + (x[1] ? " ✓" : "") + "</span>";
+  }).join("");
+
+  /* weakest topics first - this is the part worth acting on */
+  var tstats = Object.keys(S.topics).map(function (t) {
+    var v = S.topics[t];
+    return {t:t, pc: v.t ? Math.round(v.c / v.t * 100) : 0, n: v.t,
+            nm: B.APT_TOPICS[t] || B.SCI_TOPICS[t] || t};
+  }).filter(function (x) { return x.n >= 3; }).sort(function (a, b) { return a.pc - b.pc; });
+
+  var bars = tstats.length
+    ? '<div class="bars">' + tstats.slice(0, 8).map(function (x) {
+        return '<div class="barrow"><div><div class="nm">' + esc(x.nm) +
+          ' <span class="small muted mono">' + x.n + 'q</span></div>' +
+          '<div class="tr"><i class="' + (x.pc < 60 ? "weak" : "") + '" style="width:' + x.pc + '%"></i></div></div>' +
+          '<div class="pc mono">' + x.pc + '%</div></div>';
+      }).join("") + "</div>"
+    : '<p class="small muted">Finish a few sets and your weakest topics will be listed here, worst first.</p>';
+
+  app.innerHTML =
+    '<div class="stack">' +
+      '<div>' +
+        "<h1>Today’s drill</h1>" +
+        '<p class="muted" style="margin-top:6px">Zifo runs a gamified round, 40 aptitude questions in 30 minutes, a science section and an essay. Zoho runs aptitude, then DSA, then SQL. All of it is here.</p>' +
+      "</div>" +
+
+      '<div class="card today">' +
+        '<div class="today-head">' +
+          '<span class="streak-n mono">' + st + "</span>" +
+          '<div><div style="font-weight:600">day streak</div>' +
+          '<div class="small muted">' + (d.apt || d.sci || d.game || d.essay || d.dsa || d.sql || d.zoho
+              ? "Today is logged." : "Nothing logged today yet.") + "</div></div>" +
+        "</div>" +
+        '<div class="strip">' + strip + "</div>" +
+        '<div class="done-row">' + ticks + "</div>" +
+        '<button class="btn btn-accent btn-lg" id="goMix">Start daily mix · 15 questions, about 12 min</button>' +
+      "</div>" +
+
+      "<div>" +
+        '<h2 style="margin-bottom:10px">Zifo</h2>' +
+        '<div class="tiles">' +
+          tile("goSprint", "Aptitude sprint", "40 questions, 30 minutes, no solutions until the end. The real thing.", "45 sec/question pace") +
+          tile("goCoach", "Aptitude coach", "One at a time with the worked solution straight after. Pick a topic.", B.APTITUDE.length + " questions") +
+          tile("goGame", "Multitasking round", "13 levels in 20 minutes. Ordering, a draining meter and interruptions at once.", S.gameBest ? "Best " + S.gameBest : "Not played yet") +
+          tile("goSci", "Science section", "10 MCQs on one topic, the way Zifo announces it two days ahead.", Object.keys(B.SCI_TOPICS).length + " topics") +
+          tile("goEssay", "Essay", "Two images, pick one, 600 words, 20 minutes on the clock.", S.essays.length + " written") +
+          tile("goMock", "Full mock", "Game, then 40-question sprint, then science, then essay. About 75 minutes.", "End to end") +
+        "</div>" +
+      "</div>" +
+
+      "<div>" +
+        '<h2 style="margin-bottom:10px">Zoho</h2>' +
+        '<div class="tiles">' +
+          tile("goZoho", "Rapid fire", "Output prediction, complexity and data-structure questions from round 1.", B.ZOHO.length + " questions") +
+          tile("goDsa", "DSA problems", "The problems Zoho actually repeats. Attempt, then reveal the approach.", B.DSA.length + " problems") +
+          tile("goSql", "SQL", "One schema, fifteen queries, from second-highest salary to window functions.", B.SQL.length + " queries") +
+          tile("goRev", "Review mistakes", "Every question you have got wrong, waiting to be cleared.", S.mistakes.length + " waiting") +
+        "</div>" +
+      "</div>" +
+
+      '<div class="card">' +
+        '<div class="lab" style="margin-bottom:10px">Weakest topics</div>' + bars +
+      "</div>" +
+
+      '<p class="small muted">Progress is saved automatically. The aptitude topics marked with a book reference are the ones your R.S. Aggarwal PDF covers — series and reasoning are in his separate Verbal &amp; Non-Verbal Reasoning book.</p>' +
+    "</div>";
+
+  bind("goMix", startMix); bind("goSprint", function () { startApt("sprint"); });
+  bind("goCoach", pickAptTopic); bind("goGame", function () { startGame(null); });
+  bind("goSci", pickSciTopic); bind("goEssay", function () { essayPick(null); });
+  bind("goMock", startMock); bind("goZoho", startZoho);
+  bind("goDsa", function () { cardDrill("dsa", 0); }); bind("goSql", function () { cardDrill("sql", 0); });
+  bind("goRev", startReview);
+}
+function tile(id, t, d, meta) {
+  return '<button class="tile" id="' + id + '"><span class="t">' + t + '</span>' +
+    '<span class="d">' + d + '</span><span class="meta mono">' + meta + "</span></button>";
+}
+function bind(id, fn) { var e = document.getElementById(id); if (e) e.onclick = fn; }
+
+/* ---------------- QUIZ ENGINE ---------------- */
+var Q = null;
+function startQuiz(opts) {
+  Q = {
+    qs: opts.qs, i: 0, mode: opts.mode, answers: [], label: opts.label,
+    perQ: opts.perQ || 45, totalSecs: opts.totalSecs || 0,
+    field: opts.field, revealed: false, qStart: Date.now(),
+    deadline: opts.totalSecs ? Date.now() + opts.totalSecs * 1000 : 0,
+    onDone: opts.onDone || home
+  };
+  if (!Q.qs.length) { app.innerHTML = '<div class="card"><p>Nothing to practise here yet.</p></div>'; setChrome("", home); return; }
+  renderQ();
+}
+function quizClock() {
+  if (Q.mode === "sprint") {
+    runClock(function () { return (Q.deadline - Date.now()) / 1000; }, finishQuiz);
+  } else {
+    runClock(function () { return Q.perQ - (Date.now() - Q.qStart) / 1000; }, function () {
+      if (!Q.revealed) reveal(-1);
+    });
+  }
+}
+function renderQ() {
+  var q = Q.qs[Q.i];
+  Q.revealed = false; Q.qStart = Date.now();
+  setChrome(Q.label, function () { if (confirm("Leave this set? Progress in it is lost.")) { clearInterval(clockT); home(); } });
+  quizClock();
+
+  app.innerHTML =
+    '<div class="prog"><i style="width:' + (Q.i / Q.qs.length * 100) + '%"></i></div>' +
+    '<div class="card">' +
+      '<div class="qnum"><span class="lab mono">Q' + (Q.i + 1) + " / " + Q.qs.length + "</span>" +
+        (q.topic ? '<span class="small muted">' + esc(B.APT_TOPICS[q.topic] || B.SCI_TOPICS[q.topic] || "") + "</span>" : "") +
+      "</div>" +
+      '<div class="qtext">' + esc(q.q) + "</div>" +
+      '<div class="opts" id="opts">' +
+        q.opts.map(function (o, i) {
+          return '<button class="opt" data-i="' + i + '"><span class="bub">' +
+            "ABCD"[i] + '</span><span>' + esc(o) + "</span></button>";
+        }).join("") +
+      "</div>" +
+      '<div id="after"></div>' +
+    "</div>";
+
+  Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (b) {
+    b.onclick = function () { choose(parseInt(b.dataset.i, 10)); };
+  });
+}
+function choose(i) {
+  if (Q.revealed) return;
+  if (Q.mode === "sprint") {
+    Q.answers[Q.i] = i;
+    recordAnswer(Q.qs[Q.i], i === Q.qs[Q.i].a);
+    next();
+  } else reveal(i);
+}
+function reveal(i) {
+  Q.revealed = true;
+  clearInterval(clockT); clockT = null; barClock.hidden = true;
+  var q = Q.qs[Q.i], ok = i === q.a;
+  Q.answers[Q.i] = i;
+  recordAnswer(q, ok);
+  Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (b) {
+    var bi = parseInt(b.dataset.i, 10);
+    b.disabled = true;
+    if (bi === q.a) b.classList.add("right");
+    else if (bi === i) b.classList.add("wrong");
+  });
+  document.getElementById("after").innerHTML =
+    '<div class="sol"><div class="lab">' +
+      (i < 0 ? "Time up — solution" : ok ? "Correct" : "Not quite") +
+    "</div>" + esc(q.sol) + "</div>" +
+    '<div class="row" style="margin-top:14px"><button class="btn btn-accent" id="nx">' +
+      (Q.i + 1 >= Q.qs.length ? "See results" : "Next question") + "</button>" +
+      '<button class="btn btn-quiet" id="stopNow">Stop here</button></div>';
+  bind("nx", next);
+  bind("stopNow", finishQuiz);
+}
+function next() {
+  Q.i++;
+  if (Q.i >= Q.qs.length) return finishQuiz();
+  renderQ();
+}
+function finishQuiz() {
+  clearInterval(clockT); clockT = null; barClock.hidden = true;
+  var right = 0;
+  Q.qs.forEach(function (q, i) {
+    var a = Q.answers[i];
+    if (a === q.a) right++;
+    if (Q.mode === "sprint" && a === undefined) recordAnswer(q, false);  /* unattempted counts as missed */
+  });
+  var total = Q.qs.length, pc = Math.round(right / total * 100);
+  if (Q.field) { var dp = {}; dp[Q.field] = total; touchDay(dp); }
+  save();
+
+  var wrongList = Q.qs.map(function (q, i) { return {q:q, a:Q.answers[i]}; })
+                      .filter(function (x) { return x.a !== x.q.a; });
+
+  setChrome("", home);
+  app.innerHTML =
+    '<div class="stack">' +
+      '<div class="card">' +
+        '<div class="lab">' + esc(Q.label) + "</div>" +
+        '<div class="row" style="align-items:baseline;gap:14px;margin-top:6px">' +
+          '<span class="score-big mono">' + right + "/" + total + "</span>" +
+          '<span class="muted">' + pc + "% correct</span>" +
+        "</div>" +
+        '<p class="small muted" style="margin-top:10px">' +
+          (pc >= 80 ? "Strong. Push the timer down rather than the count up."
+           : pc >= 60 ? "Passable. The gap is almost always speed, not understanding — check the ones below."
+           : "Work through every solution below before drilling more. Volume without review does nothing.") +
+        "</p>" +
+      "</div>" +
+      (wrongList.length
+        ? '<div class="card"><div class="lab" style="margin-bottom:12px">Review · ' + wrongList.length + " missed</div>" +
+          wrongList.map(function (x) {
+            return '<div style="padding:12px 0;border-top:1px solid var(--line2)">' +
+              '<div class="qtext" style="font-size:15px">' + esc(x.q.q) + "</div>" +
+              '<p class="small" style="margin-top:8px"><span style="color:var(--good);font-weight:600">Correct: ' +
+                esc(x.q.opts[x.q.a]) + "</span>" +
+                (x.a === undefined ? '  <span class="muted">(not attempted)</span>'
+                 : x.a < 0 ? '  <span class="muted">(timed out)</span>'
+                 : '  <span style="color:var(--bad)">You chose: ' + esc(x.q.opts[x.a]) + "</span>") + "</p>" +
+              '<div class="sol" style="margin-top:10px">' + esc(x.q.sol) + "</div></div>";
+          }).join("") + "</div>"
+        : '<div class="card"><p style="color:var(--good);font-weight:600">Clean sweep — nothing missed.</p></div>') +
+      '<button class="btn btn-accent btn-lg" id="done">Back to home</button>' +
+    "</div>";
+  bind("done", function () { Q.onDone(); });
+}
+
+/* ---------------- quiz launchers ---------------- */
+function startMix() {
+  var qs = weightPick(B.APTITUDE, 8).concat(weightPick(B.SCIENCE, 4), weightPick(B.ZOHO, 3));
+  startQuiz({qs: qs, mode: "coach", perQ: 60, label: "Daily mix", field: "apt"});
+}
+function startApt(mode) {
+  var n = Math.min(40, B.APTITUDE.length);
+  startQuiz({qs: weightPick(B.APTITUDE, n), mode: "sprint", totalSecs: 30 * 60,
+             label: "Aptitude sprint · " + n + "Q / 30 min", field: "apt"});
+}
+function pickAptTopic() {
+  setChrome("", home);
+  var keys = ["all"].concat(Object.keys(B.APT_TOPICS));
+  app.innerHTML = '<div class="stack"><div><h1>Aptitude coach</h1>' +
+    '<p class="muted" style="margin-top:6px">60 seconds a question, worked solution straight after. Topics marked with a book name are in your R.S. Aggarwal PDF — read that chapter when a topic drops below 60%.</p></div>' +
+    '<div class="card"><div class="lab" style="margin-bottom:12px">Choose a topic</div><div class="stack" style="gap:8px">' +
+    keys.map(function (k) {
+      var nm = k === "all" ? "Everything, mixed" : B.APT_TOPICS[k];
+      var cnt = k === "all" ? B.APTITUDE.length : byTopic(B.APTITUDE, k).length;
+      var st = S.topics[k];
+      var book = BOOK[k];
+      return '<button class="opt" data-k="' + k + '"><span class="bub mono">' + cnt + "</span>" +
+        "<span><span style=\"font-weight:600\">" + esc(nm) + "</span>" +
+        (book ? '<br><span class="small muted">Aggarwal: ' + esc(book) + " chapter</span>"
+              : k === "all" ? "" : '<br><span class="small muted">Not in the quant book — see Verbal &amp; Non-Verbal Reasoning</span>') +
+        (st && st.t >= 3 ? '<br><span class="small mono" style="color:' + (st.c/st.t < .6 ? "var(--urgent)" : "var(--good)") + '">' +
+            Math.round(st.c/st.t*100) + "% over " + st.t + " attempts</span>" : "") +
+        "</span></button>";
+    }).join("") + "</div></div></div>";
+  Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (b) {
+    b.onclick = function () {
+      var k = b.dataset.k, pool = byTopic(B.APTITUDE, k);
+      startQuiz({qs: weightPick(pool, Math.min(10, pool.length)), mode: "coach", perQ: 60,
+                 label: (k === "all" ? "Mixed aptitude" : B.APT_TOPICS[k]), field: "apt"});
+    };
+  });
+}
+function pickSciTopic() {
+  setChrome("", home);
+  app.innerHTML = '<div class="stack"><div><h1>Science section</h1>' +
+    '<p class="muted" style="margin-top:6px">Zifo names the topic about two days before the assessment. Pick the one you have been given — or drill the weakest.</p></div>' +
+    '<div class="card"><div class="stack" style="gap:8px">' +
+    ["all"].concat(Object.keys(B.SCI_TOPICS)).map(function (k) {
+      var nm = k === "all" ? "Everything, mixed" : B.SCI_TOPICS[k];
+      var cnt = k === "all" ? B.SCIENCE.length : byTopic(B.SCIENCE, k).length;
+      var st = S.topics[k];
+      return '<button class="opt" data-k="' + k + '"><span class="bub mono">' + cnt + "</span><span>" +
+        '<span style="font-weight:600">' + esc(nm) + "</span>" +
+        (st && st.t >= 3 ? '<br><span class="small mono" style="color:' + (st.c/st.t < .6 ? "var(--urgent)" : "var(--good)") + '">' +
+          Math.round(st.c/st.t*100) + "%</span>" : "") + "</span></button>";
+    }).join("") + "</div></div></div>";
+  Array.prototype.forEach.call(app.querySelectorAll(".opt"), function (b) {
+    b.onclick = function () {
+      var k = b.dataset.k, pool = byTopic(B.SCIENCE, k);
+      startQuiz({qs: weightPick(pool, Math.min(10, pool.length)), mode: "coach", perQ: 60,
+                 label: "Science · " + (k === "all" ? "mixed" : B.SCI_TOPICS[k]), field: "sci"});
+    };
+  });
+}
+function startZoho() {
+  startQuiz({qs: weightPick(B.ZOHO, Math.min(12, B.ZOHO.length)), mode: "coach", perQ: 60,
+             label: "Zoho rapid fire", field: "zoho"});
+}
+function startReview() {
+  var qs = S.mistakes.map(findQ).filter(Boolean);
+  if (!qs.length) {
+    setChrome("", home);
+    app.innerHTML = '<div class="card"><h2>Nothing to review</h2><p class="muted" style="margin-top:8px">No outstanding mistakes. Questions land here automatically when you get them wrong, and leave when you get them right.</p><button class="btn btn-accent" style="margin-top:14px" id="bk">Back</button></div>';
+    bind("bk", home); return;
+  }
+  startQuiz({qs: qs.slice(0, 20), mode: "coach", perQ: 75, label: "Mistake review", field: "apt"});
+}
+
+/* ---------------- GAME ---------------- */
+function startGame(after) {
+  setChrome("Multitasking round", function () { if (confirm("End the round?")) home(); });
+  barClock.hidden = true; clearInterval(clockT); clockT = null;
+  app.innerHTML = "<div class='card'><div id='gameHost'></div></div>";
+  G.start(document.getElementById("gameHost"), function (r) {
+    if (r.score > S.gameBest) S.gameBest = r.score;
+    touchDay({game: 1});
+    setChrome("", home);
+    app.innerHTML =
+      '<div class="stack"><div class="card">' +
+        '<div class="lab">Multitasking round</div>' +
+        '<div class="row" style="align-items:baseline;gap:14px;margin-top:6px">' +
+          '<span class="score-big mono">' + r.score + "</span>" +
+          '<span class="muted">' + r.levelsCleared + " of 13 levels · " + fmt(r.seconds) + "</span></div>" +
+        '<p class="small muted" style="margin-top:10px">' + esc(r.why) + " Personal best " + S.gameBest + ".</p>" +
+        '<div class="bars" style="margin-top:16px">' +
+          statRow("Tiles in order", r.tilesRight, r.tilesRight + r.tilesWrong) +
+          statRow("Prompts answered", r.promptsRight, r.promptsRight + r.promptsWrong) +
+          '<div class="barrow"><div><div class="nm">Charge ran out</div></div><div class="pc mono">' + r.meterFails + "</div></div>" +
+        "</div>" +
+        '<p class="small muted" style="margin-top:14px">The scored thing here is switching, not arithmetic. If your prompt accuracy collapses once the meter appears, that is the habit to train — answer the prompt first, it expires; the tiles wait.</p>' +
+      "</div>" +
+      '<div class="row"><button class="btn btn-accent" id="again">Play again</button>' +
+      '<button class="btn" id="bk">Home</button></div></div>';
+    bind("again", function () { startGame(after); });
+    bind("bk", after || home);
+    save();
+    if (after) after();
+  });
+}
+function statRow(nm, c, t) {
+  var pc = t ? Math.round(c / t * 100) : 0;
+  return '<div class="barrow"><div><div class="nm">' + nm + ' <span class="small muted mono">' + c + "/" + t + "</span></div>" +
+    '<div class="tr"><i class="' + (pc < 60 ? "weak" : "") + '" style="width:' + pc + '%"></i></div></div>' +
+    '<div class="pc mono">' + pc + "%</div></div>";
+}
+
+/* ---------------- ESSAY ---------------- */
+function altOf(id) {
+  var p = B.ESSAYS.filter(function (x) { return x.id === id; })[0];
+  return p ? p.alt : "";
+}
+function scene(id) {
+  var c = {ink:"var(--ink)", a:"var(--accent)", u:"var(--urgent)", g:"var(--good)", l:"var(--ink3)"};
+  var s = '<svg viewBox="0 0 320 180" role="img" aria-label="' + esc(altOf(id)) + '">';
+  if (id === "e1") s +=
+    '<circle cx="252" cy="52" r="24" fill="' + c.u + '" opacity=".28"/>' +
+    '<path d="M0 132h320v48H0z" fill="' + c.l + '" opacity=".18"/>' +
+    '<path d="M40 132l10 22M96 132l-8 26M150 132l6 24M210 132l-10 22M268 132l8 25" stroke="' + c.l + '" stroke-width="2" opacity=".5"/>' +
+    '<path d="M108 132V64M108 92l-24-20M108 80l22-18M108 104l-18-12" stroke="' + c.ink + '" stroke-width="3.5" fill="none" stroke-linecap="round"/>' +
+    '<path d="M196 132v-20" stroke="' + c.g + '" stroke-width="3" stroke-linecap="round"/>' +
+    '<ellipse cx="189" cy="110" rx="9" ry="5" fill="' + c.g + '"/><ellipse cx="203" cy="116" rx="8" ry="4.5" fill="' + c.g + '"/>';
+  if (id === "e2") s +=
+    '<rect width="320" height="180" fill="' + c.ink + '" opacity=".1"/>' +
+    '<g stroke="' + c.u + '" stroke-width="5" stroke-linecap="round" opacity=".6">' +
+    '<path d="M8 58h84M120 58h60M212 58h96M20 92h52M96 92h104M226 92h74M14 126h96M136 126h48M204 126h104"/></g>' +
+    '<g stroke="' + c.a + '" stroke-width="3" stroke-linecap="round" opacity=".45">' +
+    '<path d="M40 74h70M150 108h90M30 142h60"/></g>' +
+    '<circle cx="160" cy="86" r="9" fill="' + c.ink + '"/>' +
+    '<path d="M160 96v42M160 106l-13 14M160 106l13 14M160 138l-9 22M160 138l9 22" stroke="' + c.ink + '" stroke-width="5" stroke-linecap="round" fill="none"/>';
+  if (id === "e3") s +=
+    '<path d="M0 96h96v84H0zM232 96h88v84h-88z" fill="' + c.l + '" opacity=".25"/>' +
+    '<rect x="0" y="86" width="176" height="12" fill="' + c.ink + '"/>' +
+    '<rect x="232" y="86" width="88" height="12" fill="' + c.ink + '" opacity=".3"/>' +
+    '<g stroke="' + c.a + '" stroke-width="3.5" fill="none">' +
+    '<path d="M20 86V60M56 86V52M92 86V48M128 86V52M164 86V64"/>' +
+    '<path d="M20 60l36-8 36-4 36 4 36 12"/></g>' +
+    '<path d="M186 92h14M208 92h14" stroke="' + c.u + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 8"/>';
+  if (id === "e4") s +=
+    '<path d="M0 148h320v32H0z" fill="' + c.l + '" opacity=".22"/>' +
+    '<rect x="44" y="52" width="86" height="96" rx="4" fill="none" stroke="' + c.ink + '" stroke-width="3"/>' +
+    '<g stroke="' + c.ink + '" stroke-width="2.2"><path d="M62 56v88M80 56v88M98 56v88M116 56v88"/></g>' +
+    '<path d="M44 52h86" stroke="' + c.ink + '" stroke-width="4"/>' +
+    '<g transform="rotate(-38 130 100)"><rect x="130" y="70" width="34" height="60" rx="3" fill="var(--card)" stroke="' + c.u + '" stroke-width="3"/></g>' +
+    '<g stroke="' + c.a + '" stroke-width="3.5" fill="none" stroke-linecap="round">' +
+    '<path d="M198 46l12-11 12 11M232 76l13-12 13 12M188 104l11-10 11 10M262 36l11-10 11 10"/></g>';
+  if (id === "e5") s +=
+    '<rect width="320" height="180" fill="' + c.l + '" opacity=".14"/>' +
+    '<g stroke="' + c.ink + '" stroke-width="5" stroke-linecap="round">' +
+    '<path d="M112 180V0M196 180V0"/></g>' +
+    '<g stroke="' + c.ink + '" stroke-width="4.5" stroke-linecap="round">' +
+    '<path d="M112 28h84M112 62h84M112 96h84"/></g>' +
+    '<g stroke="' + c.u + '" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 9" opacity=".8">' +
+    '<path d="M112 130h84M112 164h84"/></g>';
+  if (id === "e6") s +=
+    '<path d="M36 148c14-34 52-42 76-26 10 7 14 18 14 18l-6 20H44z" fill="' + c.a + '" opacity=".28"/>' +
+    '<path d="M284 148c-14-34-52-42-76-26-10 7-14 18-14 18l6 20h60z" fill="' + c.a + '" opacity=".28"/>' +
+    '<path d="M126 140h68l-8 34h-52z" fill="' + c.ink + '" opacity=".35"/>' +
+    '<path d="M160 140V76" stroke="' + c.g + '" stroke-width="4" stroke-linecap="round"/>' +
+    '<ellipse cx="141" cy="88" rx="17" ry="9" fill="' + c.g + '" transform="rotate(-22 141 88)"/>' +
+    '<ellipse cx="180" cy="98" rx="15" ry="8" fill="' + c.g + '" transform="rotate(20 180 98)"/>';
+  return s + "</svg>";
+}
+function essayPick(after) {
+  setChrome("", home);
+  var pool = B.ESSAYS.slice().sort(function () { return Math.random() - .5; }).slice(0, 2);
+  app.innerHTML = '<div class="stack"><div><h1>Essay</h1>' +
+    '<p class="muted" style="margin-top:6px">Zifo shows two images and gives you up to 600 words on one of them. Pick the one you can argue about, not the one you like the look of.</p></div>' +
+    '<div class="escenes">' + pool.map(function (p) {
+      return '<button class="escene" data-id="' + p.id + '">' + scene(p.id) +
+        '<span class="cap">' + esc(p.alt) + "</span></button>";
+    }).join("") + "</div>" +
+    '<p class="small muted">Twenty minutes on the clock once you choose.</p></div>';
+  Array.prototype.forEach.call(app.querySelectorAll(".escene"), function (b) {
+    b.onclick = function () { essayWrite(b.dataset.id, after); };
+  });
+}
+function essayWrite(id, after) {
+  var p = B.ESSAYS.filter(function (x) { return x.id === id; })[0];
+  var deadline = Date.now() + 20 * 60 * 1000;
+  setChrome("Essay · " + p.t, function () { if (confirm("Abandon this essay?")) { clearInterval(clockT); home(); } });
+  runClock(function () { return (deadline - Date.now()) / 1000; }, function () { submit(true); });
+
+  app.innerHTML = '<div class="stack">' +
+    '<div class="card" style="padding:0;overflow:hidden">' + scene(id) +
+      '<div style="padding:12px 15px"><p class="small muted">' + esc(p.alt) + "</p></div></div>" +
+    '<textarea class="ta" id="ta" placeholder="Open with a claim, not a description of the picture. Three or four paragraphs, an example in each, a conclusion that says something."></textarea>' +
+    '<div class="row"><span class="wc mono" id="wc">0 words</span><span class="sp" style="flex:1"></span>' +
+      '<button class="btn btn-accent" id="sub">Submit</button></div></div>';
+
+  var ta = document.getElementById("ta"), wc = document.getElementById("wc");
+  function count() {
+    var n = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+    wc.textContent = n + " words · limit 600";
+    wc.classList.toggle("over", n > 600);
+    return n;
+  }
+  ta.oninput = count;
+  ta.focus();
+  bind("sub", function () { submit(false); });
+
+  function submit(auto) {
+    clearInterval(clockT); clockT = null; barClock.hidden = true;
+    var text = ta.value.trim(), n = count();
+    if (!auto && n < 40 && !confirm("That is only " + n + " words. Submit anyway?")) { runClock(function(){return (deadline-Date.now())/1000;}, function(){submit(true);}); return; }
+    S.essays.unshift({ts: Date.now(), promptId: id, words: n, text: text.slice(0, 8000)});
+    if (S.essays.length > 20) S.essays.length = 20;
+    touchDay({essay: 1});
+    essayDone(p, text, n, auto, after);
+  }
+}
+function essayDone(p, text, n, auto, after) {
+  setChrome("", home);
+  app.innerHTML = '<div class="stack">' +
+    '<div class="card"><div class="lab">Essay submitted</div>' +
+      '<div class="row" style="align-items:baseline;gap:14px;margin-top:6px">' +
+        '<span class="score-big mono">' + n + "</span><span class=\"muted\">words" + (auto ? " · time ran out" : "") + "</span></div>" +
+      '<p class="small muted" style="margin-top:10px">' +
+        (n > 600 ? "Over the limit. Zifo caps at 600 — cut, do not trail off."
+         : n < 250 ? "Thin. Under 250 words rarely shows enough structure to score well."
+         : "Good length. Length is the easy part; structure is what is marked.") + "</p>" +
+    "</div>" +
+    '<div class="card"><div class="lab" style="margin-bottom:10px">Angles you could have taken</div>' +
+      '<ul style="margin:0;padding-left:20px">' + p.angles.map(function (a) { return "<li>" + esc(a) + "</li>"; }).join("") + "</ul>" +
+      '<p class="small muted" style="margin-top:12px">A scoring essay picks ONE of these and argues it. An essay that mentions all three and commits to none reads as padding.</p></div>' +
+    '<div id="fbHost"></div>' +
+    '<div class="row"><button class="btn btn-accent" id="again">Another essay</button>' +
+    '<button class="btn" id="bk">' + (after ? "Finish mock" : "Home") + '</button></div></div>';
+  bind("again", function () { essayPick(after); });
+  bind("bk", after || home);
+  save();
+
+  if (sampler && text.length > 60) {
+    var host = document.getElementById("fbHost");
+    host.innerHTML = '<button class="btn btn-lg" id="askFb">Ask Claude to mark this essay</button>';
+    document.getElementById("askFb").onclick = function () {
+      host.innerHTML = '<div class="fb" id="fbOut">Reading it…</div>';
+      var out = document.getElementById("fbOut");
+      sampler(
+        "You are marking a 600-word placement-test essay written under a 20-minute limit by an Indian " +
+        "undergraduate applying to Zifo RnD Solutions. The prompt was an image described as: \"" + p.alt + "\".\n\n" +
+        "Essay (" + n + " words):\n\"\"\"\n" + text + "\n\"\"\"\n\n" +
+        "Reply in plain text, no markdown headings. Give exactly: a score out of 10; three specific strengths; " +
+        "three specific weaknesses quoting the actual phrases at fault; and one sentence naming the single " +
+        "highest-leverage fix for the next essay. Be direct and concrete. Do not praise generically.",
+        {onText: function (e) { out.textContent = e.text; }}
+      ).then(function (r) { out.textContent = r.text; })
+       .catch(function () { out.textContent = "Could not get feedback just now. Your essay is saved."; });
+    };
+  }
+}
+
+/* ---------------- DSA / SQL CARDS ---------------- */
+function cardDrill(kind, idx) {
+  var list = kind === "dsa" ? B.DSA : B.SQL;
+  if (idx >= list.length) idx = 0;
+  var it = list[idx];
+  setChrome(kind === "dsa" ? "DSA" : "SQL", home);
+  barClock.hidden = true; clearInterval(clockT); clockT = null;
+
+  var body = kind === "dsa"
+    ? '<h2>' + esc(it.t) + '</h2>' +
+      '<div class="row" style="margin:8px 0 12px"><span class="badge ' + it.lvl + '">' + it.lvl + "</span>" +
+        it.tags.map(function (t) { return '<span class="badge">' + esc(t) + "</span>"; }).join("") + "</div>" +
+      "<p>" + esc(it.s) + "</p>" +
+      '<pre class="pre" style="margin-top:12px">' + esc(it.io) + "</pre>"
+    : '<div class="row" style="margin-bottom:10px"><span class="badge ' + it.lvl + '">' + it.lvl + "</span></div>" +
+      '<p style="font-size:17px">' + esc(it.q) + "</p>" +
+      '<div class="lab" style="margin:14px 0 6px">Schema</div>' +
+      '<pre class="pre">' + esc(B.SQL_SCHEMA) + "</pre>" +
+      '<textarea class="ta" id="sqlTa" style="min-height:130px;margin-top:12px" placeholder="Write your query here before revealing the answer."></textarea>';
+
+  app.innerHTML = '<div class="stack">' +
+    '<div class="row"><span class="lab mono">' + (idx + 1) + " / " + list.length + "</span>" +
+      '<span class="sp" style="flex:1"></span>' +
+      '<button class="btn btn-quiet" id="prev">Previous</button>' +
+      '<button class="btn btn-quiet" id="next">Next</button></div>' +
+    '<div class="card">' + body + '<div id="rev" style="margin-top:16px"></div></div>' +
+    '<div id="fbHost"></div></div>';
+
+  var rev = document.getElementById("rev");
+  var stage = 0;
+  function step() {
+    if (kind === "dsa") {
+      if (stage === 0) rev.innerHTML = '<button class="btn btn-accent" id="go">Show hint</button>';
+      else if (stage === 1) rev.innerHTML =
+        '<div class="sol"><div class="lab">Hint</div>' + esc(it.hint) + "</div>" +
+        '<button class="btn btn-accent" id="go" style="margin-top:12px">Show approach</button>';
+      else rev.innerHTML =
+        '<div class="sol"><div class="lab">Hint</div>' + esc(it.hint) + "</div>" +
+        '<div class="sol" style="margin-top:10px"><div class="lab">Approach</div>' + esc(it.app) + "</div>" +
+        '<div class="sol" style="margin-top:10px;border-left-color:var(--good)"><div class="lab">Complexity</div>' + esc(it.cx) + "</div>" +
+        rate();
+    } else {
+      if (stage === 0) rev.innerHTML = '<button class="btn btn-accent" id="go">Show answer</button>';
+      else rev.innerHTML =
+        '<div class="lab" style="margin-bottom:6px">Answer</div><pre class="pre">' + esc(it.a) + "</pre>" +
+        '<div class="sol" style="margin-top:10px">' + esc(it.note) + "</div>" + rate();
+    }
+    var g = document.getElementById("go");
+    if (g) g.onclick = function () { stage++; step(); };
+    bindRate();
+  }
+  function rate() {
+    return '<div class="row" style="margin-top:14px"><span class="small muted">Mark it:</span>' +
+      '<button class="btn" id="rGot">Got it</button>' +
+      '<button class="btn" id="rNo">Needs work</button></div>';
+  }
+  function bindRate() {
+    bind("rGot", function () { mark(1); });
+    bind("rNo", function () { mark(0); });
+  }
+  function mark(ok) {
+    S.cards[it.id] = {ok: ok, ts: Date.now()};
+    touchDay(kind === "dsa" ? {dsa: 1} : {sql: 1});
+    save();
+    cardDrill(kind, idx + 1);
+  }
+  step();
+  bind("next", function () { cardDrill(kind, idx + 1); });
+  bind("prev", function () { cardDrill(kind, (idx - 1 + list.length) % list.length); });
+
+  if (kind === "sql" && sampler) {
+    var host = document.getElementById("fbHost");
+    host.innerHTML = '<button class="btn btn-lg" id="ck">Check my query with Claude</button>';
+    document.getElementById("ck").onclick = function () {
+      var mine = (document.getElementById("sqlTa") || {}).value || "";
+      if (!mine.trim()) { alert("Write a query first — that is where the learning is."); return; }
+      host.innerHTML = '<div class="fb" id="o">Checking…</div>';
+      var o = document.getElementById("o");
+      sampler("Schema:\n" + B.SQL_SCHEMA + "\n\nQuestion: " + it.q +
+        "\n\nCandidate's query:\n" + mine +
+        "\n\nReference answer:\n" + it.a +
+        "\n\nIn plain text, no markdown headings: say whether the candidate's query is correct. " +
+        "If it is wrong, name the specific bug. If it is correct but differs from the reference, say so and " +
+        "compare them on performance or dialect portability. Three short paragraphs maximum.",
+        {onText: function (e) { o.textContent = e.text; }})
+        .then(function (r) { o.textContent = r.text; })
+        .catch(function () { o.textContent = "Could not check just now."; });
+    };
+  }
+}
+
+/* ---------------- FULL MOCK ---------------- */
+function startMock() {
+  var stages = ["game", "apt", "sci", "essay"], si = 0;
+  function gate(title, desc, run) {
+    setChrome("Mock · stage " + (si + 1) + " of 4", home);
+    barClock.hidden = true; clearInterval(clockT); clockT = null;
+    app.innerHTML = '<div class="card"><div class="lab">Stage ' + (si + 1) + " of 4</div>" +
+      "<h2 style='margin-top:6px'>" + title + "</h2><p class='muted' style='margin-top:8px'>" + desc + "</p>" +
+      "<button class='btn btn-accent btn-lg' style='margin-top:16px' id='go'>Begin</button>" +
+      "<button class='btn btn-quiet' style='margin-top:8px;width:100%' id='skip'>Skip this stage</button></div>";
+    bind("go", run); bind("skip", nextStage);
+  }
+  function nextStage() { si++; runStage(); }
+  function runStage() {
+    if (si >= stages.length) {
+      setChrome("", home);
+      app.innerHTML = "<div class='card'><h2>Mock complete</h2><p class='muted' style='margin-top:8px'>All four stages done. Look at the weakest-topic list on the home screen — that is what to drill this week.</p><button class='btn btn-accent' style='margin-top:14px' id='bk'>Home</button></div>";
+      bind("bk", home); return;
+    }
+    var s = stages[si];
+    if (s === "game") gate("Multitasking round", "13 levels, 20 minutes. This comes first in the real assessment, when you are freshest — and it is the stage people underestimate.", function () { startGame(nextStage); });
+    if (s === "apt") gate("Aptitude sprint", "40 questions, 30 minutes, elimination round. No solutions until the end. Skip anything that takes more than about 45 seconds.", function () {
+      var n = Math.min(40, B.APTITUDE.length);
+      startQuiz({qs: weightPick(B.APTITUDE, n), mode: "sprint", totalSecs: 30*60, label: "Mock · aptitude", field: "apt", onDone: nextStage});
+    });
+    if (s === "sci") gate("Science section", "10 MCQs. In the real test you would know the topic two days ahead; here it is mixed.", function () {
+      startQuiz({qs: weightPick(B.SCIENCE, 10), mode: "coach", perQ: 60, label: "Mock · science", field: "sci", onDone: nextStage});
+    });
+    if (s === "essay") gate("Essay", "Two images, one essay, 600 words, 20 minutes.", function () { essayPick(nextStage); });
+  }
+  runStage();
+}
+
+/* ---------------- boot ---------------- */
+home();
+
+if (window.claude && window.claude.use) {
+  window.claude.use("db").then(function (db) {
+    if (!db) return;
+    dbDoc = db.doc("progress/state");
+    return dbDoc.get().then(function (snap) {
+      if (snap.exists) {
+        var r = snap.data();
+        if (r && r.v === 1 && (r.updatedAt || 0) > (S.updatedAt || 0)) {
+          S = Object.assign(S, r);
+          try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {}
+          if (!Q || !clockT) home();
+        } else save();
+      } else save();
+    });
+  }).catch(function () {});
+
+  window.claude.use("sample").then(function (s) { if (s) sampler = s; }).catch(function () {});
+}
+})();
+</script>
+
+</body>
+</html>
