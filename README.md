@@ -1,4 +1,4 @@
-# Placement prep
+# Study room
 
 Two self-contained HTML pages. No build step, no dependencies — open either file
 in a browser, or view them live via GitHub Pages.
