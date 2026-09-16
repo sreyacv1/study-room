@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pharmacogenomics CIA-II Master Pack</title>
+<style>
+  :root{
+    --bg:#f7f7fb; --card:#ffffff; --ink:#1a1b25; --muted:#5a5c6b;
+    --line:#e3e4ee; --brand:#5b3fa8; --brand2:#0e7c86; --accent:#c23a6b;
+    --gold:#b9862e; --green:#1f7a45; --chipbg:#efeaf9;
+    --shadow:0 1px 3px rgba(20,20,50,.08),0 6px 20px rgba(20,20,50,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  a{color:var(--brand)}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px 18px 96px}
+  header.hero{background:linear-gradient(135deg,#5b3fa8,#0e7c86);color:#fff;border-radius:18px;
+    padding:26px 24px;box-shadow:var(--shadow)}
+  header.hero h1{margin:0 0 6px;font-size:26px;letter-spacing:.2px}
+  header.hero p{margin:2px 0;color:#f0ecff;font-size:14px}
+  .blueprint{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .bp{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);
+    border-radius:12px;padding:8px 12px;font-size:13px}
+  .bp b{display:block;font-size:15px}
+  nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(247,247,251,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin:18px -18px 0;padding:10px 18px;}
+  nav.toc a{display:inline-block;margin:3px 10px 3px 0;font-size:13px;color:var(--brand2);text-decoration:none;
+    border:1px solid var(--line);border-radius:20px;padding:3px 11px;background:#fff}
+  nav.toc a:hover{background:var(--chipbg)}
+  section{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 8px;
+    margin-top:22px;box-shadow:var(--shadow)}
+  h2{font-size:21px;margin:2px 0 4px;color:var(--brand);border-left:5px solid var(--brand);padding-left:10px}
+  h3{font-size:16px;margin:22px 0 6px;color:var(--brand2)}
+  h4{font-size:14px;margin:16px 0 4px;color:var(--accent);text-transform:uppercase;letter-spacing:.4px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;
+    background:var(--chipbg);color:var(--brand);margin-left:6px;vertical-align:middle}
+  .tag.hi{background:#fde8ef;color:var(--accent)}
+  .tag.num{background:#eafaf0;color:var(--green)}
+  ul,ol{padding-left:22px;margin:6px 0}
+  li{margin:3px 0}
+  .key{background:#fbf7ec;border:1px solid #efe2c4;border-left:4px solid var(--gold);
+    border-radius:10px;padding:10px 14px;margin:12px 0}
+  .key b{color:var(--gold)}
+  .must{background:#fdeef3;border:1px solid #f6cdda;border-left:4px solid var(--accent);
+    border-radius:10px;padding:10px 14px;margin:12px 0}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:#f2f0fa;color:var(--brand)}
+  .fig{margin:16px 0;text-align:center}
+  .fig img{max-width:100%;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .fig figcaption{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .mermaid{background:#fbfbfe;border:1px dashed var(--line);border-radius:12px;padding:12px;margin:14px 0;text-align:center;overflow-x:auto}
+  .qa{border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+  .qa>summary{cursor:pointer;padding:11px 14px;font-weight:600;background:#faf9fe;list-style:none;
+    display:flex;gap:8px;align-items:flex-start}
+  .qa>summary::-webkit-details-marker{display:none}
+  .qa>summary:before{content:"Q";flex:0 0 auto;background:var(--brand);color:#fff;border-radius:6px;
+    width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+  .qa[open]>summary{border-bottom:1px solid var(--line)}
+  .qa .ans{padding:12px 14px;font-size:14px;background:#fff}
+  .qa .ans:before{content:"Model answer";display:block;font-size:11px;font-weight:700;color:var(--green);
+    text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .marks{margin-left:auto;font-size:11px;color:var(--muted);white-space:nowrap;border:1px solid var(--line);
+    border-radius:20px;padding:1px 8px;background:#fff}
+  .formula{background:#0f1226;color:#eef;border-radius:10px;padding:10px 14px;margin:10px 0;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;overflow-x:auto}
+  .worked{border:1px solid var(--line);border-left:4px solid var(--brand2);border-radius:10px;
+    padding:10px 14px;margin:12px 0;background:#f6fcfd}
+  .worked b.res{color:var(--green)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .gallery a{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  .gallery img{width:100%;height:120px;object-fit:cover;display:block}
+  .gallery span{display:block;font-size:11px;color:var(--muted);padding:4px 6px}
+  .printbtn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;
+    background:var(--brand);color:#fff;border:none;border-radius:24px;padding:11px 18px;font-size:14px;
+    box-shadow:var(--shadow);cursor:pointer}
+  footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:30px}
+  .pill{font-size:11px;border:1px solid var(--line);border-radius:20px;padding:1px 8px;color:var(--brand2)}
+  @media print{
+    nav.toc,.printbtn{display:none}
+    body{background:#fff}
+    section{box-shadow:none;break-inside:avoid;border:1px solid #ccc}
+    .qa .ans{display:block!important}
+    details{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>Pharmacogenomics &mdash; CIA&nbsp;II Master Pack</h1>
+  <p>SASTRA Deemed University &middot; School of Chemical &amp; Biotechnology &middot; B.Tech Bioinformatics, Sem 7</p>
+  <p>Course <b>BIN317 &middot; Pharmacogenomics</b> &middot; CIA&nbsp;II &middot; built to score <b>50/50</b></p>
+  <div class="blueprint">
+    <div class="bp"><b>50</b>Max marks</div>
+    <div class="bp"><b>1&frac12; hr</b>Duration</div>
+    <div class="bp"><b>Part A</b>Answer ALL &middot; 2&times;10 = 20</div>
+    <div class="bp"><b>Part B</b>Answer ANY TWO &middot; 15&times;2 = 30</div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#strategy">Exam strategy</a>
+  <a href="#sickle">1 &middot; Hydroxyurea &amp; Sickle cell</a>
+  <a href="#neuro">2 &middot; Neurodegenerative</a>
+  <a href="#schizo">3 &middot; Schizophrenia</a>
+  <a href="#depression">4 &middot; Depression</a>
+  <a href="#bipolar">5 &middot; Bipolar</a>
+  <a href="#numericals">Numericals</a>
+  <a href="#partA">Part A bank</a>
+  <a href="#partB">Part B bank</a>
+  <a href="#solved">Solved past paper</a>
+  <a href="#gallery">Image gallery</a>
+</nav>
+
+<!-- ===================== STRATEGY ===================== -->
+<section id="strategy">
+  <h2>How to score 50/50 <span class="tag hi">read first</span></h2>
+  <p>The paper is fixed in shape &mdash; last year's CIA&nbsp;II (Sep 2025) and your syllabus portion match exactly. Prepare to this blueprint:</p>
+  <table>
+    <tr><th>Part</th><th>Rule</th><th>Marks</th><th>What it tests</th></tr>
+    <tr><td><b>Part A</b></td><td>Answer <b>ALL 10</b></td><td>2 &times; 10 = 20</td><td>One-line facts: enzyme names, genes, definitions, "differentiate", numeric one-liners</td></tr>
+    <tr><td><b>Part B</b></td><td>Answer <b>ANY 2 of 3</b></td><td>15 &times; 2 = 30</td><td>Long answers with sub-parts &mdash; usually one <b>numerical (5)</b> + <b>theory (10)</b>, or a <b>5+5+5</b> essay</td></tr>
+  </table>
+  <div class="key"><b>Scoring plan.</b> Part A is where marks are lost by vagueness &mdash; write the <b>exact gene/enzyme name</b> and one reason. In Part B always <b>show every step of a numerical</b> (formula &rarr; substitution &rarr; answer &rarr; one-line interpretation); the interpretation line carries marks. Pick the two Part-B questions whose numerical you can finish first.</div>
+  <div class="must"><b>High-yield keywords the examiner rewards:</b> HbF / &gamma;-globin reactivation, ribonucleotide reductase, &beta;6 Glu&rarr;Val, APOE &epsilon;4, LRRK2, COMT, SOD1, HTT, DRD2, His452Tyr 5-HT2A, Ser9Gly DRD3, CYP1A2, CYP2D6, 5-HTTLPR (long/short allele), CACNA1C, lithium, Therapeutic Index, Odds Ratio, Hazard Ratio.</div>
+  <p><span class="pill">note</span> Flowchart diagrams below render with an online library (Mermaid). If you are offline, the coloured <b>image diagrams</b> and all text/tables still work &mdash; the gallery at the end has every figure.</p>
+</section>
+
+<!-- ===================== TOPIC 1 SICKLE ===================== -->
+<section id="sickle">
+  <h2>1 &middot; Endothelial cells, Hydroxyurea &amp; Sickle Cell Disease <span class="tag hi">Part B fav</span></h2>
+
+  <h3>Core notes</h3>
+  <ul>
+    <li><b>Endothelial cells</b> form a single layer lining all blood vessels; regulate exchange between blood and tissue and signal growth of surrounding vessel-wall cells. In SCD they become <b>activated &amp; adhesive</b>, promoting vaso-occlusion &mdash; so they are a <b>drug target</b>.</li>
+    <li><b>Sickle cell disease (SCD)</b> is caused by <b>HbS</b>: a point mutation <b>&beta;6 Glu &rarr; Val</b> (glutamic acid&rarr;valine at position 6 of the &beta;-globin chain). Deoxygenated HbS <b>polymerises</b> &rarr; RBCs sickle &rarr; haemolysis + vaso-occlusion.</li>
+    <li><b>Hydroxyurea (HU)</b> = hydroxylated derivative of urea. <b>Inhibitor of ribonucleotide reductase</b> (rate-limiting enzyme converting ribonucleotides &rarr; deoxyribonucleotides) &rarr; blocks DNA synthesis &rarr; <b>S-phase-specific cytotoxic</b>; inhibition is <b>reversible</b>.</li>
+    <li>HU is <b>freely water-soluble</b>, crosses membranes by <b>passive diffusion</b>, near-complete oral bioavailability; biotransformed to <b>urea</b> by a hepatic <b>P450 (CYP) monooxygenase</b>; eliminated renally &amp; non-renally.</li>
+  </ul>
+
+  <div class="key"><b>Mechanism of benefit in SCD (memorise the 4 arms):</b>
+    <ol>
+      <li><b>Induces HbF</b> by <b>reactivating &gamma;-globin genes</b> &rarr; HbF inhibits <b>HbS polymerisation</b> &rarr; less sickling.</li>
+      <li><b>&darr; Reticulocytes</b> &amp; &darr; WBC/platelets &rarr; lowers overall HbS burden and adhesion.</li>
+      <li><b>Anti-inflammatory</b> &rarr; &darr; adhesion molecules &rarr; fewer <b>vaso-occlusive crises</b>.</li>
+      <li><b>&uarr; RBC deformability</b> &rarr; better blood flow &amp; oxygen delivery.</li>
+    </ol>
+  </div>
+
+  <div class="fig">
+    <img src="pharmacogenomics_cia2_images/topic_endothelial_p1_0_685x486.png" alt="Hydroxyurea mechanism">
+    <figcaption>Hydroxyurea's dual effect &mdash; vascular (endothelial) arm and RBC arm converge on improved tissue oxygenation and reduced inflammation.</figcaption>
+  </div>
+
+  <h3>Flowchart &mdash; Sickle-cell pathophysiology</h3>
+  <pre class="mermaid">
+flowchart TD
+  A["&beta;6 Glu &rarr; Val point mutation (HBB gene)"] --> B["Abnormal Hemoglobin S (HbS)"]
+  B --> C{Deoxygenation / low O2}
+  C -->|yes| D["HbS polymerises"]
+  D --> E["RBC sickles (rigid, crescent)"]
+  E --> F["Endothelial activation & adhesion"]
+  E --> G["Haemolysis"]
+  F --> H["Vaso-occlusion"]
+  H --> I["Pain crises, organ / tissue damage"]
+  G --> J["Chronic haemolytic anaemia"]
+  </pre>
+
+  <h3>Flowchart &mdash; Hydroxyurea mechanism of action</h3>
+  <pre class="mermaid">
+flowchart TD
+  HU["Hydroxyurea (S-phase specific)"] --> RR["Inhibits ribonucleotide reductase (reversible)"]
+  RR --> DNA["Blocks DNA synthesis"]
+  HU --> GAMMA["Reactivates &gamma;-globin genes"]
+  GAMMA --> HBF["&uarr; Fetal Hb (HbF)"]
+  HBF --> POLY["&darr; HbS polymerisation &rarr; &darr; sickling"]
+  HU --> RETIC["&darr; Reticulocytes, WBC, platelets"]
+  HU --> ANTI["Anti-inflammatory: &darr; adhesion molecules"]
+  ANTI --> VOC["&darr; Vaso-occlusive crises"]
+  POLY --> OUT["Improved blood flow & O2 delivery"]
+  RETIC --> OUT
+  VOC --> OUT
+  </pre>
+
+  <h3>Hemoglobin types <span class="tag">Part A: "differentiate HbA vs HbF"</span></h3>
+  <table>
+    <tr><th>Type</th><th>Globin chains</th><th>Adult %</th><th>Note</th></tr>
+    <tr><td><b>HbA</b></td><td>&alpha;2&beta;2</td><td>97&ndash;98%</td><td>Main adult Hb; carries O2</td></tr>
+    <tr><td><b>HbA2</b></td><td>&alpha;2&delta;2</td><td>2&ndash;3%</td><td>Minor/compensatory</td></tr>
+    <tr><td><b>HbF</b></td><td>&alpha;2&gamma;2</td><td>&lt;1%</td><td>Fetal; <b>higher O2 affinity</b>; target of HU</td></tr>
+    <tr><td><b>HbS</b></td><td>&alpha;2&beta;2 (&beta;6 Glu&rarr;<b>Val</b>)</td><td>&mdash;</td><td>Sickle Hb; HbSS = disease</td></tr>
+    <tr><td><b>HbC</b></td><td>&beta;6 Glu&rarr;<b>Lys</b></td><td>&mdash;</td><td>HbC disease/trait</td></tr>
+    <tr><td><b>HbE</b></td><td>&beta;26 Glu&rarr;<b>Lys</b></td><td>&mdash;</td><td>Common in SE Asia</td></tr>
+  </table>
+  <div class="key"><b>Trait vs Disease.</b> <b>Sickle cell trait</b> = <b>one</b> HbS gene + one normal (<b>heterozygous</b>, usually asymptomatic, can transmit). <b>Sickle cell disease</b> = <b>two</b> abnormal genes (e.g. HbSS, homozygous, chronic anaemia). So they are <b>NOT identical</b> &mdash; a common Part-A "justify" question.</div>
+</section>
+
+<!-- ===================== TOPIC 2 NEURODEGEN ===================== -->
+<section id="neuro">
+  <h2>2 &middot; Pharmacogenomics of Neurological / Neurodegenerative Diseases</h2>
+
+  <h3>Disease &rarr; Gene &rarr; Drug map <span class="tag hi">must-know table</span></h3>
+  <table>
+    <tr><th>Disease</th><th>Key gene(s)</th><th>Relevance</th></tr>
+    <tr><td><b>Alzheimer's (AD)</b></td><td><b>APOE</b> (&epsilon;4), CYP2D6, CYP3A4/5</td><td>APOE&epsilon;4 &uarr; risk &amp; alters response; CYP enzymes metabolise <b>donepezil, rivastigmine</b></td></tr>
+    <tr><td><b>Parkinson's (PD)</b></td><td><b>LRRK2</b>, <b>COMT</b></td><td>LRRK2 mutations &uarr; risk (targeted drugs developing); COMT variants alter <b>levodopa</b> response</td></tr>
+    <tr><td><b>ALS</b></td><td><b>SOD1</b></td><td>SOD1 mutations &rarr; familial ALS; targeted therapy research</td></tr>
+    <tr><td><b>Huntington's (HD)</b></td><td><b>HTT</b> (CAG repeat)</td><td>Mutant huntingtin &mdash; therapies modulate its expression/function</td></tr>
+    <tr><td><b>Multiple Sclerosis (MS)</b></td><td><b>HLA-DRB1</b></td><td>&uarr; risk; influences response to disease-modifying therapies (DMTs)</td></tr>
+  </table>
+
+  <h3>Mechanisms of neuronal death <span class="tag">gene examples carry marks</span></h3>
+  <p>Néri et al. split pathogenesis into an <b>"initiation" phase</b> (a trigger disrupts homeostasis) and an <b>"execution" phase</b> (cell-death pathways finish the neuron).</p>
+  <table>
+    <tr><th>Mechanism</th><th>Gene examples</th></tr>
+    <tr><td><b>Apoptosis</b> (shrinkage, chromatin condensation, blebbing)</td><td>CASP3, CASP8, CASP9</td></tr>
+    <tr><td><b>Excitotoxicity</b> (glutamate &rarr; Ca²⁺ influx)</td><td>GRIN2A, GRIN2B</td></tr>
+    <tr><td><b>Oxidative stress</b> (ROS imbalance)</td><td>SOD2, CAT, GPX1</td></tr>
+    <tr><td><b>Mitochondrial dysfunction</b></td><td>mitochondrial DNA variants</td></tr>
+    <tr><td><b>Proteostasis / aggregation</b></td><td>APP, Tau (MAPT)</td></tr>
+    <tr><td><b>Neuroinflammation</b></td><td>TNF, IL1B</td></tr>
+    <tr><td><b>Autophagy dysregulation</b></td><td>ATG5, ATG7</td></tr>
+    <tr><td><b>Ca²⁺ dysregulation / neurotrophic loss</b></td><td>CACNA1C, CACNB2, Trk receptors, BDNF</td></tr>
+  </table>
+
+  <h3>Flowchart &mdash; Neurodegeneration &amp; pharmacogenomic targets</h3>
+  <pre class="mermaid">
+flowchart TD
+  INIT["INITIATION phase: trigger disrupts homeostasis"] --> EXEC["EXECUTION phase: cell-death pathways"]
+  EXEC --> AP["Apoptosis (CASP3/8/9)"]
+  EXEC --> EX["Excitotoxicity: glutamate, Ca2+ influx (GRIN2A/B)"]
+  EXEC --> OX["Oxidative stress (SOD2, CAT, GPX1)"]
+  EXEC --> MI["Mitochondrial dysfunction (mtDNA)"]
+  EXEC --> PR["Protein aggregation (APP, Tau)"]
+  EXEC --> IN["Neuroinflammation (TNF, IL1B)"]
+  EXEC --> AU["Autophagy dysregulation (ATG5/7)"]
+  AP --> DEATH["Neuronal death"]
+  EX --> DEATH
+  OX --> DEATH
+  MI --> DEATH
+  PR --> DEATH
+  IN --> DEATH
+  AU --> DEATH
+  DEATH --> PGX["Pharmacogenomic target: gene variant &rarr; tailored drug & dose"]
+  </pre>
+
+  <h3>Perspectives (5-mark bullet points)</h3>
+  <ul>
+    <li><b>Personalised medicine</b> &mdash; tailor drug/dose to genetic profile for max efficacy, min ADRs.</li>
+    <li><b>Early detection &amp; intervention</b> &mdash; identify high-risk genotypes, slow progression.</li>
+    <li><b>Drug development / trial design</b> &mdash; stratify participants &rarr; efficient trials.</li>
+    <li><b>Ethical &amp; privacy</b> &mdash; consent, data privacy, stigma.</li>
+    <li><b>Multi-omics integration</b> &mdash; genomics + transcriptomics + proteomics + metabolomics.</li>
+  </ul>
+</section>
+
+<!-- ===================== TOPIC 3 SCHIZO ===================== -->
+<section id="schizo">
+  <h2>3 &middot; Psychiatric Pharmacogenetics &mdash; Schizophrenia <span class="tag hi">Part B fav</span></h2>
+
+  <h3>Core notes</h3>
+  <ul>
+    <li>Schizophrenia affects <b>~1%</b> worldwide; early onset; ~10% suicide. <b>Dopamine hypothesis:</b> overactivity at dopaminergic synapses (esp. <b>mesolimbic</b>) causes positive symptoms. Serotonin also contributes.</li>
+    <li><b>Typical antipsychotics</b> (chlorpromazine 1952, haloperidol): high <b>D2</b> affinity; binding potency &prop; clinical potency; more <b>EPS</b>.</li>
+    <li><b>Clozapine</b> = prototype <b>atypical</b>: preferential binding to <b>5-HT2</b> and <b>D4</b> over D2; <b>fast dissociation</b> from D2; effective in up to <b>60%</b> of treatment-refractory patients; fewer EPS.</li>
+  </ul>
+
+  <div class="fig">
+    <img src="pharmacogenomics_cia2_images/topic_schizo_p0_1_511x383.png" alt="Dopamine hypothesis flowchart">
+    <figcaption>Dopamine hypothesis: synthesis pathway, the four dopamine tracts, and how D2 blockade improves psychotic symptoms.</figcaption>
+  </div>
+
+  <h3>The four dopamine pathways <span class="tag">2-mark gold</span></h3>
+  <table>
+    <tr><th>Pathway</th><th>Change / effect</th></tr>
+    <tr><td><b>Mesolimbic</b></td><td>&uarr; dopamine &rarr; <b>positive</b> symptoms (hallucinations, delusions)</td></tr>
+    <tr><td><b>Mesocortical</b></td><td>&darr; dopamine &rarr; <b>negative &amp; cognitive</b> symptoms</td></tr>
+    <tr><td><b>Nigrostriatal</b></td><td>D2 blockade &rarr; <b>EPS</b> (extrapyramidal side effects)</td></tr>
+    <tr><td><b>Tuberoinfundibular</b></td><td>D2 blockade &rarr; <b>hyperprolactinaemia</b></td></tr>
+  </table>
+
+  <div class="fig">
+    <img src="pharmacogenomics_cia2_images/topic_schizo_p2_0_601x451.png" alt="Serotonin pathway and atypical antipsychotics">
+    <figcaption>Serotonin biosynthesis and the dual D2 + 5-HT2A action of atypical antipsychotics (lower EPS, broader efficacy).</figcaption>
+  </div>
+
+  <h3>Pharmacogenetics of clozapine &mdash; the exam facts</h3>
+  <table>
+    <tr><th>Aspect</th><th>Gene / marker</th><th>Effect</th></tr>
+    <tr><td>Response (PD)</td><td><b>5-HT2A His452Tyr</b> (HTR2A)</td><td>Predicts <b>clozapine non-response</b></td></tr>
+    <tr><td>Metabolism (PK)</td><td><b>CYP1A2</b></td><td>Main metaboliser; <b>induced by smoking</b>, inhibited by <b>fluvoxamine/caffeine</b>. CYP2D6 = minor.</td></tr>
+    <tr><td>Tardive dyskinesia</td><td><b>DRD3 Ser9Gly</b></td><td>Replicated association with <b>TD</b> (also 5-HT2A, CYP1A2 studied)</td></tr>
+    <tr><td>Weight gain</td><td><b>5-HT2C</b> (HTR2C), ADRB3, TNF</td><td>5-HT2C antagonism &rarr; appetite &uarr; &rarr; weight gain/metabolic effects</td></tr>
+    <tr><td>Serious ADR</td><td>&mdash;</td><td><b>Agranulocytosis</b> (~0.38%) &rarr; needs regular blood monitoring</td></tr>
+  </table>
+
+  <h3>Flowchart &mdash; Clozapine pharmacogenetics</h3>
+  <pre class="mermaid">
+flowchart TD
+  CLO["Clozapine (atypical)"] --> PD["Pharmacodynamics: prefers 5-HT2 & D4 over D2"]
+  CLO --> PK["Pharmacokinetics: metabolised by CYP1A2"]
+  PK --> SMOKE["Smoking induces CYP1A2 &rarr; &darr; levels"]
+  PK --> FLUV["Fluvoxamine/caffeine inhibit &rarr; &uarr; levels"]
+  PD --> RESP{Response?}
+  RESP -->|5-HT2A His452Tyr| NR["Predicts non-response"]
+  RESP -->|responder| EFF["Up to 60% refractory patients improve"]
+  CLO --> AE["Adverse effects"]
+  AE --> AG["Agranulocytosis ~0.38% (monitor CBC)"]
+  AE --> TD["Tardive dyskinesia &rarr; DRD3 Ser9Gly"]
+  AE --> WG["Weight gain &rarr; 5-HT2C (HTR2C)"]
+  </pre>
+</section>
+
+<!-- ===================== TOPIC 4 DEPRESSION ===================== -->
+<section id="depression">
+  <h2>4 &middot; Major Depression &amp; Antidepressant Treatment</h2>
+  <h3>Core notes</h3>
+  <ul>
+    <li>Only <b>60&ndash;70%</b> respond to any given antidepressant; response takes weeks; each <b>failed</b> trial cuts odds of response by <b>~15&ndash;20%</b> &mdash; motivates pharmacogenomic prediction.</li>
+    <li>Genetic factors act on <b>metabolism, receptors, transporters</b> and CNS elements.</li>
+  </ul>
+  <table>
+    <tr><th>Category</th><th>Gene / marker</th><th>Relevance</th></tr>
+    <tr><td><b>Metabolism</b></td><td><b>CYP450</b> (esp. <b>CYP2D6</b>, CYP2C19)</td><td>Rate of antidepressant breakdown; CYP2D6 <b>poor metaboliser</b> &rarr; toxicity (fatal fluoxetine case reported)</td></tr>
+    <tr><td><b>Transporter</b></td><td><b>Serotonin transporter 5-HTT / SLC6A4</b> &mdash; <b>5-HTTLPR</b> promoter (long <b>l</b> / short <b>s</b>)</td><td>Target of <b>SSRIs</b>. <b>Long allele (l/l or l/s)</b> &rarr; <b>better SSRI response</b> (fluvoxamine, paroxetine). Short = &darr; expression.</td></tr>
+    <tr><td>Also NET</td><td>Norepinephrine transporter</td><td>Target of SNRIs/TCAs</td></tr>
+    <tr><td><b>Receptors</b></td><td><b>5-HT2A, 5-HT2C</b> (HTR2A/2C)</td><td>Modulate response to serotonergic drugs</td></tr>
+  </table>
+  <div class="key"><b>Goal = personalised medicine:</b> genotype-guided choice &amp; dose &rarr; improve response, cut the <b>trial-and-error</b> and ADR risk.</div>
+
+  <h3>Flowchart &mdash; Genotype-guided antidepressant selection</h3>
+  <pre class="mermaid">
+flowchart TD
+  PT["Patient with major depression"] --> TEST["Pharmacogenomic test"]
+  TEST --> MET["CYP2D6 / CYP2C19 metaboliser status"]
+  TEST --> TRN["5-HTTLPR (SLC6A4) long/short allele"]
+  TEST --> REC["5-HT2A / 5-HT2C receptor variants"]
+  MET -->|poor metaboliser| LOW["&darr; dose / avoid drug (toxicity risk)"]
+  MET -->|ultra-rapid| HIGH["&uarr; dose / alternative"]
+  TRN -->|long allele l/l or l/s| GOOD["Better SSRI response"]
+  TRN -->|short allele s/s| POOR["&darr; SSRI response &rarr; consider alternative"]
+  LOW --> PLAN["Individualised antidepressant plan"]
+  HIGH --> PLAN
+  GOOD --> PLAN
+  POOR --> PLAN
+  REC --> PLAN
+  </pre>
+</section>
+
+<!-- ===================== TOPIC 5 BIPOLAR ===================== -->
+<section id="bipolar">
+  <h2>5 &middot; Pharmacogenomics of Bipolar Disorder</h2>
+  <ul>
+    <li>Types: <b>Bipolar I</b> (&ge;1 manic episode), <b>Bipolar II</b> (major depressive + hypomanic, no mania), <b>Cyclothymic</b>. High heritability <b>~60&ndash;80%</b>; <b>polygenic</b>; shares risk with schizophrenia &amp; MDD.</li>
+    <li>Treatment: <b>mood stabilisers</b> (lithium, valproate, carbamazepine, lamotrigine), <b>atypical antipsychotics</b>, cautious <b>antidepressants</b> (can trigger mania &rarr; give with a stabiliser).</li>
+  </ul>
+  <table>
+    <tr><th>Gene</th><th>Function / link</th></tr>
+    <tr><td><b>CACNA1C</b></td><td>Ca²⁺ channel subunit &mdash; most-studied variant; neuronal excitability/mood</td></tr>
+    <tr><td><b>ANK3</b></td><td>Ankyrin-G; neuronal membrane structure</td></tr>
+    <tr><td><b>DAOA (G72)</b></td><td>Glutamate signalling</td></tr>
+    <tr><td><b>COMT</b></td><td>Dopamine breakdown</td></tr>
+    <tr><td><b>BDNF</b></td><td>Neuroplasticity, stress response</td></tr>
+    <tr><td><b>NRG1, DTNBP1</b></td><td>Neural development / synaptic function</td></tr>
+    <tr><td><b>5-HTTLPR</b></td><td>Serotonin transporter regulation</td></tr>
+  </table>
+  <div class="key"><b>Lithium response</b> is itself under pharmacogenomic study &mdash; markers may predict responders vs those prone to side-effects. Testing also flags patients at risk of <b>antidepressant-triggered mania</b>.</div>
+
+  <h3>Flowchart &mdash; Bipolar pharmacogenomics</h3>
+  <pre class="mermaid">
+flowchart TD
+  BP["Bipolar disorder (heritability 60-80%, polygenic)"] --> GENES["Risk genes"]
+  GENES --> G1["CACNA1C, ANK3 (ion channel/structure)"]
+  GENES --> G2["DAOA, NRG1, DTNBP1 (glutamate/synapse)"]
+  GENES --> G3["COMT, BDNF, 5-HTTLPR (neurotransmitter/plasticity)"]
+  BP --> RX["Pharmacogenomic-guided therapy"]
+  RX --> LI["Predict lithium response & side effects"]
+  RX --> AD["Flag antidepressant-induced mania risk"]
+  RX --> ADR["Predict adverse drug reactions"]
+  LI --> PLAN["Personalised mood-stabiliser plan"]
+  AD --> PLAN
+  ADR --> PLAN
+  </pre>
+</section>
+
+<!-- ===================== NUMERICALS ===================== -->
+<section id="numericals">
+  <h2>Numericals &mdash; every formula + worked example <span class="tag num">Part B: 5 marks each</span></h2>
+  <p>Always write: <b>formula &rarr; substitution &rarr; answer with unit &rarr; one-line interpretation.</b> The interpretation line is worth marks.</p>
+
+  <h3>Decision flowchart &mdash; which formula?</h3>
+  <pre class="mermaid">
+flowchart TD
+  Q["Read the question"] --> A{What is asked?}
+  A -->|safety margin, TD50/ED50| TI["Therapeutic Index"]
+  A -->|dose from genotype| DOSE["Metabolizer Score / Adjusted Dose"]
+  A -->|will drug work?| EFF["Effectiveness Score"]
+  A -->|risk in cohort study| RR["Relative Risk / ARR / NNT"]
+  A -->|case-control association| OR["Odds Ratio"]
+  A -->|survival over time| HR["Hazard Ratio"]
+  A -->|adjusted for confounders| ADJ["Adjusted Risk Ratio"]
+  </pre>
+
+  <h3>1. Therapeutic Index (TI)</h3>
+  <div class="formula">TI = TD&#8325;&#8320; / ED&#8325;&#8320;   (or LD&#8325;&#8320; / ED&#8325;&#8320;)</div>
+  <p>TD&#8325;&#8320;/LD&#8325;&#8320; = dose toxic/lethal in 50%; ED&#8325;&#8320; = dose effective in 50%.</p>
+  <div class="worked"><b>Exam example (from last paper):</b> LD&#8325;&#8320; = 200 mg/kg, ED&#8325;&#8320; = 20 mg/kg.<br>
+    TI = 200 / 20 = <b class="res">10</b>.<br>
+    <b>Interpretation:</b> TI = 10 is a <b>wide safety margin</b> (drug relatively safe). A <b>low/narrow TI</b> (e.g. 2&ndash;3) means toxic and effective doses are close &rarr; careful dosing &amp; monitoring. In pharmacogenomics, a CYP2C9 <b>poor metaboliser</b> on warfarin clears drug slowly &rarr; higher exposure &rarr; effectively narrows the TI.</div>
+
+  <h3>2. Metabolizer Score &amp; Dosing Adjustment</h3>
+  <div class="formula">Metabolizer Score = &Sigma; activity scores of relevant genes
+Adjusted Dose = Standard Dose &times; (Metabolizer Score / Reference Metabolizer Score)</div>
+  <div class="worked"><b>Example:</b> Reference (normal) CYP2D6 score = 2.0. Patient has one reduced-function allele (0.5) + one no-function allele (0) &rarr; score = <b>0.5</b> (poor/intermediate metaboliser). Standard dose = 100 mg.<br>
+    Adjusted Dose = 100 &times; (0.5 / 2.0) = <b class="res">25 mg</b>.<br>
+    <b>Interpretation:</b> a poor metaboliser needs a <b>reduced dose</b> to avoid accumulation/toxicity.</div>
+
+  <h3>3. Effectiveness Score</h3>
+  <div class="formula">Effectiveness Score = Effectiveness Genotype Score &times; Genotype Multiplier</div>
+  <div class="worked"><b>Exam example (from last paper):</b> Effectiveness Genotype Score = 6.5, Genotype Multiplier = 0.75.<br>
+    Effectiveness Score = 6.5 &times; 0.75 = <b class="res">4.875</b>.<br>
+    <b>Interpret (ii):</b> minimum for a positive drug response = 6. Since <b>4.875 &lt; 6</b>, the patient is predicted <b>NOT</b> to respond well &rarr; <b>should not be prescribed</b> this drug; choose an alternative.</div>
+
+  <h3>4. Relative Risk (RR), ARR &amp; NNT/NNH <span class="tag">cohort study</span></h3>
+  <div class="formula">RR = Incidence(exposed) / Incidence(unexposed)
+ARR = Incidence(control) &minus; Incidence(treatment)
+NNT (or NNH) = 1 / ARR</div>
+  <div class="worked"><b>Example:</b> Variant carriers (exposed): 50 adverse events / 200 = 0.25. Non-carriers: 10 / 200 = 0.05.<br>
+    RR = 0.25 / 0.05 = <b class="res">5</b> &rarr; carriers have 5&times; the risk of the adverse event.<br>
+    ARR = 0.25 &minus; 0.05 = 0.20 (20%); NNH = 1/0.20 = <b class="res">5</b> &rarr; 1 extra harm per 5 carriers exposed.</div>
+
+  <h3>5. Odds Ratio (OR) <span class="tag">case-control</span></h3>
+  <div class="formula">OR = (odds of exposure in cases) / (odds in controls) = (a&times;d)/(b&times;c)</div>
+  <table>
+    <tr><th></th><th>Variant (exposed)</th><th>No variant</th></tr>
+    <tr><th>Cases (ADR)</th><td>a = 60</td><td>c = 40</td></tr>
+    <tr><th>Controls</th><td>b = 30</td><td>d = 70</td></tr>
+  </table>
+  <div class="worked">OR = (a&times;d)/(b&times;c) = (60&times;70)/(30&times;40) = 4200/1200 = <b class="res">3.5</b>.<br>
+    <b>Interpretation:</b> variant carriers have <b>3.5&times; the odds</b> of the outcome. OR &gt; 1 = positive association, = 1 no association, &lt; 1 protective.</div>
+
+  <h3>6. Hazard Ratio (HR) <span class="tag">survival / time-to-event</span></h3>
+  <div class="formula">HR = hazard rate (treatment/variant group) / hazard rate (control group)</div>
+  <div class="worked"><b>Interpretation-style question:</b> HR = 2.0 &rarr; at any given time the treated/variant group has <b>twice the instantaneous risk</b> of the event vs control. HR = 1 no difference; HR &lt; 1 protective (e.g. HR 0.5 = 50% lower hazard). Comes from Cox proportional-hazards / Kaplan-Meier survival analysis.</div>
+
+  <h3>7. Adjusted Risk Ratio <span class="tag">confounding</span></h3>
+  <div class="worked">The <b>crude</b> RR/OR ignores confounders (age, sex, smoking&hellip;). The <b>adjusted</b> risk ratio comes from a <b>multivariable regression</b> that holds confounders constant, isolating the true genotype&ndash;outcome effect.<br>
+    <b>Example:</b> crude RR = 2.5; after adjusting for smoking, adjusted RR = <b class="res">1.8</b> &rarr; part of the apparent effect was confounding, but a real association remains.</div>
+</section>
+
+<!-- ===================== PART A BANK ===================== -->
+<section id="partA">
+  <h2>Part A question bank &mdash; 2 marks, answer ALL <span class="tag hi">40+ Qs</span></h2>
+  <p>Every likely 2-mark question with a crisp model answer. Tap to reveal.</p>
+
+  <details class="qa"><summary>Which enzyme does hydroxyurea inhibit, and what is the consequence? <span class="marks">2</span></summary>
+    <div class="ans">Ribonucleotide reductase (rate-limiting enzyme converting ribonucleotides &rarr; deoxyribonucleotides). Inhibition blocks DNA synthesis, making HU an S-phase-specific cytotoxic agent. The inhibition is reversible.</div></details>
+
+  <details class="qa"><summary>How does hydroxyurea benefit sickle cell disease? <span class="marks">2</span></summary>
+    <div class="ans">It reactivates &gamma;-globin genes &rarr; &uarr; fetal haemoglobin (HbF); HbF inhibits HbS polymerisation, reducing sickling. It also lowers reticulocytes/WBC, is anti-inflammatory (&darr; adhesion), and improves blood flow.</div></details>
+
+  <details class="qa"><summary>What is the molecular defect in HbS? <span class="marks">2</span></summary>
+    <div class="ans">A point mutation in the &beta;-globin chain: position 6 glutamic acid &rarr; valine (&beta;6 Glu&rarr;Val), producing sickle haemoglobin (HbS).</div></details>
+
+  <details class="qa"><summary>Are sickle cell disease and sickle cell trait identical? Justify. <span class="marks">2</span></summary>
+    <div class="ans">No. Trait = heterozygous (one HbS + one normal gene), usually asymptomatic but can transmit the gene. Disease = two abnormal genes (e.g. homozygous HbSS), causing chronic haemolytic anaemia and crises.</div></details>
+
+  <details class="qa"><summary>Differentiate HbA and HbF in globin composition and role. <span class="marks">2</span></summary>
+    <div class="ans">HbA = &alpha;2&beta;2, the main adult Hb (97&ndash;98%), transports O2 to tissues. HbF = &alpha;2&gamma;2, fetal Hb (&lt;1% in adults), has higher O2 affinity for maternal-to-fetal O2 transfer; it is re-induced by hydroxyurea.</div></details>
+
+  <details class="qa"><summary>Why are endothelial cells a target in sickle cell therapy? <span class="marks">2</span></summary>
+    <div class="ans">Endothelial cells line all vessels and, when activated in SCD, become adhesive and pro-thrombotic, driving vaso-occlusion. Hydroxyurea reduces their activation/adhesion, so they are a therapeutic target.</div></details>
+
+  <details class="qa"><summary>Name the gene most associated with Alzheimer's risk and drug response. <span class="marks">2</span></summary>
+    <div class="ans">APOE &mdash; the &epsilon;4 allele &uarr; AD risk and alters treatment outcomes. CYP2D6 and CYP3A4/5 metabolise AD drugs (donepezil, rivastigmine).</div></details>
+
+  <details class="qa"><summary>Which genes matter in Parkinson's pharmacogenomics? <span class="marks">2</span></summary>
+    <div class="ans">LRRK2 (mutations &uarr; PD risk; targeted drugs) and COMT (variants alter response to levodopa).</div></details>
+
+  <details class="qa"><summary>Which gene is linked to familial ALS? <span class="marks">2</span></summary>
+    <div class="ans">SOD1 (superoxide dismutase 1); mutations cause familial ALS and are a target for gene-specific therapy.</div></details>
+
+  <details class="qa"><summary>Which gene causes Huntington's disease? <span class="marks">2</span></summary>
+    <div class="ans">HTT (huntingtin) &mdash; a CAG-repeat expansion; therapies aim to modulate mutant huntingtin expression/function.</div></details>
+
+  <details class="qa"><summary>State the two phases of neurodegeneration. <span class="marks">2</span></summary>
+    <div class="ans">An "initiation" phase (a trigger disrupts cellular homeostasis via a specific mechanism) and an "execution" phase (cell-death pathways &mdash; excitotoxicity/necrosis, apoptosis, autophagy &mdash; kill the neuron).</div></details>
+
+  <details class="qa"><summary>Name two genes involved in excitotoxicity and oxidative stress. <span class="marks">2</span></summary>
+    <div class="ans">Excitotoxicity: GRIN2A / GRIN2B (glutamate receptors). Oxidative stress: SOD2, CAT, GPX1 (antioxidant enzymes).</div></details>
+
+  <details class="qa"><summary>State the dopamine hypothesis of schizophrenia. <span class="marks">2</span></summary>
+    <div class="ans">Overactivity at dopaminergic synapses in the CNS (especially the mesolimbic pathway) produces the positive psychotic symptoms (hallucinations, delusions). Antipsychotics act mainly by D2 blockade/modulation.</div></details>
+
+  <details class="qa"><summary>Match each dopamine pathway to its effect. <span class="marks">2</span></summary>
+    <div class="ans">Mesolimbic &rarr; positive symptoms; Mesocortical &rarr; negative/cognitive symptoms; Nigrostriatal &rarr; EPS on D2 blockade; Tuberoinfundibular &rarr; hyperprolactinaemia on D2 blockade.</div></details>
+
+  <details class="qa"><summary>Why is clozapine "atypical"? <span class="marks">2</span></summary>
+    <div class="ans">It preferentially binds serotonin 5-HT2 and dopamine D4 receptors over D2, and dissociates rapidly from D2. This gives efficacy in refractory schizophrenia with fewer extrapyramidal side effects.</div></details>
+
+  <details class="qa"><summary>Which enzyme metabolises clozapine, and what alters it? <span class="marks">2</span></summary>
+    <div class="ans">CYP1A2. Its activity is induced by cigarette smoke (&darr; clozapine levels) and inhibited by fluvoxamine and caffeine (&uarr; levels). CYP2D6 plays only a minor role.</div></details>
+
+  <details class="qa"><summary>Which polymorphism predicts clozapine non-response? <span class="marks">2</span></summary>
+    <div class="ans">The structural His452Tyr polymorphism of the 5-HT2A receptor gene (HTR2A).</div></details>
+
+  <details class="qa"><summary>Which polymorphism is linked to tardive dyskinesia? <span class="marks">2</span></summary>
+    <div class="ans">The Ser9Gly polymorphism of the dopamine D3 receptor gene (DRD3) &mdash; the most replicated association with TD.</div></details>
+
+  <details class="qa"><summary>Which receptor gene is implicated in antipsychotic-induced weight gain? <span class="marks">2</span></summary>
+    <div class="ans">The 5-HT2C receptor gene (HTR2C); antagonism &rarr; appetite &uarr;. ADRB3 and TNF also show trends.</div></details>
+
+  <details class="qa"><summary>What serious blood ADR is associated with clozapine? <span class="marks">2</span></summary>
+    <div class="ans">Agranulocytosis (~0.38% of patients) &mdash; a severe fall in WBC; requires regular blood-count monitoring.</div></details>
+
+  <details class="qa"><summary>What % of patients respond to any given antidepressant? <span class="marks">2</span></summary>
+    <div class="ans">Only 60&ndash;70%, and each failed trial lowers the odds of subsequent response by ~15&ndash;20%.</div></details>
+
+  <details class="qa"><summary>Which gene is the key target for SSRI pharmacogenomics? <span class="marks">2</span></summary>
+    <div class="ans">The serotonin transporter gene 5-HTT / SLC6A4. Its promoter polymorphism 5-HTTLPR (long "l" / short "s") affects expression; the long allele (l/l or l/s) is linked with better SSRI response.</div></details>
+
+  <details class="qa"><summary>Which CYP enzyme is most important for antidepressant metabolism? <span class="marks">2</span></summary>
+    <div class="ans">CYP2D6 (also CYP2C19). Poor metabolisers accumulate drug and risk toxicity (a fatal fluoxetine case was reported in a CYP2D6 poor metaboliser).</div></details>
+
+  <details class="qa"><summary>Give the heritability of bipolar disorder and its inheritance pattern. <span class="marks">2</span></summary>
+    <div class="ans">~60&ndash;80% heritability; it is polygenic (many genes of small effect) with gene&ndash;environment interaction, and shares risk with schizophrenia and MDD.</div></details>
+
+  <details class="qa"><summary>Name two genes associated with bipolar disorder. <span class="marks">2</span></summary>
+    <div class="ans">CACNA1C (calcium-channel subunit) and ANK3 (ankyrin-G); others include DAOA/G72, COMT, BDNF, NRG1, DTNBP1.</div></details>
+
+  <details class="qa"><summary>Why are antidepressants used cautiously in bipolar disorder? <span class="marks">2</span></summary>
+    <div class="ans">They can trigger a manic episode, so they are usually given together with a mood stabiliser or antipsychotic; pharmacogenomic testing can flag higher-risk patients.</div></details>
+
+  <details class="qa"><summary>Write the Therapeutic Index formula and interpret a low value. <span class="marks">2</span></summary>
+    <div class="ans">TI = TD&#8325;&#8320;/ED&#8325;&#8320; (or LD&#8325;&#8320;/ED&#8325;&#8320;). A low/narrow TI means toxic and effective doses are close &rarr; small dosing errors cause toxicity, so careful monitoring is needed.</div></details>
+
+  <details class="qa"><summary>Write the Odds Ratio formula for a 2&times;2 table. <span class="marks">2</span></summary>
+    <div class="ans">OR = (a&times;d)/(b&times;c), where a/c = variant/no-variant in cases and b/d = variant/no-variant in controls. OR &gt;1 = positive association; =1 none; &lt;1 protective.</div></details>
+
+  <details class="qa"><summary>Differentiate Relative Risk and Odds Ratio. <span class="marks">2</span></summary>
+    <div class="ans">RR = ratio of incidences (used in cohort/prospective studies). OR = ratio of odds (used in case-control/retrospective studies). OR approximates RR when the outcome is rare.</div></details>
+
+  <details class="qa"><summary>Define Hazard Ratio. <span class="marks">2</span></summary>
+    <div class="ans">The ratio of the instantaneous event (hazard) rate in one group to another over time, from survival analysis. HR = 1 no difference; &gt;1 higher risk; &lt;1 protective.</div></details>
+
+  <details class="qa"><summary>What is an adjusted risk ratio? <span class="marks">2</span></summary>
+    <div class="ans">A risk ratio from a multivariable model that holds confounders (age, sex, smoking&hellip;) constant, giving the true genotype&ndash;outcome effect rather than the confounded crude value.</div></details>
+
+  <details class="qa"><summary>Define pharmacogenomics vs pharmacogenetics. <span class="marks">2</span></summary>
+    <div class="ans">Pharmacogenetics = effect of single-gene variants on drug response. Pharmacogenomics = genome-wide study of how many genes (and gene expression) influence drug response, discovery and development. (Often used interchangeably.)</div></details>
+
+  <details class="qa"><summary>What is the Metabolizer Score used for? <span class="marks">2</span></summary>
+    <div class="ans">It sums genotype-based activity scores of drug-metabolising genes to classify a patient (poor/intermediate/extensive metaboliser) and guide dose adjustment.</div></details>
+
+  <details class="qa"><summary>Give the dosing-adjustment formula. <span class="marks">2</span></summary>
+    <div class="ans">Adjusted Dose = Standard Dose &times; (Metabolizer Score / Reference Metabolizer Score). A poor metaboliser (low score) therefore receives a reduced dose.</div></details>
+
+  <details class="qa"><summary>List the pharmacogenomic mechanisms of neuronal death (any four). <span class="marks">2</span></summary>
+    <div class="ans">Apoptosis, excitotoxicity, oxidative stress, mitochondrial dysfunction, protein aggregation, neuroinflammation, autophagy dysregulation, Ca²⁺ dysregulation (any four).</div></details>
+
+  <details class="qa"><summary>Which gene influences MS disease-modifying therapy response? <span class="marks">2</span></summary>
+    <div class="ans">HLA-DRB1 &mdash; variants &uarr; MS risk and influence response to disease-modifying therapies (DMTs).</div></details>
+
+  <details class="qa"><summary>Name two atypical antipsychotics and their receptor action. <span class="marks">2</span></summary>
+    <div class="ans">Risperidone and olanzapine act on both D2 and 5-HT2A; clozapine on D2, 5-HT2A (and many others); aripiprazole is a D2 partial agonist.</div></details>
+</section>
+
+<!-- ===================== PART B BANK ===================== -->
+<section id="partB">
+  <h2>Part B question bank &mdash; 15 marks, answer ANY TWO <span class="tag hi">essay + numerical</span></h2>
+
+  <details class="qa" open><summary>Explain the pharmacogenomics of endothelial cells with relevance to hydroxyurea in treating sickle cell disease (5) + Effectiveness-Score numerical (5+5). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(a) Theory (5):</b> Endothelial cells line all vessels and, in SCD, become activated and adhesive, promoting vaso-occlusion &mdash; hence a drug target. Hydroxyurea is an S-phase-specific inhibitor of ribonucleotide reductase. Its benefit: (1) reactivates &gamma;-globin &rarr; &uarr;HbF &rarr; &darr;HbS polymerisation; (2) &darr; reticulocytes/WBC/platelets; (3) anti-inflammatory &rarr; &darr; endothelial adhesion &rarr; fewer vaso-occlusive crises; (4) &uarr; RBC deformability &rarr; better flow &amp; oxygenation. Draw the vascular-arm/RBC-arm diagram.<br><br>
+      <b>(b)(i) (5):</b> Effectiveness Score = Effectiveness Genotype Score &times; Genotype Multiplier = 6.5 &times; 0.75 = <b>4.875</b>.<br>
+      <b>(b)(ii) (5):</b> Minimum for positive response = 6. Since 4.875 &lt; 6, the patient is predicted <b>not to respond</b> &rarr; should <b>not</b> be prescribed this drug; select an alternative or test another genotype.
+    </div></details>
+
+  <details class="qa"><summary>Discuss the role of pharmacogenomics in managing neurodegenerative and psychiatric disorders; show how genetic profiling predicts outcomes in schizophrenia OR bipolar disorder (5+5+5). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(i) Neurodegenerative (5):</b> AD &mdash; APOE&epsilon;4 alters risk/response; CYP2D6, CYP3A4/5 metabolise donepezil/rivastigmine. PD &mdash; LRRK2 (risk/targeted drugs), COMT (levodopa response). ALS &mdash; SOD1. HD &mdash; HTT. MS &mdash; HLA-DRB1. Genotype guides drug choice/dose and stratifies trials.<br>
+      <b>(ii) Psychiatric &mdash; general (5):</b> Predicts response and ADRs of psychotropics; merges pharmacology + genetics for "right drug, right patient." Reduces trial-and-error, improves efficacy, cuts serious ADRs.<br>
+      <b>(iii) Schizophrenia example (5):</b> Clozapine metabolised by CYP1A2 (smoking induces). 5-HT2A His452Tyr predicts non-response; DRD3 Ser9Gly predicts tardive dyskinesia; 5-HT2C predicts weight gain; monitor for agranulocytosis. So genotyping predicts both efficacy and side-effect risk. <i>(Or bipolar: CACNA1C/ANK3 risk, lithium-response markers, antidepressant-induced mania risk.)</i>
+    </div></details>
+
+  <details class="qa"><summary>Therapeutic Index numerical (5) + role of a metabolising enzyme in pharmacogenomics (10). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(a) TI (5):</b> LD&#8325;&#8320; = 200 mg/kg, ED&#8325;&#8320; = 20 mg/kg &rarr; TI = 200/20 = <b>10</b> (wide safety margin). A narrow TI needs close monitoring; genetic variation (e.g. CYP2C9 poor metaboliser on warfarin) &uarr; exposure and effectively narrows the margin.<br>
+      <b>(b) Enzyme role (10):</b> Take CYP1A2 &amp; clozapine (or CYP2D6 &amp; antidepressants). CYP enzymes metabolise the drug; polymorphisms create poor/intermediate/extensive/ultra-rapid metabolisers. Poor metabolisers &rarr; accumulation &rarr; toxicity (need &darr; dose); ultra-rapid &rarr; sub-therapeutic levels (need &uarr; dose/alternative). Environmental modifiers (smoking induces CYP1A2; fluvoxamine inhibits) further shift levels. Hence genotype-guided dosing improves efficacy and safety.
+    </div></details>
+
+  <details class="qa"><summary>Describe the mechanisms of neuronal death in neurodegenerative disorders and their pharmacogenomic targets (15). <span class="marks">15</span></summary>
+    <div class="ans">Two phases: initiation (homeostatic disruption) &rarr; execution (cell-death pathways). Mechanisms + gene targets: apoptosis (CASP3/8/9); excitotoxicity via glutamate &amp; Ca²⁺ (GRIN2A/B); oxidative stress (SOD2, CAT, GPX1); mitochondrial dysfunction (mtDNA); protein aggregation (APP, Tau); neuroinflammation (TNF, IL1B); autophagy dysregulation (ATG5/7); Ca²⁺ dysregulation/neurotrophic loss (CACNA1C, BDNF, Trk). Each variant modulates the pathway and the response to drugs targeting it (e.g. caspase inhibitors, antioxidants, anti-inflammatories) &rarr; basis for individualised therapy. Close with perspectives: personalised medicine, early detection, trial stratification, ethics, multi-omics.</div></details>
+
+  <details class="qa"><summary>Explain the dopamine and serotonin hypotheses of schizophrenia and the pharmacogenetics of clozapine response (15). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>Dopamine hypothesis:</b> Tyrosine &rarr;(tyrosine hydroxylase) L-DOPA &rarr;(DOPA decarboxylase) dopamine &rarr; D2 (DRD2). Overactivity in the four tracts explains symptoms (mesolimbic&rarr;positive; mesocortical&rarr;negative/cognitive; nigrostriatal&rarr;EPS; tuberoinfundibular&rarr;prolactin).<br>
+      <b>Serotonin/atypicals:</b> Tryptophan &rarr;(tryptophan hydroxylase) 5-HTP &rarr; 5-HT &rarr; 5-HT2A (HTR2A)/5-HT2C (HTR2C). Atypicals add 5-HT2A antagonism to D2 action &rarr; broader efficacy, lower EPS.<br>
+      <b>Clozapine pharmacogenetics:</b> PK &mdash; CYP1A2 (smoking induces, fluvoxamine inhibits). PD/response &mdash; 5-HT2A His452Tyr predicts non-response. ADRs &mdash; DRD3 Ser9Gly (TD), 5-HT2C (weight gain), agranulocytosis (~0.38%, monitor CBC). Conclusion: genotyping predicts efficacy + safety.
+    </div></details>
+
+  <details class="qa"><summary>Discuss the pharmacogenomics of major depression and antidepressant treatment (15). <span class="marks">15</span></summary>
+    <div class="ans">Problem: only 60&ndash;70% respond; slow onset; each failed trial &darr; odds ~15&ndash;20%. Genetic factors: (1) Metabolism &mdash; CYP2D6/CYP2C19 (poor metabolisers risk toxicity; e.g. fatal fluoxetine case). (2) Transporter &mdash; 5-HTT/SLC6A4 5-HTTLPR long/short allele; long allele &rarr; better SSRI response. (3) Receptors &mdash; 5-HT2A/2C variants. (4) NET for SNRIs/TCAs. Application: genotype-guided drug &amp; dose selection &rarr; reduce trial-and-error and ADRs &rarr; personalised medicine. Note ongoing research &amp; ethical considerations.</div></details>
+
+  <details class="qa"><summary>Odds Ratio / Relative Risk numerical (5) + case-control vs cohort study design in pharmacogenomics (10). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(a) Numerical (5):</b> With a=60, b=30, c=40, d=70: OR = ad/bc = (60&times;70)/(30&times;40) = <b>3.5</b> &rarr; 3.5&times; odds of the outcome in variant carriers. (If cohort: RR = incidence-exposed/unexposed.)<br>
+      <b>(b) Study designs (10):</b> Case-control (retrospective) starts from outcome (cases vs controls) and looks back at genotype &rarr; use OR; efficient for rare outcomes but prone to recall/selection bias. Cohort (prospective) starts from exposure (genotype) and follows for outcomes &rarr; use RR/incidence; stronger causal inference but slower/costly. Adjust for confounders with multivariable models &rarr; adjusted risk ratio. Relate to pharmacogenomic association studies (candidate-gene vs genome-wide).
+    </div></details>
+
+  <details class="qa"><summary>Metabolizer-score dosing numerical (5) + personalised medicine in neurodegenerative disease (10). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(a) Numerical (5):</b> Reference score 2.0; patient 0.5 (reduced+null allele). Adjusted Dose = Standard &times; (0.5/2.0) = <b>25%</b> of standard &rarr; e.g. 100 mg &rarr; 25 mg (poor metaboliser needs dose reduction).<br>
+      <b>(b) Theory (10):</b> Tailor drug/dose to genotype in AD (APOE, CYP2D6/3A4/5), PD (LRRK2, COMT/levodopa), ALS (SOD1), HD (HTT), MS (HLA-DRB1). Benefits: early detection of high-risk genotypes, efficient trial stratification, multi-omics integration; challenges: incomplete knowledge, ethics/privacy/stigma.
+    </div></details>
+</section>
+
+<!-- ===================== SOLVED PAST PAPER ===================== -->
+<section id="solved">
+  <h2>Solved past paper &mdash; CIA-II, September 2025 <span class="tag hi">closest predictor</span></h2>
+  <p>The exact previous paper, fully answered. Some Part A items (statins, thiopurines, asthma, BBB) come from the wider unit &mdash; learn these one-liners too, they recur.</p>
+
+  <h3>Part A &mdash; answer ALL (2 &times; 10 = 20)</h3>
+
+  <details class="qa"><summary>Q1 &amp; Q5. Primary enzyme target of statins? Which gene affects statin metabolism/efficacy? <span class="marks">2</span></summary>
+    <div class="ans"><b>HMG-CoA reductase</b> is the primary target of statins (rate-limiting enzyme of cholesterol synthesis). Genetic variation in <b>SLCO1B1</b> (hepatic uptake transporter OATP1B1) &mdash; and CYP3A4/CYP2C9 &mdash; alters statin exposure, efficacy and myopathy risk.</div></details>
+
+  <details class="qa"><summary>Q2. Are sickle cell disease and sickle cell trait identical? Justify. <span class="marks">2</span></summary>
+    <div class="ans">No. <b>Trait</b> = heterozygous (one HbS + one normal gene) &mdash; usually asymptomatic, carrier. <b>Disease</b> = two abnormal genes (e.g. HbSS homozygous) &mdash; chronic haemolytic anaemia and vaso-occlusive crises. Different genotype and clinical severity.</div></details>
+
+  <details class="qa"><summary>Q3. What happens if a TPMT-deficient person receives standard thiopurine doses? <span class="marks">2</span></summary>
+    <div class="ans">TPMT normally inactivates thiopurines. In deficiency the drug is not methylated &rarr; toxic thioguanine nucleotides accumulate &rarr; severe <b>myelosuppression / bone-marrow toxicity</b> (potentially fatal). Dose must be sharply reduced.</div></details>
+
+  <details class="qa"><summary>Q4. Name a key protein of the BBB and its pharmacogenomic relevance. <span class="marks">2</span></summary>
+    <div class="ans"><b>P-glycoprotein (MDR1 / ABCB1)</b> &mdash; an efflux transporter on brain endothelial cells that pumps drugs out of the CNS. Its polymorphisms alter how much drug reaches the brain, affecting CNS drug efficacy/toxicity.</div></details>
+
+  <details class="qa"><summary>Q6. How do NUDT15 variants influence thiopurine therapy? <span class="marks">2</span></summary>
+    <div class="ans">Loss-of-function <b>NUDT15</b> variants cannot dephosphorylate active thioguanine metabolites &rarr; accumulation &rarr; <b>thiopurine-induced myelosuppression</b> (common in East-Asian populations). Genotyping guides dose reduction, alongside TPMT.</div></details>
+
+  <details class="qa"><summary>Q7. Significance of the SLCO1B1 gene in statin pharmacogenomics. <span class="marks">2</span></summary>
+    <div class="ans">SLCO1B1 encodes the hepatic uptake transporter <b>OATP1B1</b>. The <b>c.521T&gt;C (rs4149056)</b> variant reduces statin uptake into liver &rarr; &uarr; plasma statin (esp. simvastatin) &rarr; &uarr; risk of <b>myopathy/rhabdomyolysis</b>. Guides statin choice/dose.</div></details>
+
+  <details class="qa"><summary>Q8. Name any two thiopurine derivatives used clinically. <span class="marks">2</span></summary>
+    <div class="ans"><b>Azathioprine</b> and <b>6-mercaptopurine (6-MP)</b> (also 6-thioguanine).</div></details>
+
+  <details class="qa"><summary>Q9. Differentiate HbA1 and HbF in composition and physiological role. <span class="marks">2</span></summary>
+    <div class="ans"><b>HbA1</b> = &alpha;2&beta;2, the main adult haemoglobin, transports O2 from lungs to tissues. <b>HbF</b> = &alpha;2&gamma;2, fetal haemoglobin with <b>higher O2 affinity</b> for maternal&rarr;fetal transfer; declines after birth.</div></details>
+
+  <details class="qa"><summary>Q10. Target of beta-agonists in asthma? How does ADRB2 variation affect response? <span class="marks">2</span></summary>
+    <div class="ans">Target = <b>beta-2 adrenergic receptor</b> (encoded by <b>ADRB2</b>); beta-agonists (e.g. salbutamol) activate it to cause bronchodilation. Polymorphisms <b>Arg16Gly</b> and <b>Gln27Glu</b> alter receptor downregulation and bronchodilator response, so response varies by genotype.</div></details>
+
+  <h3>Part B &mdash; answer ANY TWO (15 &times; 2 = 30)</h3>
+
+  <details class="qa"><summary>Q11. (a) Therapeutic Index numerical (5) &nbsp;(b) Role of TPMT in thiopurine metabolism + cancer pharmacogenomics (10). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(a) (5):</b> LD&#8325;&#8320; = 200 mg/kg, ED&#8325;&#8320; = 20 mg/kg &rarr; TI = 200/20 = <b>10</b>. A TI of 10 is a <b>wide safety margin</b>; a low/narrow TI would need careful monitoring.<br><br>
+      <b>(b) (10):</b> <b>TPMT (thiopurine S-methyltransferase)</b> inactivates thiopurines (azathioprine, 6-MP, 6-thioguanine) by S-methylation, competing with the pathway that forms cytotoxic thioguanine nucleotides (TGNs). <b>Clinical implications:</b> TPMT-deficient/low-activity patients given standard doses over-accumulate TGNs &rarr; severe, potentially fatal myelosuppression; they need major dose reduction, while normal metabolisers get full dose. <b>In cancer (e.g. childhood ALL):</b> TPMT genotyping before 6-MP is one of the earliest, best-established clinical pharmacogenomic tests &mdash; it individualises dose to maximise anti-leukaemic effect while avoiding life-threatening toxicity. (NUDT15 testing is now added, especially in Asian patients.)
+    </div></details>
+
+  <details class="qa"><summary>Q12. (a) Endothelial/hydroxyurea in sickle cell (5) &nbsp;(b) Effectiveness-Score numerical (5+5). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(a) (5):</b> Endothelial cells line vessels; in SCD they become activated/adhesive &rarr; vaso-occlusion, so they are a drug target. Hydroxyurea (ribonucleotide-reductase inhibitor, S-phase specific) reactivates &gamma;-globin &rarr; &uarr;HbF &rarr; &darr;HbS polymerisation; &darr;reticulocytes/WBC; anti-inflammatory &rarr; &darr;endothelial adhesion &rarr; fewer crises; &uarr;RBC deformability &rarr; better oxygenation.<br><br>
+      <b>(b)(i) (5):</b> Effectiveness Score = 6.5 &times; 0.75 = <b>4.875</b>.<br>
+      <b>(b)(ii) (5):</b> Minimum for positive response = 6; 4.875 &lt; 6 &rarr; predicted poor responder &rarr; <b>do not prescribe</b> this drug; consider an alternative.
+    </div></details>
+
+  <details class="qa"><summary>Q13. Role of pharmacogenomics in neurodegenerative &amp; psychiatric disorders; genetic profiling in schizophrenia OR bipolar (5+5+5). <span class="marks">15</span></summary>
+    <div class="ans">
+      <b>(i) Neurodegenerative (5):</b> AD &mdash; APOE&epsilon;4 (risk/response), CYP2D6/3A4/5 (donepezil, rivastigmine); PD &mdash; LRRK2, COMT (levodopa); ALS &mdash; SOD1; HD &mdash; HTT; MS &mdash; HLA-DRB1. Genotype tailors drug choice/dose and stratifies trials.<br>
+      <b>(ii) Psychiatric &mdash; general (5):</b> Predicts response &amp; ADRs of psychotropics; merges genetics + pharmacology for "right drug, right patient", cutting trial-and-error and serious ADRs.<br>
+      <b>(iii) Schizophrenia (5):</b> Clozapine &mdash; CYP1A2 metabolism (smoking induces); 5-HT2A His452Tyr &rarr; non-response; DRD3 Ser9Gly &rarr; tardive dyskinesia; 5-HT2C &rarr; weight gain; monitor agranulocytosis. <i>Or bipolar: CACNA1C/ANK3 risk genes, lithium-response markers, antidepressant-induced mania risk.</i>
+    </div></details>
+</section>
+
+<!-- ===================== GALLERY ===================== -->
+<section id="gallery">
+  <h2>Image gallery &mdash; all diagrams &amp; reference pages</h2>
+  <p>Featured diagrams appear inline above. Below: the remaining topic figures and the full scanned reference chapter (Ch 17, Neurodegenerative Diseases) for reading. Click any image to open full size.</p>
+
+  <h3>Topic diagrams</h3>
+  <div class="gallery">
+    <a href="pharmacogenomics_cia2_images/topic_schizo_p0_0_467x350.png"><img src="pharmacogenomics_cia2_images/topic_schizo_p0_0_467x350.png" alt=""><span>Dopamine synthesis</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_schizo_p0_1_511x383.png"><img src="pharmacogenomics_cia2_images/topic_schizo_p0_1_511x383.png" alt=""><span>Dopamine hypothesis</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_schizo_p2_0_601x451.png"><img src="pharmacogenomics_cia2_images/topic_schizo_p2_0_601x451.png" alt=""><span>Serotonin / atypicals</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_endothelial_p0_0_479x558.png"><img src="pharmacogenomics_cia2_images/topic_endothelial_p0_0_479x558.png" alt=""><span>Endothelial / sickle types</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_endothelial_p1_0_685x486.png"><img src="pharmacogenomics_cia2_images/topic_endothelial_p1_0_685x486.png" alt=""><span>Hydroxyurea mechanism</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_unit3_p5_0_731x1024.png"><img src="pharmacogenomics_cia2_images/topic_unit3_p5_0_731x1024.png" alt=""><span>Neurodegeneration notes</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_unit3_p5_1_1975x742.png"><img src="pharmacogenomics_cia2_images/topic_unit3_p5_1_1975x742.png" alt=""><span>Schizophrenia figure</span></a>
+    <a href="pharmacogenomics_cia2_images/topic_unit3_p7_1_2061x939.png"><img src="pharmacogenomics_cia2_images/topic_unit3_p7_1_2061x939.png" alt=""><span>Bipolar figure</span></a>
+    <a href="pharmacogenomics_cia2_images/ref_Ch11_p271_0_1072x1473.png"><img src="pharmacogenomics_cia2_images/ref_Ch11_p271_0_1072x1473.png" alt=""><span>Ref Ch11 figure</span></a>
+  </div>
+
+  <h3>Reference chapter 17 &mdash; Neurodegenerative Diseases (scanned, 17 pp)</h3>
+  <div class="gallery">
+    <a href="pharmacogenomics_cia2_images/neuro_page_01.png"><img src="pharmacogenomics_cia2_images/neuro_page_01.png" alt=""><span>p1</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_02.png"><img src="pharmacogenomics_cia2_images/neuro_page_02.png" alt=""><span>p2</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_03.png"><img src="pharmacogenomics_cia2_images/neuro_page_03.png" alt=""><span>p3</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_04.png"><img src="pharmacogenomics_cia2_images/neuro_page_04.png" alt=""><span>p4</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_05.png"><img src="pharmacogenomics_cia2_images/neuro_page_05.png" alt=""><span>p5</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_06.png"><img src="pharmacogenomics_cia2_images/neuro_page_06.png" alt=""><span>p6</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_07.png"><img src="pharmacogenomics_cia2_images/neuro_page_07.png" alt=""><span>p7</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_08.png"><img src="pharmacogenomics_cia2_images/neuro_page_08.png" alt=""><span>p8</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_09.png"><img src="pharmacogenomics_cia2_images/neuro_page_09.png" alt=""><span>p9</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_10.png"><img src="pharmacogenomics_cia2_images/neuro_page_10.png" alt=""><span>p10</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_11.png"><img src="pharmacogenomics_cia2_images/neuro_page_11.png" alt=""><span>p11</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_12.png"><img src="pharmacogenomics_cia2_images/neuro_page_12.png" alt=""><span>p12</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_13.png"><img src="pharmacogenomics_cia2_images/neuro_page_13.png" alt=""><span>p13</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_14.png"><img src="pharmacogenomics_cia2_images/neuro_page_14.png" alt=""><span>p14</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_15.png"><img src="pharmacogenomics_cia2_images/neuro_page_15.png" alt=""><span>p15</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_16.png"><img src="pharmacogenomics_cia2_images/neuro_page_16.png" alt=""><span>p16</span></a>
+    <a href="pharmacogenomics_cia2_images/neuro_page_17.png"><img src="pharmacogenomics_cia2_images/neuro_page_17.png" alt=""><span>p17</span></a>
+  </div>
+</section>
+
+<footer>
+  Built from your CIA-II syllabus, the reference book <i>Pharmacogenomics: The Search for Individualized Therapies</i> (Licinio &amp; Wong, Wiley-VCH 2002, Ch 11, 16&ndash;20), your class notes (UNIT 3, formula sheet, topic PDFs) and the Sep-2025 CIA-II paper. Study Room &middot; for revision only.
+</footer>
+</div>
+
+<button class="printbtn" onclick="window.print()">Print / Save PDF</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  try{
+    mermaid.initialize({startOnLoad:true,theme:"base",flowchart:{useMaxWidth:true},
+      themeVariables:{primaryColor:"#efeaf9",primaryBorderColor:"#5b3fa8",primaryTextColor:"#1a1b25",
+        lineColor:"#0e7c86",fontSize:"13px"}});
+  }catch(e){}
+</script>
+</body>
+</html>
