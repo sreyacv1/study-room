@@ -38,6 +38,24 @@ Covers activations, loss functions, backpropagation, regression and classificati
 designs, optimizers, convolution, pooling, CNN architecture, random and unsupervised
 features, RNNs, BPTT, LSTM, GRU, time-series forecasting and bidirectional RNNs.
 
+## Zoho Prep Room — `Zoho_Prep.html`
+
+Round-by-round practice matching Zoho's actual process:
+
+- **C output** — 60 predict-the-output questions (every deterministic answer verified with gcc), written-answer format like the real paper
+- **Aptitude** — 40 questions with worked solutions
+- **Mock R1** — 10 C + 10 aptitude in 60 minutes, scored against Zoho's likely cutoff
+- **Coding** — 55 problems in three levels with tests, run in the browser via Pyodide (Python). 17 come from the community `Zoho_Preparation` round-2 set.
+- **Build** — 10 machine-round briefs (railway, taxi, bank, inventory, social media, library, hotel, elevator, food delivery, family tree) with a 3-hour timer, design notes, self-check list and a change request that unlocks at 2 hours
+- **NLP / ML** — 32 flashcards tied to the ZLabs role and Sreya's own projects
+- **Interview** — 38 project, technical and HR questions with saved answers
+
+Wrong answers resurface first in every drill until cleared. Progress in localStorage.
+
+## Resume — `Sreya_Resume_Zoho.html`
+
+Resume targeted at the Zoho DevOps/MLOps role. Print to PDF from the browser.
+
 ## Zoho drive plan — `Zoho_2027_Plan.html`
 
 17-day preparation schedule for the Zoho DevOps Engineer (ZLabs) campus drive

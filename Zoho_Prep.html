@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zoho Prep Room</title>
+<meta name="description" content="Round-by-round practice for the Zoho campus drive: C output, aptitude, timed coding with a Python runner, machine-round builds, NLP flashcards and interview drills.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#F0F1F4;--card:#fff;--ink:#1C1D22;--ink2:#5C6070;--line:#D9DCE4;--accent:#2D4B9A;--accent2:#E8EDF9;--warn:#B3261E;--warnbg:#FDECEA;--ok:#1E7A46;--okbg:#E6F4EC;--code:#F6F7FA}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#131419;--card:#1C1E26;--ink:#E7E8ED;--ink2:#9AA0B0;--line:#2C2F3A;--accent:#7B96E8;--accent2:#232A42;--warn:#F28B82;--warnbg:#3A1F1E;--ok:#7DD3A0;--okbg:#1B3327;--code:#15171E}}
+:root[data-theme="dark"]{--paper:#131419;--card:#1C1E26;--ink:#E7E8ED;--ink2:#9AA0B0;--line:#2C2F3A;--accent:#7B96E8;--accent2:#232A42;--warn:#F28B82;--warnbg:#3A1F1E;--ok:#7DD3A0;--okbg:#1B3327;--code:#15171E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",-apple-system,Helvetica,Arial,sans-serif;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 80px}
+h1{font-family:Archivo,sans-serif;font-size:26px;font-weight:800;margin:8px 0 2px;letter-spacing:-.02em}
+h2{font-family:Archivo,sans-serif;font-size:19px;font-weight:600;margin:20px 0 8px}
+h3{font-size:15px;font-weight:600;margin:14px 0 6px}
+.lede{color:var(--ink2);margin:0 0 14px;font-size:14px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 18px;position:sticky;top:0;background:var(--paper);padding:8px 0;z-index:5}
+nav button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:6px 13px;font:inherit;font-size:13px;cursor:pointer}
+nav button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.warn{background:var(--warnbg);border-color:var(--warn)}.ok{background:var(--okbg);border-color:var(--ok)}
+button.b{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 15px;font:inherit;font-size:14px;cursor:pointer;margin:4px 6px 4px 0}
+button.b.s{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+button.b:disabled{opacity:.5;cursor:default}
+pre,textarea.code{font-family:"IBM Plex Mono",Menlo,monospace;font-size:13px;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto;white-space:pre;margin:8px 0;line-height:1.45}
+textarea.code{width:100%;min-height:220px;color:var(--ink);resize:vertical;tab-size:4}
+input.ans,textarea.plain{font:inherit;font-size:15px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%}
+textarea.plain{min-height:90px;resize:vertical}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:12px;background:var(--accent2);color:var(--accent);margin-right:6px}
+.timer{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:500}
+.small{font-size:13px;color:var(--ink2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
+.stat b{font-family:Archivo,sans-serif;font-size:22px;display:block}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent)}
+ul,ol{padding-left:20px}li{margin:3px 0}
+.flash{min-height:120px;cursor:pointer;user-select:none}
+.hidden{display:none}
+label.ck{display:block;padding:5px 0;cursor:pointer}
+.out{font-family:"IBM Plex Mono",monospace;font-size:13px;white-space:pre-wrap;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:8px;max-height:260px;overflow:auto}
+.pass{color:var(--ok)}.fail{color:var(--warn)}
+details{margin:8px 0}summary{cursor:pointer;font-weight:500}
+@media(max-width:480px){h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Zoho Prep Room</h1>
+<p class="lede">Round by round, in the order Zoho runs them. Drive: 9 and 10 October 2026. <span id="days"></span></p>
+<nav id="nav"></nav>
+<div id="view"></div>
+</div>
+<script>
+// ---------- ROUND 1: C OUTPUT ----------
+const C = [
+{c:`int a=5;\nprintf("%d %d %d", a++, a, ++a);`, a:"unspecified", ex:"Order of evaluation of printf arguments is unspecified in C. If Zoho asks this, write 'undefined / compiler dependent'. GCC typically prints 6 7 7.", alt:["undefined","compiler dependent","6 7 7"]},
+{c:`int x=10;\nx = x++ + ++x;\nprintf("%d", x);`, a:"undefined", ex:"Modifying x twice between sequence points is undefined behaviour. Say so. GCC usually gives 22.", alt:["undefined behaviour","22"]},
+{c:`int a[5]={1,2,3,4,5};\nint *p=a;\nprintf("%d", *(p+3));`, a:"4", ex:"p+3 points to a[3]. Arrays are zero-indexed."},
+{c:`int a[]={10,20,30,40};\nprintf("%d", *a + 1);`, a:"11", ex:"*a is a[0]=10, then +1. Different from *(a+1) which is 20."},
+{c:`int a[]={10,20,30,40};\nprintf("%d", *(a+1));`, a:"20", ex:"Pointer arithmetic moves by element size, so a+1 is a[1]."},
+{c:`char s[]="hello";\nprintf("%d", sizeof(s));`, a:"6", ex:"sizeof counts the null terminator: 5 chars + '\\0'."},
+{c:`char s[]="hello";\nprintf("%d", strlen(s));`, a:"5", ex:"strlen stops before the null terminator."},
+{c:`char *s="hello";\nprintf("%c", *(s+1));`, a:"e", ex:"s+1 points to the second character."},
+{c:`int i;\nfor(i=0;i<5;i++);\nprintf("%d", i);`, a:"5", ex:"The semicolon after for makes an empty loop. i ends at 5."},
+{c:`int i=0;\nwhile(i++<3) printf("%d ", i);`, a:"1 2 3", ex:"Condition checks i then increments. Body sees the incremented value."},
+{c:`int i=0;\nwhile(++i<3) printf("%d ", i);`, a:"1 2", ex:"Pre-increment: checks 1<3, 2<3, then 3<3 fails."},
+{c:`int x=5;\nprintf("%d", x++ + x++);`, a:"undefined", ex:"Two modifications without a sequence point. Say undefined; GCC gives 11.", alt:["undefined behaviour","11"]},
+{c:`int x=5, y;\ny = x++;\nprintf("%d %d", x, y);`, a:"6 5", ex:"Post-increment returns the old value then increments."},
+{c:`int x=5, y;\ny = ++x;\nprintf("%d %d", x, y);`, a:"6 6", ex:"Pre-increment increments first."},
+{c:`void f(){ static int c=0; c++; printf("%d ", c); }\nint main(){ f(); f(); f(); }`, a:"1 2 3", ex:"static keeps its value between calls and is initialised once."},
+{c:`void f(){ int c=0; c++; printf("%d ", c); }\nint main(){ f(); f(); f(); }`, a:"1 1 1", ex:"Without static, c is re-created at 0 every call."},
+{c:`int f(int n){ if(n==0) return 0; return n + f(n-1); }\nint main(){ printf("%d", f(4)); }`, a:"10", ex:"4+3+2+1+0 = 10."},
+{c:`void f(int n){ if(n==0) return; printf("%d ", n); f(n-1); }\nint main(){ f(3); }`, a:"3 2 1", ex:"Print happens before the recursive call."},
+{c:`void f(int n){ if(n==0) return; f(n-1); printf("%d ", n); }\nint main(){ f(3); }`, a:"1 2 3", ex:"Print happens after the recursive call, so it unwinds in reverse."},
+{c:`int main(){ printf("%d", printf("abc")); }`, a:"abc3", ex:"Inner printf prints abc and returns 3, which the outer printf prints."},
+{c:`int a=10;\nif(a=0) printf("yes"); else printf("no");`, a:"no", ex:"Assignment, not comparison. a becomes 0, which is false."},
+{c:`int a=10;\nif(a=5) printf("yes"); else printf("no");`, a:"yes", ex:"a=5 assigns 5, non-zero is true."},
+{c:`int x=3;\nswitch(x){ case 1: printf("A"); case 3: printf("B"); case 4: printf("C"); break; default: printf("D"); }`, a:"BC", ex:"No break after case 3, so it falls through to case 4."},
+{c:`printf("%d", 7/2);`, a:"3", ex:"Integer division truncates."},
+{c:`printf("%.1f", 7/2.0);`, a:"3.5", ex:"One operand is double so division is floating point."},
+{c:`printf("%d", -7 % 3);`, a:"-1", ex:"In C, % takes the sign of the dividend."},
+{c:`printf("%d", 5 & 3);`, a:"1", ex:"101 & 011 = 001."},
+{c:`printf("%d", 5 | 3);`, a:"7", ex:"101 | 011 = 111."},
+{c:`printf("%d", 5 ^ 3);`, a:"6", ex:"101 ^ 011 = 110."},
+{c:`printf("%d", 1 << 3);`, a:"8", ex:"Left shift by 3 multiplies by 8."},
+{c:`printf("%d", 10 > 5 > 2);`, a:"0", ex:"(10>5) is 1, then 1>2 is 0."},
+{c:`int a=5;\nprintf("%d", a==5 ? 1 : 0);`, a:"1", ex:"Ternary."},
+{c:`printf("%d", sizeof(int));`, a:"4", ex:"On the compilers Zoho uses, int is 4 bytes."},
+{c:`printf("%d", sizeof('A'));`, a:"4", ex:"In C, a character constant has type int. In C++ it would be 1."},
+{c:`printf("%c", 'A'+1);`, a:"B", ex:"Characters are integers. 65+1 = 66 = 'B'."},
+{c:`printf("%d", 'A');`, a:"65", ex:"ASCII value of A."},
+{c:`char c='a';\nprintf("%c", c-32);`, a:"A", ex:"Lowercase to uppercase differ by 32 in ASCII."},
+{c:`int a[3]={1,2,3};\nprintf("%d", a[3]);`, a:"garbage", ex:"Out of bounds. Undefined. Write 'garbage / undefined'.", alt:["undefined","garbage value"]},
+{c:`int a[2][2]={{1,2},{3,4}};\nprintf("%d", a[1][0]);`, a:"3", ex:"Second row, first column."},
+{c:`int a[2][2]={{1,2},{3,4}};\nprintf("%d", *(*(a+1)+1));`, a:"4", ex:"*(a+1) is row 1, +1 is column 1."},
+{c:`int a=5; int *p=&a; int **q=&p;\nprintf("%d", **q);`, a:"5", ex:"Double dereference goes back to a."},
+{c:`int a=5, b=10;\nint *p=&a; *p=b;\nprintf("%d", a);`, a:"10", ex:"Writing through the pointer changes a."},
+{c:`void swap(int a,int b){ int t=a; a=b; b=t; }\nint main(){ int x=1,y=2; swap(x,y); printf("%d %d", x, y); }`, a:"1 2", ex:"Pass by value. The originals are untouched."},
+{c:`void swap(int *a,int *b){ int t=*a; *a=*b; *b=t; }\nint main(){ int x=1,y=2; swap(&x,&y); printf("%d %d", x, y); }`, a:"2 1", ex:"Pass by pointer changes the originals."},
+{c:`int i;\nfor(i=1;i<=3;i++){ if(i==2) continue; printf("%d ", i); }`, a:"1 3", ex:"continue skips the print for i=2."},
+{c:`int i;\nfor(i=1;i<=3;i++){ if(i==2) break; printf("%d ", i); }`, a:"1", ex:"break exits the loop entirely."},
+{c:`int i=5;\ndo{ printf("%d ", i); i++; }while(i<3);`, a:"5", ex:"do-while runs the body once before checking."},
+{c:`char s[]="abc";\nchar *p=s;\np++;\nprintf("%s", p);`, a:"bc", ex:"%s prints from the pointer to the null terminator."},
+{c:`printf("%d", strcmp("abc","abd"));`, a:"negative", ex:"'c' < 'd', so a negative value. GCC typically returns -1. Write 'negative (-1)'.", alt:["-1","<0"]},
+{c:`int x=0;\nprintf("%d %d", x, x=5);`, a:"unspecified", ex:"Argument evaluation order is unspecified. Typically 5 5 on GCC.", alt:["undefined","5 5"]},
+{c:`printf("%d", 010);`, a:"8", ex:"A leading zero makes it octal."},
+{c:`printf("%d", 0x10);`, a:"16", ex:"Hexadecimal."},
+{c:`float f=0.1;\nif(f==0.1) printf("eq"); else printf("neq");`, a:"neq", ex:"0.1 literal is double; float 0.1 is not exactly equal to it."},
+{c:`int a=5;\nprintf("%d", !a);`, a:"0", ex:"Logical NOT of non-zero is 0."},
+{c:`int a=5;\nprintf("%d", ~a);`, a:"-6", ex:"Bitwise NOT: ~x = -(x+1)."},
+{c:`int i=3;\nprintf("%d", i---1);`, a:"2", ex:"Parsed as (i--) - 1 = 3-1."},
+{c:`int a[]={1,2,3,4,5};\nprintf("%d", sizeof(a)/sizeof(a[0]));`, a:"5", ex:"Standard idiom for array length."},
+{c:`int a[]={1,2,3,4,5};\nint *p=a;\nprintf("%d", sizeof(p)/sizeof(p[0]));`, a:"2", ex:"sizeof a pointer is 8 on 64-bit, /4 = 2. Trap question. On 32-bit Turbo C it is 1.", alt:["1"]},
+{c:`char *s="hello";\ns[0]='H';\nprintf("%s", s);`, a:"crash", ex:"String literals are read-only. Writing to one is undefined, usually a segfault.", alt:["undefined","segmentation fault","runtime error"]},
+{c:`int main(){ int x; printf("%d", x); }`, a:"garbage", ex:"Uninitialised local variable.", alt:["undefined","garbage value"]},
+];
+// ---------- ROUND 1: APTITUDE ----------
+const APT = [
+{q:"A train 150 m long passes a pole in 15 s. Speed in km/h?", a:"36", ex:"10 m/s × 18/5 = 36 km/h."},
+{q:"A can do a job in 10 days, B in 15 days. Together, how many days?", a:"6", ex:"1/10+1/15 = 1/6."},
+{q:"If 20% of a number is 50, the number is?", a:"250", ex:"50/0.2."},
+{q:"Average of 5 numbers is 20. One number 30 is removed. New average?", a:"17.5", ex:"(100-30)/4."},
+{q:"Cost price 400, selling price 500. Profit %?", a:"25", ex:"100/400."},
+{q:"Ratio of ages of A and B is 3:4, sum 35. Age of B?", a:"20", ex:"35/7 × 4."},
+{q:"Next in series: 2, 6, 12, 20, 30, ?", a:"42", ex:"Differences 4,6,8,10,12. Or n(n+1)."},
+{q:"Next in series: 1, 1, 2, 3, 5, 8, ?", a:"13", ex:"Fibonacci."},
+{q:"Next in series: 3, 9, 27, 81, ?", a:"243", ex:"×3."},
+{q:"Probability of getting a sum of 7 with two dice? (as fraction a/b)", a:"1/6", ex:"6 of 36 outcomes."},
+{q:"HCF of 36 and 48?", a:"12", ex:"36=2²·3², 48=2⁴·3. Common: 2²·3."},
+{q:"LCM of 12 and 18?", a:"36", ex:"2²·3²."},
+{q:"A man walks 5 km east, 3 km north, 5 km west. Distance from start?", a:"3", ex:"East and west cancel."},
+{q:"Simple interest on 1000 at 5% for 3 years?", a:"150", ex:"1000×5×3/100."},
+{q:"Compound interest on 1000 at 10% for 2 years?", a:"210", ex:"1000×1.21−1000."},
+{q:"If x + 1/x = 3, x² + 1/x² = ?", a:"7", ex:"Square both sides: x²+2+1/x²=9."},
+{q:"Angle between clock hands at 3:00?", a:"90", ex:"Each hour mark is 30°."},
+{q:"Angle between clock hands at 3:30?", a:"75", ex:"Hour hand at 105°, minute at 180°."},
+{q:"Speed 60 km/h for 2 h then 40 km/h for 2 h. Average speed?", a:"50", ex:"200 km / 4 h."},
+{q:"How many 3-digit numbers are divisible by 7?", a:"128", ex:"105 to 994: (994-105)/7 + 1."},
+{q:"Sum of first 20 natural numbers?", a:"210", ex:"n(n+1)/2."},
+{q:"Sum of first 10 odd numbers?", a:"100", ex:"n²."},
+{q:"In how many ways can 3 people be seated in 5 chairs?", a:"60", ex:"5P3 = 60."},
+{q:"How many ways to choose 2 from 6?", a:"15", ex:"6C2."},
+{q:"A number when divided by 5 leaves remainder 3, by 7 leaves 3. Smallest such number > 3?", a:"38", ex:"LCM 35 + 3."},
+{q:"Two pipes fill a tank in 20 and 30 min. Both open, time to fill?", a:"12", ex:"1/20+1/30=1/12."},
+{q:"Mixture: 40 L milk-water in 3:1. Water to add for 1:1?", a:"20", ex:"30 milk, 10 water; need 30 water."},
+{q:"Unit digit of 7^100?", a:"1", ex:"Cycle 7,9,3,1; 100 mod 4 = 0 → 1."},
+{q:"A is 2 years older than B, who is twice as old as C. Sum 27. Age of B?", a:"10", ex:"C=5, B=10, A=12."},
+{q:"If the day before yesterday was Thursday, day after tomorrow?", a:"Monday", ex:"Today Saturday."},
+{q:"Complete: ACE, BDF, CEG, ?", a:"DFH", ex:"Each letter shifts by 1."},
+{q:"Man's speed 5 km/h, river 3 km/h. Time to go 8 km upstream? (hours)", a:"4", ex:"8/(5-3)."},
+{q:"Square of a number minus the number is 56. The number (positive)?", a:"8", ex:"x²−x−56=0 → (x−8)(x+7)."},
+{q:"Missing number: 4, 9, 16, 25, ?, 49", a:"36", ex:"Squares."},
+{q:"12 men do work in 8 days. 16 men take?", a:"6", ex:"12×8/16."},
+{q:"20% discount then 10% discount on 1000. Final price?", a:"720", ex:"1000×0.8×0.9."},
+{q:"A bag has 3 red, 2 blue balls. Probability both drawn (without replacement) are red? (a/b)", a:"3/10", ex:"3/5 × 2/4."},
+{q:"Number of diagonals in a hexagon?", a:"9", ex:"n(n−3)/2."},
+{q:"log₂ 64 = ?", a:"6", ex:"2⁶."},
+{q:"Three coins tossed. Probability of exactly two heads? (a/b)", a:"3/8", ex:"HHT, HTH, THH."},
+];
+// ---------- ROUND 2: CODING (function name, tests as [args, expected]) ----------
+const CODE = [
+{t:"Reverse a string", lv:1, fn:"rev", s:"Return the reversed string. No slicing, no reversed(). Use a loop.", ex:'rev("hello") -> "olleh"', hint:"Walk from the last index to 0 and append.", tests:[[["hello"],"olleh"],[["a"],"a"],[[""],""]], sol:`def rev(s):\n    out = ""\n    i = len(s) - 1\n    while i >= 0:\n        out += s[i]\n        i -= 1\n    return out`},
+{t:"Count vowels", lv:1, fn:"vowels", s:"Return number of vowels (a,e,i,o,u, any case).", ex:'vowels("Zoho Corp") -> 3', hint:"Lowercase each char, check membership.", tests:[[["Zoho Corp"],3],[["xyz"],0]], sol:`def vowels(s):\n    n = 0\n    for ch in s:\n        if ch.lower() in "aeiou":\n            n += 1\n    return n`},
+{t:"Prime check", lv:1, fn:"is_prime", s:"Return True if n is prime.", ex:"is_prime(7) -> True", hint:"Check divisors up to sqrt(n).", tests:[[[7],true],[[1],false],[[25],false],[[2],true]], sol:`def is_prime(n):\n    if n < 2:\n        return False\n    i = 2\n    while i * i <= n:\n        if n % i == 0:\n            return False\n        i += 1\n    return True`},
+{t:"Factorial (recursive)", lv:1, fn:"fact", s:"Return n! using recursion.", ex:"fact(5) -> 120", hint:"fact(0)=1.", tests:[[[5],120],[[0],1]], sol:`def fact(n):\n    if n <= 1:\n        return 1\n    return n * fact(n - 1)`},
+{t:"Fibonacci list", lv:1, fn:"fib", s:"Return the first n Fibonacci numbers as a list starting 0,1.", ex:"fib(6) -> [0,1,1,2,3,5]", hint:"Keep two variables.", tests:[[[6],[0,1,1,2,3,5]],[[1],[0]]], sol:`def fib(n):\n    out = []\n    a, b = 0, 1\n    for _ in range(n):\n        out.append(a)\n        a, b = b, a + b\n    return out`},
+{t:"Palindrome without slicing", lv:1, fn:"is_pal", s:"Return True if s reads the same forwards and backwards. Ignore case. No slicing.", ex:'is_pal("Madam") -> True', hint:"Two pointers from each end.", tests:[[["Madam"],true],[["abc"],false],[["a"],true]], sol:`def is_pal(s):\n    s = s.lower()\n    i, j = 0, len(s) - 1\n    while i < j:\n        if s[i] != s[j]:\n            return False\n        i += 1\n        j -= 1\n    return True`},
+{t:"Character frequency", lv:1, fn:"freq", s:"Return a dict of character counts.", ex:'freq("aab") -> {"a":2,"b":1}', hint:"dict.get(ch,0)+1.", tests:[[["aab"],{"a":2,"b":1}]], sol:`def freq(s):\n    d = {}\n    for ch in s:\n        d[ch] = d.get(ch, 0) + 1\n    return d`},
+{t:"Anagram check", lv:1, fn:"anagram", s:"Return True if the two strings are anagrams. No sorted().", ex:'anagram("listen","silent") -> True', hint:"Compare frequency dicts.", tests:[[["listen","silent"],true],[["abc","abd"],false]], sol:`def anagram(a, b):\n    if len(a) != len(b):\n        return False\n    d = {}\n    for ch in a:\n        d[ch] = d.get(ch, 0) + 1\n    for ch in b:\n        if d.get(ch, 0) == 0:\n            return False\n        d[ch] -= 1\n    return True`},
+{t:"String compression", lv:2, fn:"compress", s:"Compress runs: aaabb -> a3b2. Single chars still get 1.", ex:'compress("aaabbc") -> "a3b2c1"', hint:"Track current char and count.", tests:[[["aaabbc"],"a3b2c1"],[["a"],"a1"],[[""],""]], sol:`def compress(s):\n    if not s:\n        return ""\n    out = ""\n    cur = s[0]\n    cnt = 1\n    for ch in s[1:]:\n        if ch == cur:\n            cnt += 1\n        else:\n            out += cur + str(cnt)\n            cur = ch\n            cnt = 1\n    out += cur + str(cnt)\n    return out`},
+{t:"First non-repeating character", lv:2, fn:"first_unique", s:"Return the first character that appears once, or '' if none.", ex:'first_unique("swiss") -> "w"', hint:"Count, then scan again in order.", tests:[[["swiss"],"w"],[["aabb"],""]], sol:`def first_unique(s):\n    d = {}\n    for ch in s:\n        d[ch] = d.get(ch, 0) + 1\n    for ch in s:\n        if d[ch] == 1:\n            return ch\n    return ""`},
+{t:"Odd-repeating characters", lv:2, fn:"odd_rep", s:"Return characters that appear an odd number of times, in first-seen order. (Asked in a ZLabs written round.)", ex:'odd_rep("datastructure") -> "dtsce"', hint:"Count, then keep chars with odd count once each.", tests:[[["datastructure"],"dtsce"],[["aab"],"b"]], sol:`def odd_rep(s):\n    d = {}\n    for ch in s:\n        d[ch] = d.get(ch, 0) + 1\n    out = ""\n    seen = set()\n    for ch in s:\n        if d[ch] % 2 == 1 and ch not in seen:\n            out += ch\n            seen.add(ch)\n    return out`},
+{t:"Reverse words", lv:2, fn:"rev_words", s:"Reverse the order of words. Single spaces.", ex:'rev_words("the sky is blue") -> "blue is sky the"', hint:"Split manually or use split, then build backwards.", tests:[[["the sky is blue"],"blue is sky the"],[["a"],"a"]], sol:`def rev_words(s):\n    words = s.split(" ")\n    out = ""\n    i = len(words) - 1\n    while i >= 0:\n        out += words[i]\n        if i > 0:\n            out += " "\n        i -= 1\n    return out`},
+{t:"Balanced parentheses", lv:2, fn:"balanced", s:"Return True if every ( [ { is closed in order.", ex:'balanced("{[()]}") -> True', hint:"Stack. Push openers, pop and match closers.", tests:[[["{[()]}"],true],[["([)]"],false],[["(("],false],[[""],true]], sol:`def balanced(s):\n    st = []\n    pair = {")": "(", "]": "[", "}": "{"}\n    for ch in s:\n        if ch in "([{":\n            st.append(ch)\n        elif ch in pair:\n            if not st or st[-1] != pair[ch]:\n                return False\n            st.pop()\n    return len(st) == 0`},
+{t:"Remove unbalanced parentheses", lv:3, fn:"remove_unbal", s:"Remove the minimum parentheses so the rest is balanced (only round brackets). Keep letters.", ex:'remove_unbal("((ab)") -> "(ab)"', hint:"Mark indices of unmatched ( and ) using a stack, then rebuild without them.", tests:[[["((ab)"],"(ab)"],[["a)b(c)"],"ab(c)"],[["(())"],"(())"]], sol:`def remove_unbal(s):\n    st = []\n    bad = set()\n    for i, ch in enumerate(s):\n        if ch == "(":\n            st.append(i)\n        elif ch == ")":\n            if st:\n                st.pop()\n            else:\n                bad.add(i)\n    bad.update(st)\n    return "".join(ch for i, ch in enumerate(s) if i not in bad)`},
+{t:"Alternate sort", lv:2, fn:"alt_sort", s:"Return list as max, min, second max, second min, ...", ex:"alt_sort([1,2,3,4,5]) -> [5,1,4,2,3]", hint:"Sort by hand (bubble), then take from both ends.", tests:[[[[1,2,3,4,5]],[5,1,4,2,3]],[[[4,1]],[4,1]]], sol:`def alt_sort(a):\n    a = list(a)\n    n = len(a)\n    for i in range(n):\n        for j in range(n - 1 - i):\n            if a[j] > a[j + 1]:\n                a[j], a[j + 1] = a[j + 1], a[j]\n    out = []\n    i, j = 0, n - 1\n    while i <= j:\n        out.append(a[j])\n        if i != j:\n            out.append(a[i])\n        i += 1\n        j -= 1\n    return out`},
+{t:"Merge sorted arrays, no duplicates", lv:2, fn:"merge_uniq", s:"Merge two sorted lists into one sorted list without duplicates.", ex:"merge_uniq([1,2,4],[2,3,4]) -> [1,2,3,4]", hint:"Two pointers; skip a value equal to the last pushed.", tests:[[[[1,2,4],[2,3,4]],[1,2,3,4]],[[[],[1,1]],[1]]], sol:`def merge_uniq(a, b):\n    i = j = 0\n    out = []\n    def push(v):\n        if not out or out[-1] != v:\n            out.append(v)\n    while i < len(a) and j < len(b):\n        if a[i] < b[j]:\n            push(a[i]); i += 1\n        else:\n            push(b[j]); j += 1\n    while i < len(a):\n        push(a[i]); i += 1\n    while j < len(b):\n        push(b[j]); j += 1\n    return out`},
+{t:"Second largest", lv:1, fn:"second_largest", s:"Return the second largest distinct value, or None.", ex:"second_largest([3,5,5,1]) -> 3", hint:"Track first and second in one pass.", tests:[[[[3,5,5,1]],3],[[[1]],null]], sol:`def second_largest(a):\n    first = second = None\n    for v in a:\n        if first is None or v > first:\n            second = first\n            first = v\n        elif v != first and (second is None or v > second):\n            second = v\n    return second`},
+{t:"Rotate array right by k", lv:2, fn:"rotate", s:"Rotate right by k without slicing.", ex:"rotate([1,2,3,4,5],2) -> [4,5,1,2,3]", hint:"New index (i+k)%n.", tests:[[[[1,2,3,4,5],2],[4,5,1,2,3]],[[[1,2],3],[2,1]]], sol:`def rotate(a, k):\n    n = len(a)\n    out = [0] * n\n    for i in range(n):\n        out[(i + k) % n] = a[i]\n    return out`},
+{t:"Spiral matrix", lv:3, fn:"spiral", s:"Return elements of a matrix in clockwise spiral order.", ex:"spiral([[1,2,3],[4,5,6],[7,8,9]]) -> [1,2,3,6,9,8,7,4,5]", hint:"Four boundaries: top, bottom, left, right. Shrink after each side.", tests:[[[[[1,2,3],[4,5,6],[7,8,9]]],[1,2,3,6,9,8,7,4,5]],[[[[1,2],[3,4]]],[1,2,4,3]]], sol:`def spiral(m):\n    out = []\n    if not m:\n        return out\n    top, bot = 0, len(m) - 1\n    left, right = 0, len(m[0]) - 1\n    while top <= bot and left <= right:\n        for c in range(left, right + 1):\n            out.append(m[top][c])\n        top += 1\n        for r in range(top, bot + 1):\n            out.append(m[r][right])\n        right -= 1\n        if top <= bot:\n            for c in range(right, left - 1, -1):\n                out.append(m[bot][c])\n            bot -= 1\n        if left <= right:\n            for r in range(bot, top - 1, -1):\n                out.append(m[r][left])\n            left += 1\n    return out`},
+{t:"Rotate matrix 90° clockwise", lv:3, fn:"rot90", s:"Return the matrix rotated 90° clockwise.", ex:"rot90([[1,2],[3,4]]) -> [[3,1],[4,2]]", hint:"new[c][n-1-r] = old[r][c].", tests:[[[[[1,2],[3,4]]],[[3,1],[4,2]]]], sol:`def rot90(m):\n    n = len(m)\n    out = [[0] * n for _ in range(n)]\n    for r in range(n):\n        for c in range(n):\n            out[c][n - 1 - r] = m[r][c]\n    return out`},
+{t:"Transpose", lv:1, fn:"transpose", s:"Return the transpose of an r×c matrix.", ex:"transpose([[1,2,3],[4,5,6]]) -> [[1,4],[2,5],[3,6]]", hint:"out[c][r] = m[r][c].", tests:[[[[[1,2,3],[4,5,6]]],[[1,4],[2,5],[3,6]]]], sol:`def transpose(m):\n    r, c = len(m), len(m[0])\n    out = [[0] * r for _ in range(c)]\n    for i in range(r):\n        for j in range(c):\n            out[j][i] = m[i][j]\n    return out`},
+{t:"Pattern in matrix", lv:3, fn:"has_pattern", s:"Return True if small matrix p appears inside big matrix m (exact sub-block). Asked in a ZLabs written round.", ex:"has_pattern([[1,2],[3,4]],[[2],[4]]) -> True", hint:"Try every top-left start, compare block.", tests:[[[[[1,2],[3,4]],[[2],[4]]],true],[[[[1,2],[3,4]],[[4,3]]],false]], sol:`def has_pattern(m, p):\n    R, C = len(m), len(m[0])\n    r, c = len(p), len(p[0])\n    for i in range(R - r + 1):\n        for j in range(C - c + 1):\n            ok = True\n            for x in range(r):\n                for y in range(c):\n                    if m[i + x][j + y] != p[x][y]:\n                        ok = False\n                        break\n                if not ok:\n                    break\n            if ok:\n                return True\n    return False`},
+{t:"Decode string 3[a2[bc]]", lv:3, fn:"decode", s:"Decode k[encoded] with nesting. Asked in Zoho 2025 round 2.", ex:'decode("3[a2[bc]]") -> "abcbcabcbcabcbc"', hint:"Stack of (prev_string, repeat_count). On ']' pop and multiply.", tests:[[["3[a2[bc]]"],"abcbcabcbcabcbc"],[["2[ab]c"],"ababc"]], sol:`def decode(s):\n    st = []\n    cur = ""\n    num = 0\n    for ch in s:\n        if ch.isdigit():\n            num = num * 10 + int(ch)\n        elif ch == "[":\n            st.append((cur, num))\n            cur, num = "", 0\n        elif ch == "]":\n            prev, k = st.pop()\n            cur = prev + cur * k\n        else:\n            cur += ch\n    return cur`},
+{t:"Group anagrams", lv:2, fn:"group_anagrams", s:"Group words that are anagrams. Return list of groups in first-seen order, each group in input order. Asked in Zoho 2024 round 2.", ex:'group_anagrams(["eat","tea","tan","ate","nat"]) -> [["eat","tea","ate"],["tan","nat"]]', hint:"Key = sorted letters string.", tests:[[[["eat","tea","tan","ate","nat"]],[["eat","tea","ate"],["tan","nat"]]]], sol:`def group_anagrams(words):\n    d = {}\n    order = []\n    for w in words:\n        key = "".join(sorted(w))\n        if key not in d:\n            d[key] = []\n            order.append(key)\n        d[key].append(w)\n    return [d[k] for k in order]`},
+{t:"Longest palindromic substring", lv:3, fn:"longest_pal", s:"Return the longest palindromic substring (first one if tie).", ex:'longest_pal("babad") -> "bab"', hint:"Expand around every centre (odd and even).", tests:[[["babad"],"bab"],[["cbbd"],"bb"],[["a"],"a"]], sol:`def longest_pal(s):\n    best = ""\n    for i in range(len(s)):\n        for l, r in ((i, i), (i, i + 1)):\n            while l >= 0 and r < len(s) and s[l] == s[r]:\n                l -= 1\n                r += 1\n            cand = s[l + 1:r]\n            if len(cand) > len(best):\n                best = cand\n    return best`},
+{t:"Max profit, one buy one sell", lv:2, fn:"max_profit", s:"Given daily prices, return max profit from one buy then one sell. 0 if none.", ex:"max_profit([7,1,5,3,6,4]) -> 5", hint:"Track min so far and best diff.", tests:[[[[7,1,5,3,6,4]],5],[[[5,4,3]],0]], sol:`def max_profit(p):\n    lo = p[0]\n    best = 0\n    for v in p[1:]:\n        if v - lo > best:\n            best = v - lo\n        if v < lo:\n            lo = v\n    return best`},
+{t:"Max of window minimums", lv:3, fn:"max_of_mins", s:"For every contiguous window of length k, take its minimum; return the largest of those. (PrepInsta Zoho advanced set.)", ex:"max_of_mins([1,3,2,5,4],2) -> 4", hint:"Brute force is fine for round 2; explain the deque optimisation if asked.", tests:[[[[1,3,2,5,4],2],4],[[[5,1,5],1],5]], sol:`def max_of_mins(a, k):\n    best = None\n    for i in range(len(a) - k + 1):\n        m = a[i]\n        for j in range(i, i + k):\n            if a[j] < m:\n                m = a[j]\n        if best is None or m > best:\n            best = m\n    return best`},
+{t:"Minimum starting capital", lv:2, fn:"min_capital", s:"Sequence of wins/losses (positive/negative ints). Return the minimum starting coins so the balance never drops below 0.", ex:"min_capital([-5,3,-4]) -> 6", hint:"Track running sum; answer is -(lowest running sum), at least 0.", tests:[[[[-5,3,-4]],6],[[[2,3]],0]], sol:`def min_capital(g):\n    run = 0\n    low = 0\n    for v in g:\n        run += v\n        if run < low:\n            low = run\n    return -low`},
+{t:"Numbers using only 3 and 4", lv:2, fn:"three_four", s:"Return the first n numbers made only of digits 3 and 4 in increasing order.", ex:"three_four(6) -> [3,4,33,34,43,44]", hint:"BFS: start with 3,4; append '3' and '4' to each.", tests:[[[6],[3,4,33,34,43,44]]], sol:`def three_four(n):\n    out = []\n    q = ["3", "4"]\n    while len(out) < n:\n        s = q.pop(0)\n        out.append(int(s))\n        q.append(s + "3")\n        q.append(s + "4")\n    return out`},
+{t:"Binary search", lv:1, fn:"bsearch", s:"Return index of target in sorted list, or -1.", ex:"bsearch([1,3,5,7],5) -> 2", hint:"lo, hi, mid.", tests:[[[[1,3,5,7],5],2],[[[1,3,5,7],4],-1]], sol:`def bsearch(a, t):\n    lo, hi = 0, len(a) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if a[mid] == t:\n            return mid\n        if a[mid] < t:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1`},
+{t:"Bubble sort", lv:1, fn:"bsort", s:"Sort ascending without sorted()/sort().", ex:"bsort([3,1,2]) -> [1,2,3]", hint:"Swap adjacent pairs, n passes.", tests:[[[[3,1,2]],[1,2,3]],[[[]],[]]], sol:`def bsort(a):\n    a = list(a)\n    n = len(a)\n    for i in range(n):\n        for j in range(n - 1 - i):\n            if a[j] > a[j + 1]:\n                a[j], a[j + 1] = a[j + 1], a[j]\n    return a`},
+{t:"Two sum", lv:1, fn:"two_sum", s:"Return indices [i,j] (i<j) of two numbers adding to target, or [].", ex:"two_sum([2,7,11,15],9) -> [0,1]", hint:"Dict of value to index.", tests:[[[[2,7,11,15],9],[0,1]],[[[1,2],5],[]]], sol:`def two_sum(a, t):\n    seen = {}\n    for i, v in enumerate(a):\n        if t - v in seen:\n            return [seen[t - v], i]\n        seen[v] = i\n    return []`},
+{t:"Sum of digits until single digit", lv:1, fn:"digital_root", s:"Repeatedly sum digits until one digit remains.", ex:"digital_root(9875) -> 2", hint:"Loop while n >= 10.", tests:[[[9875],2],[[0],0]], sol:`def digital_root(n):\n    while n >= 10:\n        s = 0\n        while n > 0:\n            s += n % 10\n            n //= 10\n        n = s\n    return n`},
+{t:"Armstrong number", lv:1, fn:"armstrong", s:"True if sum of digits^len equals n.", ex:"armstrong(153) -> True", hint:"Count digits first.", tests:[[[153],true],[[10],false]], sol:`def armstrong(n):\n    digits = str(n)\n    k = len(digits)\n    total = 0\n    for d in digits:\n        total += int(d) ** k\n    return total == n`},
+{t:"Sort 0s 1s 2s", lv:2, fn:"sort012", s:"Sort a list containing only 0,1,2 without sorted().", ex:"sort012([2,0,1,2,0]) -> [0,0,1,2,2]", hint:"Count each, rebuild. Or Dutch flag.", tests:[[[[2,0,1,2,0]],[0,0,1,2,2]]], sol:`def sort012(a):\n    c = [0, 0, 0]\n    for v in a:\n        c[v] += 1\n    return [0] * c[0] + [1] * c[1] + [2] * c[2]`},
+{t:"Move zeros to end", lv:1, fn:"move_zeros", s:"Keep order of non-zeros, zeros at end.", ex:"move_zeros([0,1,0,3]) -> [1,3,0,0]", hint:"Write pointer.", tests:[[[[0,1,0,3]],[1,3,0,0]]], sol:`def move_zeros(a):\n    out = [v for v in a if v != 0]\n    return out + [0] * (len(a) - len(out))`},
+{t:"Kadane: max subarray sum", lv:2, fn:"max_sub", s:"Return the maximum sum of any contiguous subarray.", ex:"max_sub([-2,1,-3,4,-1,2,1,-5,4]) -> 6", hint:"cur = max(v, cur+v).", tests:[[[[-2,1,-3,4,-1,2,1,-5,4]],6],[[[-3,-1]],-1]], sol:`def max_sub(a):\n    cur = best = a[0]\n    for v in a[1:]:\n        cur = v if v > cur + v else cur + v\n        if cur > best:\n            best = cur\n    return best`},
+{t:"Topological order (Kahn)", lv:3, fn:"topo", s:"Given n nodes 0..n-1 and edges [u,v] meaning u before v, return one valid order (smallest node first when tied). Asked in Zoho 2025 round 2.", ex:"topo(3,[[0,1],[1,2]]) -> [0,1,2]", hint:"Indegree count, queue of zero-indegree nodes, pick the smallest each time.", tests:[[[3,[[0,1],[1,2]]],[0,1,2]],[[3,[[2,0]]],[1,2,0]]], sol:`def topo(n, edges):\n    adj = [[] for _ in range(n)]\n    indeg = [0] * n\n    for u, v in edges:\n        adj[u].append(v)\n        indeg[v] += 1\n    out = []\n    while len(out) < n:\n        pick = -1\n        for i in range(n):\n            if indeg[i] == 0 and i not in out:\n                pick = i\n                break\n        if pick == -1:\n            break\n        out.append(pick)\n        indeg[pick] = -1\n        for v in adj[pick]:\n            indeg[v] -= 1\n    return out`},
+{t:"Greater on right side", lv:2, fn:"greater_right", s:"Replace each element with the greatest element to its right; last becomes -1. (Repo Q1.)", ex:"greater_right([16,17,4,3,5,2]) -> [17,5,5,5,2,-1]", hint:"Scan from the right, keep max so far.", tests:[[[[16,17,4,3,5,2]],[17,5,5,5,2,-1]],[[[1]],[-1]]], sol:`def greater_right(a):\n    out = [0] * len(a)\n    mx = -1\n    for i in range(len(a) - 1, -1, -1):\n        out[i] = mx\n        if a[i] > mx:\n            mx = a[i]\n    return out`},
+{t:"Equilibrium index", lv:2, fn:"equilibrium", s:"Return the index where left sum equals right sum, or -1. (Repo Q3.)", ex:"equilibrium([-7,1,5,2,-4,3,0]) -> 3", hint:"total - left - a[i] == left.", tests:[[[[-7,1,5,2,-4,3,0]],3],[[[1,2,3]],-1]], sol:`def equilibrium(a):\n    total = sum(a)\n    left = 0\n    for i, v in enumerate(a):\n        if left == total - left - v:\n            return i\n        left += v\n    return -1`},
+{t:"Zig-zag matrix", lv:3, fn:"zigzag", s:"Print the matrix along anti-diagonals, alternating direction. (Repo Q5.)", ex:"zigzag([[1,2,3],[4,5,6],[7,8,9]]) -> [1,2,4,7,5,3,6,8,9]", hint:"Group cells by r+c; reverse every odd group.", tests:[[[[[1,2,3],[4,5,6],[7,8,9]]],[1,2,4,7,5,3,6,8,9]]], sol:`def zigzag(m):\n    R, C = len(m), len(m[0])\n    out = []\n    for d in range(R + C - 1):\n        cells = []\n        for r in range(R):\n            c = d - r\n            if 0 <= c < C:\n                cells.append(m[r][c])\n        if d % 2 == 0:\n            cells.reverse()\n        out.extend(cells)\n    return out`},
+{t:"Compare version numbers", lv:2, fn:"compare_version", s:"Return 'upgraded', 'downgraded' or 'not changed' comparing v1 to v2 like 4.8.2 vs 4.8.4. (Repo Q7.)", ex:'compare_version("4.8.2","4.8.4") -> "upgraded"', hint:"Split on '.', compare ints part by part, pad with 0.", tests:[[["4.8.2","4.8.4"],"upgraded"],[["4.0.2","3.9"],"downgraded"],[["1.0","1.0.0"],"not changed"]], sol:`def compare_version(v1, v2):\n    a = [int(x) for x in v1.split(".")]\n    b = [int(x) for x in v2.split(".")]\n    while len(a) < len(b): a.append(0)\n    while len(b) < len(a): b.append(0)\n    for x, y in zip(a, b):\n        if y > x: return "upgraded"\n        if y < x: return "downgraded"\n    return "not changed"`},
+{t:"Subsets with given sum", lv:3, fn:"subsets_sum", s:"Return all subsets (as lists, in index order) whose sum equals target. (Repo Q8/Q19.)", ex:"subsets_sum([1,2,3],3) -> [[1,2],[3]]", hint:"Recursion: include or exclude each element.", tests:[[[[1,2,3],3],[[1,2],[3]]],[[[2],5],[]]], sol:`def subsets_sum(a, t):\n    out = []\n    def go(i, cur, s):\n        if i == len(a):\n            if s == t and cur:\n                out.append(list(cur))\n            return\n        cur.append(a[i]); go(i + 1, cur, s + a[i]); cur.pop()\n        go(i + 1, cur, s)\n    go(0, [], 0)\n    return out`},
+{t:"Chocolates and wrappers", lv:1, fn:"chocolates", s:"With money m, price p, and w wrappers exchangeable for one chocolate, return [total eaten, wrappers left]. (Repo Q10.)", ex:"chocolates(15,1,3) -> [22,1]", hint:"Loop while wrappers >= w.", tests:[[[15,1,3],[22,1]],[[10,2,5],[6,1]]], sol:`def chocolates(m, p, w):\n    eaten = m // p\n    wr = eaten\n    while wr >= w:\n        new = wr // w\n        eaten += new\n        wr = wr % w + new\n    return [eaten, wr]`},
+{t:"Word with odd letters (pattern)", lv:2, fn:"odd_word", s:"For an odd-length word, return rows forming an X: row i has word[i] at column i and word[n-1-i] at column n-1-i, spaces elsewhere. (Repo Q13.)", ex:'odd_word("ABC") -> ["A C"," B ","A C"]', hint:"Two indices per row; use a list of spaces.", tests:[[["ABC"],["A C"," B ","A C"]],[["PROGRAM"],["P     M"," R   A ","  O R  ","   G   ","  O R  "," R   A ","P     M"]]], sol:`def odd_word(w):\n    n = len(w)\n    rows = []\n    for i in range(n):\n        row = [" "] * n\n        row[i] = w[i]\n        row[n - 1 - i] = w[n - 1 - i]\n        rows.append("".join(row))\n    return rows`},
+{t:"Next greater element", lv:2, fn:"next_greater", s:"For each element, the first greater element to its right, else -1. (Repo Q50.)", ex:"next_greater([4,5,2,25]) -> [5,25,25,-1]", hint:"Brute force is fine; stack for O(n).", tests:[[[[4,5,2,25]],[5,25,25,-1]],[[[13,7,6,12]],[-1,12,12,-1]]], sol:`def next_greater(a):\n    out = [-1] * len(a)\n    st = []\n    for i, v in enumerate(a):\n        while st and a[st[-1]] < v:\n            out[st.pop()] = v\n        st.append(i)\n    return out`},
+{t:"Reverse only vowels", lv:1, fn:"rev_vowels", s:"Reverse the vowels in a string, leaving other characters in place. (Repo Q90.)", ex:'rev_vowels("hello") -> "holle"', hint:"Two pointers that skip non-vowels.", tests:[[["hello"],"holle"],[["zoho"],"zoho"],[["aA"],"Aa"]], sol:`def rev_vowels(s):\n    s = list(s)\n    i, j = 0, len(s) - 1\n    V = "aeiouAEIOU"\n    while i < j:\n        if s[i] not in V: i += 1\n        elif s[j] not in V: j -= 1\n        else:\n            s[i], s[j] = s[j], s[i]\n            i += 1; j -= 1\n    return "".join(s)`},
+{t:"Odd ascending, even descending", lv:2, fn:"odd_even_sort", s:"Sort odd numbers ascending and even numbers descending, keeping odd positions for odds and even positions for evens... simpler version asked: return odds ascending followed by evens descending. (Repo Q61.)", ex:"odd_even_sort([5,2,8,1,3,4]) -> [1,3,5,8,4,2]", hint:"Split, sort by hand, concat.", tests:[[[[5,2,8,1,3,4]],[1,3,5,8,4,2]]], sol:`def odd_even_sort(a):\n    odds = [v for v in a if v % 2]\n    evens = [v for v in a if v % 2 == 0]\n    for arr, desc in ((odds, False), (evens, True)):\n        n = len(arr)\n        for i in range(n):\n            for j in range(n - 1 - i):\n                if (arr[j] > arr[j + 1]) != desc:\n                    arr[j], arr[j + 1] = arr[j + 1], arr[j]\n    return odds + evens`},
+{t:"Top three repeated", lv:2, fn:"top3", s:"Return the three most frequent numbers, most frequent first (tie: smaller number first). (Repo Q53.)", ex:"top3([3,4,2,3,16,3,15,16,15,15,16,2,3]) -> [3,15,16]", hint:"Count with a dict, then sort by (-count, value).", tests:[[[[3,4,2,3,16,3,15,16,15,15,16,2,3]],[3,15,16]]], sol:`def top3(a):\n    d = {}\n    for v in a:\n        d[v] = d.get(v, 0) + 1\n    items = sorted(d.items(), key=lambda kv: (-kv[1], kv[0]))\n    return [k for k, _ in items[:3]]`},
+{t:"Twisted prime", lv:1, fn:"twisted_prime", s:"True if n is prime and its reverse is also prime. (Repo Q43.)", ex:"twisted_prime(13) -> True", hint:"Reuse is_prime.", tests:[[[13],true],[[23],false],[[2],true]], sol:`def twisted_prime(n):\n    def ip(x):\n        if x < 2: return False\n        i = 2\n        while i * i <= x:\n            if x % i == 0: return False\n            i += 1\n        return True\n    r = 0\n    m = n\n    while m:\n        r = r * 10 + m % 10\n        m //= 10\n    return ip(n) and ip(r)`},
+{t:"Pangram check", lv:1, fn:"pangram", s:"True if the sentence uses every letter a-z. (Repo Q31.)", ex:'pangram("The quick brown fox jumps over the lazy dog") -> True', hint:"Set of lowercase letters, size 26.", tests:[[["The quick brown fox jumps over the lazy dog"],true],[["hello"],false]], sol:`def pangram(s):\n    seen = set()\n    for ch in s.lower():\n        if "a" <= ch <= "z":\n            seen.add(ch)\n    return len(seen) == 26`},
+{t:"Number of islands", lv:3, fn:"islands", s:"Grid of 1 (land) and 0 (water). Count connected land groups (4-directional). (Repo Q18.)", ex:"islands([[1,1,0],[0,0,1],[1,0,1]]) -> 3", hint:"DFS/flood fill marking visited.", tests:[[[[[1,1,0],[0,0,1],[1,0,1]]],3],[[[[0]]],0]], sol:`def islands(g):\n    R, C = len(g), len(g[0])\n    seen = [[False] * C for _ in range(R)]\n    def fill(r, c):\n        st = [(r, c)]\n        while st:\n            x, y = st.pop()\n            if 0 <= x < R and 0 <= y < C and g[x][y] == 1 and not seen[x][y]:\n                seen[x][y] = True\n                st += [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]\n    n = 0\n    for r in range(R):\n        for c in range(C):\n            if g[r][c] == 1 and not seen[r][c]:\n                n += 1\n                fill(r, c)\n    return n`},
+{t:"Reverse string keeping special chars in place", lv:2, fn:"rev_keep", s:"Reverse only the letters; non-letters stay at their index. (Repo Q28/Q105.)", ex:'rev_keep("a,b$c") -> "c,b$a"', hint:"Two pointers that skip non-letters.", tests:[[["a,b$c"],"c,b$a"],[["Ab,c,de!"],"ed,c,bA!"]], sol:`def rev_keep(s):\n    s = list(s)\n    i, j = 0, len(s) - 1\n    while i < j:\n        if not s[i].isalpha(): i += 1\n        elif not s[j].isalpha(): j -= 1\n        else:\n            s[i], s[j] = s[j], s[i]\n            i += 1; j -= 1\n    return "".join(s)`},
+{t:"Largest number from array", lv:3, fn:"largest_number", s:"Arrange numbers to form the largest possible number, as a string. (Repo Q67.)", ex:'largest_number([3,30,34,5,9]) -> "9534330"', hint:"Custom compare: a+b vs b+a as strings.", tests:[[[[3,30,34,5,9]],"9534330"],[[[10,2]],"210"]], sol:`def largest_number(a):\n    s = [str(v) for v in a]\n    n = len(s)\n    for i in range(n):\n        for j in range(n - 1 - i):\n            if s[j] + s[j+1] < s[j+1] + s[j]:\n                s[j], s[j+1] = s[j+1], s[j]\n    return "".join(s)`},
+{t:"Word break", lv:3, fn:"word_break", s:"True if the string can be split into words from the dictionary. (Repo Q47.)", ex:'word_break("ilike",["i","like"]) -> True', hint:"dp[i] = any dp[j] and s[j:i] in dict.", tests:[[["ilike",["i","like"]],true],[["ilikesam",["i","like","sung"]],false]], sol:`def word_break(s, words):\n    W = set(words)\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in W:\n                dp[i] = True\n                break\n    return dp[len(s)]`},
+];
+// ---------- ROUND 3: BUILD BRIEFS ----------
+const BUILD = [
+{t:"Railway ticket reservation", mods:["Book ticket: name, age, berth preference (L/M/U). Confirmed berths: 63 total. When full, RAC (18), then waiting list (10). Lower berth priority for age > 60 and women with children.","Cancel ticket: free the berth, promote first RAC to confirmed, first WL to RAC.","Print booked tickets with berth allotment.","Print available berth counts (confirmed, RAC, WL).","Reject booking when WL is full with a clear message."], change:"Change request after 2 h: add a 'tatkal' quota of 5 berths that can only be booked after a flag is set, and report tatkal separately."},
+{t:"Call taxi booking", mods:["6 taxis, points A to F, 15 km apart. Each taxi starts at A. Customer gives pickup, drop, pickup time.","Assign the nearest free taxi; tie-break by lower earnings, then lower id.","Fare: 100 for first 5 km, 10 per km after. Taxi must be free at pickup time (travel time 1 min per km, 60 min per point).","Update taxi position and earnings after each ride.","Reject with a message if no taxi is available.","Report: each taxi's booking history and total earnings."], change:"Change request: taxi must return to base A if idle for 2 hours; add a surge of 1.5× between 6 and 9 PM."},
+{t:"Banking system", mods:["Create account: name, type (savings/current), initial deposit, unique account number.","Deposit and withdraw with validation (no overdraft on savings; current allowed up to 5000 overdraft).","Transfer between accounts, atomically.","Transaction history per account with timestamp and running balance.","Monthly interest for savings at 4%.","Close account only if balance is zero."], change:"Change request: add a daily withdrawal limit of 25000 and a mini statement of the last 5 transactions."},
+{t:"Inventory manager", mods:["Add product: id, name, price, quantity, category.","Sell: reduce stock, refuse if insufficient, record the sale.","Restock and update price.","Low-stock report (quantity below threshold).","Sales report by category and by day."], change:"Change request: add expiry dates and a report of items expiring within 7 days."},
+{t:"Console social media", mods:["Sign up and login (username, password, stored in a dict).","Follow and unfollow users.","Post text; view own posts and feed of followed users, newest first.","Mutual friends between two users.","Search users by name prefix."], change:"Change request: add likes on posts and a 'top 3 most-liked posts' report."},
+{t:"Library management", mods:["Add book: id, title, author, copies.","Register member.","Issue book (max 3 per member, only if copies available); return book.","Fine: 2 per day past 14 days.","Report: books issued per member, overdue list."], change:"Change request: reservation queue when copies are 0; notify on return."},
+{t:"Hotel room booking", mods:["Rooms with type (single/double/suite), price, availability by date.","Book for a date range; refuse if any date is taken.","Cancel booking, restore availability.","Bill with nights × price and 12% tax.","Occupancy report per date."], change:"Change request: seasonal pricing (weekend +20%) and a loyalty discount after 3 bookings."},
+{t:"Elevator system", mods:["Building of N floors, one lift starting at floor 0.","Requests come with (from, to). Queue them.","Move floor by floor, printing each stop, picking up and dropping in direction order (SCAN).","Capacity 8; extra riders wait.","Report total floors travelled."], change:"Change request: two lifts; assign the one that reaches the caller sooner."},
+{t:"Food delivery", mods:["Restaurants with menus; customers place orders with multiple items.","Assign nearest available delivery agent (agents at coordinates).","Order status: placed, preparing, out for delivery, delivered.","Bill with delivery fee based on distance.","Report: orders per restaurant, agent earnings."], change:"Change request: cancellation allowed only before 'out for delivery', with 10% fee."},
+{t:"Family tree", mods:["Add person with gender; add parent-child relation.","Queries: parents, children, siblings, grandchildren.","Cousins (children of parents' siblings).","Count of descendants.","Validate: no cycles, a child has at most two parents."], change:"Change request: add spouse relation and 'in-laws' query."},
+];
+// ---------- ROUND 4: NLP / ML FLASHCARDS ----------
+const NLP = [
+["Tokenisation","Splitting text into units (words, subwords). Modern models use subword tokenisers (BPE, WordPiece) so rare words become pieces. Your RAG assistant chunks text before embedding; chunk size is a tokenisation decision."],
+["Stop words","High-frequency words (the, is) removed in classic pipelines because they carry little signal. Transformers keep them; attention learns what matters."],
+["Stemming vs lemmatisation","Stemming chops suffixes by rule (running → run, studies → studi). Lemmatisation maps to the dictionary form using vocabulary and POS (studies → study). Lemmatisation is slower but cleaner."],
+["Bag of words","Represent a document as word counts, order ignored. Simple, sparse, no meaning of similarity between words."],
+["TF-IDF","Term frequency × inverse document frequency. Up-weights words frequent in this document but rare across the corpus. Still a strong baseline for classification."],
+["Word embeddings","Dense vectors where similar words are close. word2vec learns them by predicting context words. all-MiniLM-L6-v2, used in your RAG project, produces sentence embeddings the same way at sentence level."],
+["Cosine similarity","Angle-based similarity between vectors, 1 = same direction. Used by your vector store to retrieve the chunks closest to the question."],
+["Attention","Each token computes a weighted sum over all other tokens; the weights come from query·key dot products. Lets the model relate 'it' to the noun it refers to regardless of distance."],
+["Transformer","Stacked layers of self-attention plus feed-forward networks with residuals and layer norm. No recurrence, so it parallelises on GPUs."],
+["BERT vs GPT","BERT is an encoder trained with masked-word prediction; good for classification and NER. GPT is a decoder trained to predict the next token; good for generation. Your RAG answerer is a GPT-style model."],
+["Pretraining vs fine-tuning","Pretrain on huge general text; fine-tune on a small labelled task set. Fine-tuning changes weights; prompting does not."],
+["Inference","Running a trained model on new input. The job post is about making this fast and reliable: latency, throughput, GPU memory."],
+["Latency vs throughput","Latency: time for one request. Throughput: requests per second. Batching raises throughput but can raise latency. Say how you would measure both: p50/p95 latency, requests per second under load."],
+["Quantisation","Store weights in fewer bits (float16, int8, int4). Smaller memory, faster inference, small accuracy loss. Ollama models you used are quantised GGUF files."],
+["GPU utilisation","Percentage of time the GPU is busy. Low utilisation with high latency usually means the CPU side (tokenisation, data loading) is the bottleneck."],
+["Data drift","Input distribution changes after deployment, so model quality drops without any code change. Monitor input statistics and prediction distributions. Your microbiome batch-artefact finding is the same idea: the data changed, not the biology."],
+["Overfitting","Model memorises training data, fails on new data. Detect with a held-out validation set; fix with more data, regularisation, simpler model. LASSO in your Cox model is regularisation."],
+["Train / validation / test","Train to fit, validation to choose hyperparameters, test once for the final number. Nested CV in your omics work is the rigorous version."],
+["Precision, recall, F1","Precision: of predicted positives, how many are right. Recall: of real positives, how many found. F1 is their harmonic mean. Use when classes are imbalanced."],
+["Confusion matrix","2×2 table of true/false positives/negatives. Every metric comes from it."],
+["Named entity recognition","Tag spans as PERSON, ORG, DATE and so on. Built as token classification: fine-tune BERT with BIO labels. This is likely what ZLabs' 'extract fields from documents' task is."],
+["Text classification pipeline","Clean → tokenise → vectorise (TF-IDF or embeddings) → classifier (logistic regression or fine-tuned BERT) → evaluate with F1 on a held-out set."],
+["RAG","Retrieval-augmented generation: embed the question, retrieve top-k chunks by similarity, put them in the prompt, generate a grounded answer with citations. Reduces hallucination and lets the model use private documents."],
+["Vector store","Index of embeddings supporting nearest-neighbour search (FAISS, Chroma). Approximate search (HNSW) trades a little recall for speed."],
+["Hallucination","Model produces fluent but false content. Mitigate with retrieval, citations, lower temperature, and evaluation against ground truth."],
+["Model file","Serialised weights plus config (safetensors, .pt, GGUF). Deployment means loading it into a server that exposes an API."],
+["Batching","Grouping requests so the GPU processes them together. Dynamic batching is the main lever for throughput in serving frameworks like vLLM."],
+["Monitoring in production","Track latency percentiles, error rate, GPU memory and utilisation, input drift, output quality samples. Alert on thresholds."],
+["Docker","Package code, dependencies and model into an image so it runs identically anywhere. Say honestly if you have not used it, then describe what it solves."],
+["Gradient descent","Update weights in the direction that reduces loss. Learning rate controls step size. Adam adapts it per weight."],
+["Loss functions","Cross-entropy for classification, mean squared error for regression. Cox partial likelihood for survival, which you have used."],
+["Supervised vs unsupervised","Supervised uses labels (classification). Unsupervised finds structure (clustering, WGCNA modules in your work are unsupervised)."],
+];
+// ---------- ROUND 4/5: INTERVIEW ----------
+const INTERVIEW = {
+projects:[
+"Walk me through your RAG assistant end to end. What happens between the user typing a question and the answer appearing?",
+"Why sentence-transformers all-MiniLM-L6-v2 and not a bigger model? What did you trade off?",
+"How did you choose chunk size? What breaks if chunks are too small or too large?",
+"What does 'provider-agnostic LLM layer' mean in your code? How would you add a new provider?",
+"How would you deploy your RAG assistant so 100 people could use it at once? What would you monitor?",
+"What broke while building the RAG assistant and how did you fix it?",
+"Explain the gastric cancer pipeline as a data engineering problem: sources, cleaning, joins, outputs.",
+"What is nested cross-validation and why did you need it?",
+"You found the microbiome signal was a batch artefact. How did you detect that? How is this like data drift?",
+"Why LASSO? What would happen without regularisation on 20,000 genes?",
+"In the KRAS project, what was the positive control for and what would the result mean without it?",
+"What did you actually build in the DuoGrow and Unalone projects, line by line? What did others build?",
+],
+tech:[
+"Four pillars of OOP with one example each from your own code.",
+"Difference between a list and a linked list. When is each better?",
+"What is a hash map? Average and worst-case lookup time. What is a collision?",
+"Stack vs queue with a real use in your projects.",
+"Explain Big-O of: linear search, binary search, bubble sort, dict lookup.",
+"What is recursion? Write factorial. What is the base case and what happens without it?",
+"Explain a pointer to a C beginner. What is a null pointer? A dangling pointer?",
+"What is a deadlock? Four conditions.",
+"Process vs thread.",
+"SQL: write a query for the top 3 customers by total order amount using GROUP BY and ORDER BY.",
+"SQL: inner join vs left join with an example.",
+"What is normalisation? Give 1NF, 2NF, 3NF in one line each.",
+"What is Git? Difference between commit, push, pull, merge.",
+"What is an API? What does REST mean? What are GET and POST?",
+"Puzzle: 3 bulbs, 3 switches, one visit. How?",
+"Puzzle: 8 balls, one heavier, two weighings on a balance.",
+],
+hr:[
+"Tell me about yourself in 90 seconds.",
+"Why Zoho? (Know: bootstrapped, Chennai and Tenkasi, 55+ products, ZLabs does NLP/ML research. No investors, long tenures.)",
+"Why DevOps / MLOps when your degree is bioinformatics?",
+"Explain your two gap years honestly and briefly, then pivot to what you did with the time.",
+"Your CGPA is 6.8 with an arrear. What happened, and what changed?",
+"Are you willing to relocate to Chennai? How long do you see yourself at Zoho?",
+"Salary expectations. (Answer: the offered bands are fine; I care more about the team and learning.)",
+"What is your biggest weakness? (Pick a real one with a fix in progress: starting from weak programming fundamentals, and here is my 17-day log.)",
+"Tell me about a time you were wrong and had to admit it. (The microbiome batch artefact.)",
+"Do you have questions for us? (Ask: what does a first-year DevOps engineer at ZLabs own? How are models monitored today?)",
+],
+};
+// ---------- ENGINE ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+let store = {};
+try { store = JSON.parse(localStorage.getItem("zoho-prep") || "{}"); } catch(e) { store = {}; }
+function save(){ try { localStorage.setItem("zoho-prep", JSON.stringify(store)); } catch(e){} }
+function today(){ return new Date().toISOString().slice(0,10); }
+function log(kind, id, ok){
+  store.log = store.log || [];
+  store.log.push({d:today(), k:kind, id, ok:ok?1:0});
+  store.days = store.days || {}; store.days[today()] = 1;
+  if(!ok){ store.wrong = store.wrong || {}; store.wrong[kind+":"+id] = (store.wrong[kind+":"+id]||0)+1; }
+  else if(store.wrong && store.wrong[kind+":"+id]){ delete store.wrong[kind+":"+id]; }
+  save();
+}
+function norm(s){ return String(s).trim().toLowerCase().replace(/\s+/g," "); }
+function accept(user, item){
+  const u = norm(user); if(!u) return false;
+  if(u === norm(item.a)) return true;
+  if(item.alt && item.alt.some(x => u === norm(x) || u.includes(norm(x)))) return true;
+  if(["undefined","unspecified","garbage","crash","negative"].includes(norm(item.a)) && u.includes(norm(item.a).slice(0,5))) return true;
+  return false;
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function fmt(s){ const m=Math.floor(s/60), r=s%60; return (m<10?"0":"")+m+":"+(r<10?"0":"")+r; }
+
+// days left
+(function(){ const d = Math.ceil((new Date("2026-10-09") - new Date())/86400000); $("#days").textContent = d>0 ? d+" days to go." : "Drive day."; })();
+
+const TABS = [["home","Start"],["c","C output"],["apt","Aptitude"],["mock","Mock R1"],["code","Coding"],["build","Build"],["nlp","NLP / ML"],["interview","Interview"],["progress","Progress"]];
+function nav(id){
+  $("#nav").innerHTML = TABS.map(([k,l]) => `<button class="${k===id?'on':''}" onclick="nav('${k}')">${l}</button>`).join("");
+  clearInterval(window._t);
+  ({home, c:drillC, apt:drillApt, mock, code:coding, build, nlp, interview, progress})[id]();
+  window.scrollTo(0,0);
+}
+
+// ---- HOME ----
+function home(){
+  const streak = Object.keys(store.days||{}).length;
+  $("#view").innerHTML = `
+  <div class="card ok"><b>How to use this in 17 days.</b>
+  <ol>
+  <li><b>Every day:</b> 15 C output, 15 aptitude, 3 coding problems. About 2.5 hours.</li>
+  <li><b>Days 7 and 14:</b> Mock R1 (timed, 20 questions, no notes).</li>
+  <li><b>Days 9 and 12:</b> one Build brief each, full 3 hours, with the timer here.</li>
+  <li><b>Days 15 and 16:</b> NLP cards until you can say every one aloud, then Interview drills.</li>
+  <li>Anything you get wrong comes back in the Progress tab until you clear it twice.</li>
+  </ol></div>
+  <div class="grid">
+  <div class="stat"><b>${streak}</b><span class="small">days practised</span></div>
+  <div class="stat"><b>${(store.log||[]).length}</b><span class="small">questions attempted</span></div>
+  <div class="stat"><b>${Object.keys(store.wrong||{}).length}</b><span class="small">to redo</span></div>
+  </div>
+  <div class="card"><b>Zoho's real bar, from past drives</b>
+  <ul><li>Round 1: about 20 written answers in 60 to 90 min. Aim 15+ correct here before the drive.</li>
+  <li>Round 2: 2 problems fully working out of 5 has advanced people. Aim: any level-2 problem here in under 25 minutes.</li>
+  <li>Round 3: 4 working modules with a menu, input validation, and a clean change. Aim: one brief end to end without looking anything up.</li></ul></div>`;
+}
+
+// ---- GENERIC DRILL (C / APT) ----
+function drill(kind, bank, render, n){
+  let items = shuffle(bank.map((x,i)=>({...x, id:i})));
+  const redo = Object.keys(store.wrong||{}).filter(k=>k.startsWith(kind+":")).map(k=>+k.split(":")[1]);
+  items = [...items.filter(x=>redo.includes(x.id)), ...items.filter(x=>!redo.includes(x.id))].slice(0,n);
+  let i=0, score=0;
+  function show(){
+    if(i>=items.length){ $("#view").innerHTML = `<div class="card ok"><b>Set done: ${score}/${items.length}</b><p class="small">${score>=items.length*0.75?"Good. Do another set.":"Below 75%. Read every explanation you missed before the next set."}</p><button class="b" onclick="nav('${kind==='c'?'c':'apt'}')">Another set</button></div>`; return; }
+    const it = items[i];
+    $("#view").innerHTML = `<div class="small">${kind==='c'?'C output':'Aptitude'} · ${i+1}/${items.length} · ${redo.includes(it.id)?'<span class="pill">redo</span>':''}</div>
+    <div class="card">${render(it)}
+    <input class="ans" id="ans" placeholder="Write the exact output / answer" autocomplete="off">
+    <div class="row" style="margin-top:8px"><button class="b" id="chk">Check</button><button class="b s" id="skip">Don't know</button></div>
+    <div id="fb"></div></div>`;
+    $("#ans").focus();
+    const check = (giveup)=>{
+      const ok = !giveup && accept($("#ans").value, it);
+      if(ok) score++;
+      log(kind, it.id, ok);
+      $("#fb").innerHTML = `<div class="card ${ok?'ok':'warn'}"><b>${ok?'Correct':'Answer: '+esc(it.a)}</b><div>${esc(it.ex)}</div><button class="b" id="next" style="margin-top:8px">Next</button></div>`;
+      $("#chk").disabled = $("#skip").disabled = true;
+      $("#next").focus(); $("#next").onclick = ()=>{ i++; show(); };
+    };
+    $("#chk").onclick = ()=>check(false); $("#skip").onclick = ()=>check(true);
+    $("#ans").onkeydown = e=>{ if(e.key==="Enter" && !$("#chk").disabled) check(false); };
+  }
+  show();
+}
+const renderC = it => `<div class="small">What does this print? (write <i>undefined</i> if it is undefined behaviour)</div><pre>${esc(it.c)}</pre>`;
+const renderA = it => `<div style="font-size:16px;margin:6px 0">${esc(it.q)}</div>`;
+function drillC(){ drill("c", C, renderC, 15); }
+function drillApt(){ drill("apt", APT, renderA, 15); }
+
+// ---- MOCK ROUND 1 ----
+function mock(){
+  $("#view").innerHTML = `<div class="card"><b>Mock Round 1</b><p>10 C output + 10 aptitude, 60 minutes, written answers. Do it on paper first if you can, then type your answers here. No notes, no running code.</p><button class="b" id="go">Start 60-minute mock</button></div>`;
+  $("#go").onclick = ()=>{
+    const items = [...shuffle(C.map((x,i)=>({...x,id:i,k:'c'}))).slice(0,10), ...shuffle(APT.map((x,i)=>({...x,id:i,k:'apt'}))).slice(0,10)];
+    let left = 3600;
+    $("#view").innerHTML = `<div class="row" style="justify-content:space-between"><b>Mock R1</b><span class="timer" id="tm">60:00</span></div>` +
+      items.map((it,n)=>`<div class="card"><div class="small">Q${n+1}</div>${it.k==='c'?renderC(it):renderA(it)}<input class="ans" data-n="${n}" placeholder="Answer"></div>`).join("") +
+      `<button class="b" id="submit">Submit</button>`;
+    const finish = ()=>{
+      clearInterval(window._t);
+      let s=0; const rows = items.map((it,n)=>{ const u = document.querySelector(`[data-n="${n}"]`).value; const ok = accept(u,it); if(ok) s++; log(it.k,it.id,ok); return `<div class="card ${ok?'ok':'warn'}"><div class="small">Q${n+1} · you: ${esc(u||'—')} · answer: ${esc(it.a)}</div><div class="small">${esc(it.ex)}</div></div>`; });
+      store.mocks = store.mocks || []; store.mocks.push({d:today(), s}); save();
+      $("#view").innerHTML = `<div class="card ${s>=14?'ok':'warn'}"><b>Score ${s}/20</b><p>${s>=14?"This would likely clear Zoho's round 1.":s>=10?"Borderline. Round 1 cutoffs vary; push C output to 8/10.":"Not yet. Drill C output daily; this is where the marks are."}</p></div>` + rows.join("");
+      window.scrollTo(0,0);
+    };
+    $("#submit").onclick = finish;
+    window._t = setInterval(()=>{ left--; $("#tm").textContent = fmt(left); if(left<=0) finish(); }, 1000);
+  };
+}
+
+// ---- CODING with Pyodide ----
+let py = null, pyLoading = null;
+function loadPy(){
+  if(py) return Promise.resolve(py);
+  if(pyLoading) return pyLoading;
+  const s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js";
+  pyLoading = new Promise((res, rej)=>{
+    s.onload = ()=> loadPyodide({indexURL:"https://cdn.jsdelivr.net/pyodide/v0.26.2/full/"}).then(p=>{ py=p; res(p); }).catch(rej);
+    s.onerror = ()=>rej(new Error("Could not load Python runtime (needs internet)."));
+  });
+  document.head.appendChild(s);
+  return pyLoading;
+}
+function coding(){
+  const done = (store.log||[]).filter(x=>x.k==='code'&&x.ok).map(x=>x.id);
+  $("#view").innerHTML = `<div class="card"><b>Round 2 practice</b><p class="small">Pick a problem, write Python in the box, run tests. Level 1 first. Time yourself: level 1 under 10 min, level 2 under 25, level 3 under 45. The first run downloads the Python runtime (about 10 MB); on the 2015 Air give it a minute.</p></div>` +
+    [1,2,3].map(lv=>`<h3>Level ${lv}</h3><div class="grid">${CODE.map((p,i)=>({...p,i})).filter(p=>p.lv===lv).map(p=>`<button class="b s" style="text-align:left" onclick="openProblem(${p.i})">${done.includes(p.i)?'✓ ':''}${esc(p.t)}</button>`).join("")}</div>`).join("");
+}
+function openProblem(i){
+  const p = CODE[i];
+  const key = "code-src-"+i;
+  let start = Date.now();
+  $("#view").innerHTML = `<button class="b s" onclick="nav('code')">← problems</button>
+  <div class="card"><div class="row" style="justify-content:space-between"><b>${esc(p.t)}</b><span class="timer" id="tm">00:00</span></div>
+  <p>${esc(p.s)}</p><pre>${esc(p.ex)}</pre>
+  <details><summary>Hint</summary><div class="small">${esc(p.hint)}</div></details>
+  <details><summary>Reference solution (only after 3 honest attempts)</summary><pre>${esc(p.sol)}</pre></details>
+  <textarea class="code" id="src" spellcheck="false">${esc(store[key] || ("def "+p.fn+"("+ (p.tests[0][0].length? p.tests[0][0].map((_,k)=>"arg"+(k+1)).join(", "):"") +"):\n    pass\n"))}</textarea>
+  <div class="row"><button class="b" id="run">Run tests</button><span class="small" id="st"></span></div>
+  <div class="out hidden" id="out"></div></div>`;
+  window._t = setInterval(()=>{ $("#tm").textContent = fmt(Math.floor((Date.now()-start)/1000)); }, 1000);
+  $("#src").oninput = ()=>{ store[key] = $("#src").value; save(); };
+  $("#src").onkeydown = e=>{ if(e.key==="Tab"){ e.preventDefault(); const t=e.target, s=t.selectionStart; t.value = t.value.slice(0,s)+"    "+t.value.slice(t.selectionEnd); t.selectionStart=t.selectionEnd=s+4; } };
+  $("#run").onclick = async ()=>{
+    $("#st").textContent = "Loading Python…"; $("#run").disabled = true;
+    try{
+      const P = await loadPy();
+      $("#st").textContent = "Running…";
+      const src = $("#src").value;
+      const tests = JSON.stringify(p.tests);
+      const prog = `import json, traceback\n_out=[]\ntry:\n    exec(${JSON.stringify(src)}, globals())\n    for args, exp in json.loads(${JSON.stringify(tests)}):\n        try:\n            got = ${p.fn}(*args)\n            _out.append([json.dumps(args), json.dumps(exp), json.dumps(got, default=str), got == exp])\n        except Exception as e:\n            _out.append([json.dumps(args), json.dumps(exp), 'ERROR: '+repr(e), False])\nexcept Exception as e:\n    _out.append(['', '', 'ERROR: '+traceback.format_exc(), False])\njson.dumps(_out)`;
+      const res = JSON.parse(await P.runPythonAsync(prog));
+      const ok = res.every(r=>r[3]);
+      $("#out").classList.remove("hidden");
+      $("#out").innerHTML = res.map(r=>`<div class="${r[3]?'pass':'fail'}">${r[3]?'PASS':'FAIL'}  ${esc(p.fn)}(${esc(r[0].slice(1,-1))})  expected ${esc(r[1])}  got ${esc(r[2])}</div>`).join("") + (ok?`<div class="pass" style="margin-top:6px">All tests pass in ${$("#tm").textContent}. Now explain your approach aloud in 30 seconds, as if an evaluator is beside you.</div>`:"");
+      log("code", i, ok);
+      $("#st").textContent = ok ? "Solved" : "Not yet";
+    }catch(e){ $("#out").classList.remove("hidden"); $("#out").textContent = "Error: "+e.message; $("#st").textContent=""; }
+    $("#run").disabled = false;
+  };
+}
+
+// ---- BUILD ----
+function build(){
+  $("#view").innerHTML = `<div class="card"><b>Round 3: machine round</b><p class="small">Pick a brief. Rules that match the real round: 20 minutes of design on paper before typing, a menu-driven console program, all modules in one file, no internet, no libraries beyond the standard one. The change request unlocks after 2 hours, as it does in the real round. Write the code in VS Code, not here.</p></div>
+  <div class="grid">${BUILD.map((b,i)=>`<button class="b s" style="text-align:left" onclick="openBuild(${i})">${(store.builds||{})[i]?'✓ ':''}${esc(b.t)}</button>`).join("")}</div>`;
+}
+function openBuild(i){
+  const b = BUILD[i]; let start = Date.now(); const key="build-notes-"+i;
+  $("#view").innerHTML = `<button class="b s" onclick="nav('build')">← briefs</button>
+  <div class="card"><div class="row" style="justify-content:space-between"><b>${esc(b.t)}</b><span class="timer" id="tm">00:00</span></div>
+  <h3>Modules</h3><ol>${b.mods.map(m=>`<li>${esc(m)}</li>`).join("")}</ol>
+  <h3>Design first (20 min)</h3><textarea class="plain" id="notes" placeholder="Entities and their fields. Functions and what each takes and returns. Data structures (list of dicts? dict keyed by id?). Menu options.">${esc(store[key]||"")}</textarea>
+  <h3>Self-check before you stop</h3>
+  ${["Menu loop with an exit option","Every module reachable from the menu","Invalid input handled without crashing (wrong type, missing id, empty)","Each function under 25 lines and named for what it does","Data kept in one place, not duplicated across functions","Ran every module once with a normal case and once with a bad case","Explained the design aloud in 2 minutes"].map((c,k)=>`<label class="ck"><input type="checkbox" data-k="${k}"> ${c}</label>`).join("")}
+  <div id="chg" class="card warn hidden"><b>Change request</b><div>${esc(b.change)}</div></div>
+  <div class="row"><button class="b s" id="reveal">Reveal change request now</button><button class="b" id="done">Mark brief completed</button></div></div>`;
+  $("#notes").oninput = ()=>{ store[key]=$("#notes").value; save(); };
+  window._t = setInterval(()=>{ const s=Math.floor((Date.now()-start)/1000); $("#tm").textContent=fmt(s); if(s>=7200) $("#chg").classList.remove("hidden"); },1000);
+  $("#reveal").onclick = ()=>$("#chg").classList.remove("hidden");
+  $("#done").onclick = ()=>{ store.builds=store.builds||{}; store.builds[i]=today(); store.days=store.days||{}; store.days[today()]=1; save(); nav('build'); };
+}
+
+// ---- NLP ----
+function nlp(){
+  let order = shuffle(NLP.map((x,i)=>i)); let k=0, flipped=false;
+  const known = store.nlpKnown || {};
+  function show(){
+    if(k>=order.length){ $("#view").innerHTML=`<div class="card ok"><b>Deck done.</b> Known: ${Object.keys(store.nlpKnown||{}).length}/${NLP.length}. <button class="b" onclick="nav('nlp')">Again</button></div>`; return; }
+    const [t,d] = NLP[order[k]]; flipped=false;
+    $("#view").innerHTML = `<div class="small">Card ${k+1}/${order.length} · tap to flip · say the answer aloud before flipping</div>
+    <div class="card flash" id="fc"><b style="font-size:18px">${esc(t)}</b><div id="back" class="hidden" style="margin-top:8px">${esc(d)}</div></div>
+    <div class="row"><button class="b" id="yes">I could explain it</button><button class="b s" id="no">Not yet</button></div>`;
+    $("#fc").onclick = ()=>{ $("#back").classList.toggle("hidden"); };
+    $("#yes").onclick = ()=>{ store.nlpKnown=store.nlpKnown||{}; store.nlpKnown[order[k]]=1; log("nlp",order[k],true); k++; show(); };
+    $("#no").onclick = ()=>{ if(store.nlpKnown) delete store.nlpKnown[order[k]]; log("nlp",order[k],false); $("#back").classList.remove("hidden"); setTimeout(()=>{k++; show();}, 2500); };
+  }
+  show();
+}
+
+// ---- INTERVIEW ----
+function interview(){
+  const sec = (title, arr, pre) => `<h2>${title}</h2>` + arr.map((q,i)=>`<div class="card"><div>${esc(q)}</div><textarea class="plain" data-k="${pre}${i}" placeholder="Your answer in 3 to 5 sentences. Say it aloud, then write it.">${esc((store.iv||{})[pre+i]||"")}</textarea></div>`).join("");
+  $("#view").innerHTML = `<div class="card"><b>Rounds 4 and 5</b><p class="small">Write each answer once, then practise saying it without reading. Time yourself: 2 minutes per project answer, 1 minute per HR answer. Answers save on this device.</p></div>` +
+    sec("Your projects", INTERVIEW.projects, "p") + sec("Technical", INTERVIEW.tech, "t") + sec("HR", INTERVIEW.hr, "h");
+  document.querySelectorAll("textarea[data-k]").forEach(t=>t.oninput=()=>{ store.iv=store.iv||{}; store.iv[t.dataset.k]=t.value; store.days=store.days||{}; store.days[today()]=1; save(); });
+}
+
+// ---- PROGRESS ----
+function progress(){
+  const L = store.log||[];
+  const by = k => { const a=L.filter(x=>x.k===k); return [a.length, a.filter(x=>x.ok).length]; };
+  const rows = [["c","C output"],["apt","Aptitude"],["code","Coding"],["nlp","NLP cards"]].map(([k,l])=>{ const [n,ok]=by(k); const pct=n?Math.round(ok/n*100):0; return `<div class="stat"><span class="small">${l}</span><b>${pct}%</b><span class="small">${ok}/${n}</span><div class="bar"><i style="width:${pct}%"></i></div></div>`; }).join("");
+  const wrong = Object.keys(store.wrong||{});
+  const mocks = (store.mocks||[]).map(m=>`<li>${m.d}: ${m.s}/20</li>`).join("") || "<li>None yet. Day 7 and day 14.</li>";
+  const last7 = [...Array(7)].map((_,i)=>{ const d=new Date(); d.setDate(d.getDate()-i); const s=d.toISOString().slice(0,10); return (store.days||{})[s]?"■":"□"; }).reverse().join(" ");
+  $("#view").innerHTML = `<div class="grid">${rows}</div>
+  <div class="card"><b>Last 7 days</b><div style="font-size:20px;letter-spacing:4px">${last7}</div><span class="small">A missed day is the only real failure mode of this plan.</span></div>
+  <div class="card"><b>Mock R1 scores</b><ul>${mocks}</ul></div>
+  <div class="card"><b>To redo (${wrong.length})</b><p class="small">These come first in every drill until you get them right.</p>${wrong.slice(0,30).map(w=>{ const [k,id]=w.split(":"); const it = k==='c'?C[id]:k==='apt'?APT[id]:k==='code'?CODE[id]:NLP[id]; const label = k==='c'? (it.c.split("\n").slice(-1)[0]) : k==='apt'? it.q : k==='code'? it.t : it[0]; return `<div class="small">• [${k}] ${esc(label).slice(0,90)}</div>`; }).join("")}</div>
+  <div class="card"><b>Readiness check</b><ul>
+  <li>C output accuracy over last 30: ${(()=>{const a=L.filter(x=>x.k==='c').slice(-30); return a.length?Math.round(a.filter(x=>x.ok).length/a.length*100)+'%':'—';})()} (target 80%)</li>
+  <li>Level-2 coding problems solved: ${CODE.map((p,i)=>({p,i})).filter(x=>x.p.lv===2 && L.some(l=>l.k==='code'&&l.id===x.i&&l.ok)).length}/${CODE.filter(p=>p.lv===2).length} (target 8)</li>
+  <li>Build briefs completed: ${Object.keys(store.builds||{}).length} (target 2)</li>
+  <li>NLP cards known: ${Object.keys(store.nlpKnown||{}).length}/${NLP.length} (target all)</li></ul>
+  <button class="b s" onclick="if(confirm('Erase all progress on this device?')){localStorage.removeItem('zoho-prep');location.reload();}">Reset progress</button></div>`;
+}
+nav("home");
+</script>
+</body>
+</html>

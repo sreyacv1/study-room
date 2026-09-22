@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Sreya C V — Resume (Zoho)</title>
+<style>
+  @page { size: A4; margin: 10mm 12mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 8.5pt; line-height: 1.22; color: #111; margin: 0;
+  }
+  h1 { font-size: 16.5pt; letter-spacing: .5pt; margin: 0 0 1.5pt; font-weight: 700; }
+  .contact { font-size: 7.7pt; color: #333; margin-bottom: 5.5pt; }
+  h2 {
+    font-size: 7.9pt; letter-spacing: 1.2pt; text-transform: uppercase;
+    font-weight: 700; margin: 7pt 0 3pt; padding-bottom: 1.2pt;
+    border-bottom: .7pt solid #222;
+  }
+  .entry { margin-bottom: 4.3pt; break-inside: avoid; page-break-inside: avoid; }
+  .entry:last-child { margin-bottom: 0; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 9pt; }
+  .title { font-weight: 700; }
+  .meta { font-size: 7.6pt; color: #444; white-space: nowrap; }
+  .sub { font-style: italic; font-size: 8.2pt; color: #333; }
+  .stack { font-size: 7.6pt; color: #555; margin-top: .8pt; }
+  ul { margin: 2pt 0 0; padding-left: 11pt; }
+  li { margin-bottom: .9pt; }
+  p.profile { margin: 0; text-align: justify; }
+  a { color: #1a4f8a; text-decoration: none; border-bottom: .4pt solid #9db8d4; }
+  .meta a { color: #1a4f8a; }
+  .langs { font-size: 7.7pt; color: #444; margin-top: 7pt;
+           border-top: .5pt solid #bbb; padding-top: 3pt; }
+</style>
+</head>
+<body>
+<h1>SREYA C V</h1>
+<div class="contact">
+  Malappuram, Kerala &nbsp;|&nbsp; sreyacv636@gmail.com &nbsp;|&nbsp; +91 90741 22676
+  &nbsp;|&nbsp; <a href="https://github.com/sreyacv1">github.com/sreyacv1</a> &nbsp;|&nbsp; <a href="https://linkedin.com/in/sreya-cv-680617393">linkedin.com/in/sreya-cv-680617393</a>
+</div>
+
+<h2>Summary</h2>
+<p class="profile">B.Tech Bioinformatics student (Class of 2027) who builds data and machine-learning pipelines end to end: acquiring public datasets, cleaning and representing them, training and validating models, and packaging the result so it runs with one command. Built a retrieval-augmented generation service with a provider-agnostic inference layer, and a reproducible multi-omics analysis pipeline now prepared for journal submission. Looking for a DevOps / MLOps role where reliable data preparation, deployment and model monitoring matter.</p>
+
+<h2>Technical Skills</h2>
+<div class="entry">
+  <div><span class="title">Languages:</span> Python (primary), R, C, JavaScript/TypeScript, SQL, shell</div>
+  <div><span class="title">ML / NLP:</span> scikit-learn, sentence-transformers, LangChain, vector search, embeddings, RAG, evaluation (CV, C-index, decision curves), PyTorch basics</div>
+  <div><span class="title">Data &amp; pipelines:</span> reproducible one-command pipelines, public-data ingestion (TCGA, GEO, GTEx, ChEMBL), batch-effect diagnosis, Git, Linux</div>
+  <div><span class="title">Serving:</span> Streamlit, OpenAI-compatible LLM endpoints (Ollama, vLLM), streaming responses</div>
+  <div><span class="title">Fundamentals:</span> OOP, data structures &amp; algorithms, biostatistics</div>
+</div>
+
+<h2>Projects</h2>
+<div class="entry">
+  <div class="row"><span class="title">RAG-Based Document Q&amp;A Assistant</span><span class="meta"><a href="https://github.com/sreyacv1/q-n-a-assistant">github.com/sreyacv1/q-n-a-assistant</a></span></div>
+  <div class="stack">Python | LangChain | sentence-transformers (all-MiniLM-L6-v2) | vector store | Ollama / vLLM | Streamlit</div>
+  <ul>
+    <li>Built the full pipeline: PDF/text ingestion, chunking, embedding, semantic retrieval, and streamed grounded answers with inline [n] citations and relevance-scored sources.</li>
+    <li>Designed a provider-agnostic LLM layer so the same code serves from a local Ollama model or a hosted vLLM endpoint, switching by configuration only.</li>
+  </ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="title">Gastric Cancer Multi-Omics Pipeline — Prognosis, CAF Programme &amp; Tumour Microbiome</span><span class="meta"><a href="https://github.com/sreyacv1/GASTRIC-CANCER">github.com/sreyacv1/GASTRIC-CANCER</a></span></div>
+  <div class="stack">R 4.3 | TCGA-STAD, GTEx, 5 GEO cohorts, scRNA-seq, 16S microbiome, IEU OpenGWAS | LASSO-Cox, WGCNA, GSEA, Mendelian randomisation</div>
+  <ul>
+    <li>Acquired, harmonised and versioned eight public datasets into a reproducible one-command R pipeline; trained a 25-gene LASSO-Cox prognostic model with nested cross-validation (C-index 0.61) and validated it on independent external cohorts.</li>
+    <li>Diagnosed an apparent microbiome “dysbiosis” signal as a sequencing-batch artefact through drift analysis across cohorts; reported an honest null from two-sample Mendelian randomisation. Manuscript prepared for journal submission.</li>
+  </ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="title">Cracking KRAS G12D — AI-Guided De Novo Inhibitor Design</span><span class="meta">Boltzmann AI Hackathon 2026, individual entry</span></div>
+  <div class="stack">Python | DiffDock | RDKit | ChEMBL / SureChEMBL | PDB 7RPZ</div>
+  <ul>
+    <li>Sole author. Generated and filtered 46 de novo molecules against the KRAS G12D switch II pocket with an approved inhibitor (MRTX1133) as positive control through every stage; 8 of 15 candidates beat the reference’s in-pocket pose confidence, reproduced across two independent runs.</li>
+    <li>Automated the screen as a scripted pipeline: docking, drug-likeness (Lipinski / QED), and novelty checks against ChEMBL (Tanimoto 0.43–0.67).</li>
+  </ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="title">Unalone — AI-Powered Emotional Wellness Companion</span><span class="meta"><a href="https://github.com/sreyacv1/Unalone">github.com/sreyacv1/Unalone</a></span></div>
+  <div class="stack">Smart India Hackathon, cleared internal college selection | JavaScript | Node.js | LLM chatbot with voice</div>
+  <ul><li>Built the frontend: mood-adaptive chatbot interface, anonymous peer connect and one-click personalised actions.</li></ul>
+</div>
+<div class="entry">
+  <div class="row"><span class="title">DuoGrow — AI Accountability OS for Two</span><span class="meta"><a href="https://github.com/SaiK1105/duogrow">github.com/SaiK1105/duogrow</a></span></div>
+  <div class="stack">OpenAI Hackathon, “AI in Daily Life” track | TypeScript</div>
+  <ul><li>Team lead. Owned the concept, split the work across the team and drove the build to a working hackathon submission.</li></ul>
+</div>
+
+<h2>Education</h2>
+<div class="entry">
+  <div class="row"><span class="title">B.Tech, Bioinformatics — SASTRA Deemed to be University, Thanjavur</span><span class="meta">Expected 2027</span></div>
+  <div class="stack">Data Structures &amp; Algorithms, Machine Learning, Deep Learning, Big Data, Biostatistics, Genomics &amp; Proteomics</div>
+</div>
+<div class="entry">
+  <div class="row"><span class="title">Class XII &amp; X — MES Central School, Tirur, Kerala</span><span class="meta">78.4% (2021) | 89.4% (2019)</span></div>
+</div>
+
+<div class="langs">Languages: English (fluent) | Malayalam (native) | Tamil | Hindi</div>
+</body>
+</html>
