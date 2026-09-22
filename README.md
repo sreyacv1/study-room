@@ -38,6 +38,12 @@ Covers activations, loss functions, backpropagation, regression and classificati
 designs, optimizers, convolution, pooling, CNN architecture, random and unsupervised
 features, RNNs, BPTT, LSTM, GRU, time-series forecasting and bidirectional RNNs.
 
+## PCOS Repurposing Brief — `PCOS_Repurposing_Brief.html` / `.pdf`
+
+Read-only team brief fixed on PCOS: assignment rubric, why PCOS, ten data sources with
+sizes and record shapes, the scale argument step by step, a nine-step pipeline, method
+comparison, success measure, challenges, ten expansions, writing checklist.
+
 ## Proposal Workbench — `Proposal_Workbench.html`
 
 Planning tool for the Big Data "mini research proposal" (drug-target interaction
