@@ -314,6 +314,359 @@ hr:[
 "Do you have questions for us? (Ask: what does a first-year DevOps engineer at ZLabs own? How are models monitored today?)",
 ],
 };
+// ---------- LEARN: LESSONS ----------
+const LESSONS = [
+{id:"py", t:"1. Python from zero", min:90, pri:"Day 1 to 2. Everything else depends on this.", h:`
+<p><b>Variables and types.</b> A variable is a name for a value. Python figures out the type.</p>
+<pre>n = 5            # int
+x = 2.5          # float
+s = "zoho"       # str
+ok = True        # bool
+items = [1, 2, 3]            # list: ordered, changeable
+d = {"a": 1, "b": 2}         # dict: key -> value
+print(n, s, items[0], d["a"])   # 5 zoho 1 1</pre>
+<p><b>If / else.</b> Indentation is the block. Four spaces.</p>
+<pre>if n > 3:
+    print("big")
+elif n == 3:
+    print("three")
+else:
+    print("small")</pre>
+<p><b>Loops.</b> <code>for</code> walks a sequence. <code>while</code> repeats until a condition fails.</p>
+<pre>for i in range(5):        # 0 1 2 3 4
+    print(i)
+for ch in "abc":          # a b c
+    print(ch)
+i = 0
+while i < 3:
+    i += 1                # i = i + 1</pre>
+<p><b>Strings.</b> Indexable like a list, but cannot be changed in place.</p>
+<pre>s = "hello"
+len(s)        # 5
+s[0]          # 'h'
+s[-1]         # 'o'
+s.lower(), s.upper()
+"a" in s      # False
+s + "!"       # 'hello!'
+list(s)       # ['h','e','l','l','o']  (turn into a list to edit, then "".join(lst))</pre>
+<p><b>Lists.</b></p>
+<pre>a = [3, 1, 2]
+a.append(5)      # [3,1,2,5]
+a.pop()          # removes and returns 5
+a[1]             # 1
+len(a)
+for i in range(len(a)): print(i, a[i])
+[0] * 4          # [0,0,0,0]
+[[0]*3 for _ in range(2)]   # 2 rows × 3 cols matrix</pre>
+<p><b>Dicts.</b> The most useful structure in Zoho problems. Counting is one line.</p>
+<pre>d = {}
+for ch in "banana":
+    d[ch] = d.get(ch, 0) + 1     # {'b':1,'a':3,'n':2}
+for k, v in d.items(): print(k, v)
+"a" in d     # True</pre>
+<p><b>Functions.</b> Every problem on the Coding tab is one function.</p>
+<pre>def add(a, b):
+    return a + b
+print(add(2, 3))   # 5</pre>
+<p><b>Input in a console program</b> (needed in round 3):</p>
+<pre>name = input("Name: ")
+age = int(input("Age: "))    # convert; wrap in try/except for bad input
+try:
+    age = int(input("Age: "))
+except ValueError:
+    print("Enter a number")</pre>
+<p><b>Do now:</b> Coding tab, all Level 1 problems. Do not read solutions until three failed tries.</p>`},
+
+{id:"c", t:"2. Reading C for the written test", min:60, pri:"Day 1 to 7. Round 1 is C output. You read C, you do not write it.", h:`
+<p>Zoho's paper gives a C snippet and asks what it prints. You need six rules.</p>
+<p><b>Rule 1: printf formats.</b> <code>%d</code> integer, <code>%c</code> one character, <code>%s</code> string from a pointer to the null terminator, <code>%f</code> float. <code>printf</code> returns the number of characters it printed.</p>
+<p><b>Rule 2: ++ before or after.</b> <code>y = x++</code> gives y the old x, then x grows. <code>y = ++x</code> grows x first. Two ++ on the same variable in one statement, or in the same printf, is <i>undefined</i>: write that word.</p>
+<p><b>Rule 3: arrays and pointers are the same thing in disguise.</b> <code>a[i]</code> is <code>*(a+i)</code>. <code>a</code> alone is the address of <code>a[0]</code>. <code>p+1</code> moves one element, not one byte. <code>*p++</code> reads then moves the pointer; <code>(*p)++</code> increments the value.</p>
+<p><b>Rule 4: sizeof vs strlen.</b> <code>sizeof("hello")</code> is 6 (counts \\0). <code>strlen</code> is 5. <code>sizeof(int)</code> is 4. <code>sizeof('A')</code> is 4 in C because a char constant is an int. A pointer is 8 bytes on 64-bit.</p>
+<p><b>Rule 5: static and recursion.</b> A <code>static</code> local keeps its value between calls. In recursion, a print before the recursive call prints going down (3 2 1); after the call prints coming back (1 2 3).</p>
+<p><b>Rule 6: traps.</b> <code>if(a=0)</code> is assignment, false. <code>switch</code> without <code>break</code> falls through. <code>for(...);</code> with a semicolon is an empty loop. <code>7/2</code> is 3. <code>-7%3</code> is -1. <code>010</code> is octal 8. Character maths: <code>'A'+1</code> is 'B', <code>'a'-32</code> is 'A'.</p>
+<p><b>Method on paper:</b> write the variables in a table, run each line by hand, update the table. Never guess. If it is undefined behaviour, say so; examiners accept "undefined" for those and it shows you know C.</p>
+<p><b>Do now:</b> C output tab, 15 questions. Read every explanation.</p>`},
+
+{id:"oop", t:"3. Object-oriented programming", min:60, pri:"Day 8. Needed for round 3 and the interview.", h:`
+<p>A <b>class</b> is a blueprint. An <b>object</b> is one thing made from it. Zoho's round 3 is entirely this, and the interviewer will ask the four pillars.</p>
+<pre>class Account:
+    def __init__(self, name, balance=0):     # constructor
+        self.name = name                     # attribute
+        self.balance = balance
+
+    def deposit(self, amt):                  # method
+        if amt <= 0:
+            raise ValueError("amount must be positive")
+        self.balance += amt
+
+    def withdraw(self, amt):
+        if amt > self.balance:
+            raise ValueError("insufficient funds")
+        self.balance -= amt
+
+a = Account("Sreya", 100)
+a.deposit(50)
+print(a.balance)    # 150</pre>
+<p><b>The four pillars, each with your example:</b></p>
+<ul>
+<li><b>Encapsulation:</b> data and the methods that change it live together. Nobody sets <code>balance</code> directly; they call <code>deposit</code>, which validates. In Python a leading underscore (<code>self._balance</code>) signals "private".</li>
+<li><b>Abstraction:</b> the caller knows <i>what</i> deposit does, not <i>how</i>. Your RAG assistant's "provider-agnostic LLM layer" is abstraction: the same <code>generate()</code> call works for Ollama or vLLM.</li>
+<li><b>Inheritance:</b> a child class reuses a parent. <code>class Savings(Account)</code> gets deposit and withdraw for free and adds <code>add_interest</code>.</li>
+<li><b>Polymorphism:</b> the same method name behaves differently per class. <code>Savings.withdraw</code> can override to block overdraft while <code>Current.withdraw</code> allows 5000.</li>
+</ul>
+<pre>class Savings(Account):
+    def add_interest(self, rate):
+        self.balance += self.balance * rate / 100
+
+class Current(Account):
+    def withdraw(self, amt):                  # override
+        if amt > self.balance + 5000:
+            raise ValueError("overdraft limit")
+        self.balance -= amt</pre>
+<p><b>Class vs instance:</b> <code>Account</code> is the class; <code>a</code> is an instance. <code>self</code> is "this particular object".</p>
+<p><b>Do now:</b> write Account, Savings, Current yourself in VS Code and a menu loop that creates accounts and deposits. That is the first third of the Banking build brief.</p>`},
+
+{id:"dsa", t:"4. Data structures and algorithms, the ones Zoho asks", min:90, pri:"Days 4 to 13, in pieces.", h:`
+<p><b>Big-O</b> is how the work grows with input size n. Say it for every solution you write.</p>
+<table><tr><th>Operation</th><th>Time</th></tr>
+<tr><td>Look up dict key, append to list</td><td>O(1)</td></tr>
+<tr><td>Binary search in sorted list</td><td>O(log n)</td></tr>
+<tr><td>One loop over n items, linear search</td><td>O(n)</td></tr>
+<tr><td>Good sort (merge, Python's sorted)</td><td>O(n log n)</td></tr>
+<tr><td>Nested loops, bubble sort</td><td>O(n²)</td></tr></table>
+<p><b>List</b>: ordered, index in O(1), insert in the middle O(n). <b>Linked list</b>: each node points to the next, insert O(1) if you have the node, index O(n). Say: "lists for random access, linked lists for many insertions at known positions".</p>
+<p><b>Stack</b> (last in, first out): <code>st.append(x)</code>, <code>st.pop()</code>. Use for brackets, undo, recursion by hand. <b>Queue</b> (first in, first out): <code>from collections import deque; q.append(x); q.popleft()</code>. Use for BFS, waiting lists, taxi queue.</p>
+<p><b>Hash map</b> (dict): key → value in O(1) on average by hashing the key to a slot. Collision: two keys, one slot; handled by chaining. Worst case O(n). Sets are dicts without values.</p>
+<p><b>Recursion</b>: a function calling itself with a smaller input and a base case that stops it. Without the base case: infinite recursion, stack overflow.</p>
+<pre>def fact(n):
+    if n <= 1: return 1          # base case
+    return n * fact(n - 1)</pre>
+<p><b>Sorting by hand</b> (Zoho often bans sorted()):</p>
+<pre>def bubble(a):
+    n = len(a)
+    for i in range(n):
+        for j in range(n - 1 - i):
+            if a[j] > a[j+1]:
+                a[j], a[j+1] = a[j+1], a[j]
+    return a</pre>
+<p><b>Binary search</b>: sorted list, look at the middle, discard half.</p>
+<p><b>Two pointers</b>: one index from each end. Palindromes, reversing in place, merging sorted lists.</p>
+<p><b>Sliding window</b>: keep a window of k items and move it. Max of window minimums.</p>
+<p><b>Tree</b>: nodes with children, no cycles. Family tree brief is this. <b>Graph</b>: nodes and edges. <b>BFS</b> explores level by level with a queue (shortest path in a grid). <b>DFS</b> goes deep with a stack or recursion (islands, flood fill). <b>Topological sort</b>: order tasks so prerequisites come first; count indegrees, repeatedly take a node with indegree 0.</p>
+<p><b>Matrix</b>: list of lists, <code>m[r][c]</code>. Spiral, rotate, transpose, search a sub-block. Practise all four.</p>
+<p><b>Do now:</b> Coding tab Level 2. Say the Big-O aloud after each.</p>`},
+
+{id:"method", t:"5. How to attack a coding problem, and how to talk", min:20, pri:"Read before every coding session.", h:`
+<ol>
+<li><b>Read twice.</b> Underline input, output, constraints. Write the example by hand and check you get the sample output on paper.</li>
+<li><b>Say the brute force first.</b> "I could try every pair, that's O(n²)." Then ask yourself if a dict, a sort, or two pointers removes a loop.</li>
+<li><b>Write the function skeleton</b> with the return type before the logic.</li>
+<li><b>Code the happy path.</b> Then edge cases: empty input, one element, all same, negative numbers.</li>
+<li><b>Trace once by hand</b> with the sample before running.</li>
+<li><b>Run tests.</b> If it fails, print intermediate values; do not stare.</li>
+</ol>
+<p><b>Talking while coding.</b> Zoho evaluators walk around rounds 2 and 3 and score explanation. Practise saying, in this order: what the problem asks in one sentence, your approach in one sentence, the Big-O, one edge case you handled. Thirty seconds. Silence reads as confusion.</p>
+<p><b>When stuck:</b> say what you know, what you tried, and what you would try next. That gets partial marks; silence gets zero.</p>
+<p><b>Two clean beats five half-done.</b> Move on only when tests pass and the code is readable.</p>`},
+
+{id:"build", t:"6. The machine round method", min:30, pri:"Read before day 9.", h:`
+<p>You get a brief like "railway reservation with these modules" and 3 to 4 hours. Most candidates fail here. The method:</p>
+<p><b>Minutes 0 to 20, paper only.</b> List the <b>entities</b> (Passenger, Ticket, Train) with their fields. List the <b>functions</b> the menu needs (book, cancel, show, report). Pick <b>data structures</b>: usually a dict keyed by id plus a list for order. Write the menu options.</p>
+<p><b>Minutes 20 to 60: skeleton.</b> Classes with fields, empty methods, the menu loop. Run it. It should show the menu and exit.</p>
+<pre>class Booking:
+    def __init__(self):
+        self.tickets = {}        # id -> dict
+        self.next_id = 1
+        self.rac = []            # queue
+        self.waiting = []
+
+    def book(self, name, age, pref):
+        ...
+
+def main():
+    b = Booking()
+    while True:
+        print("1 Book  2 Cancel  3 Show  4 Available  5 Exit")
+        ch = input("> ").strip()
+        if ch == "1":
+            name = input("Name: ")
+            try:
+                age = int(input("Age: "))
+            except ValueError:
+                print("Age must be a number"); continue
+            print(b.book(name, age, input("Berth L/M/U: ").upper()))
+        elif ch == "5":
+            break
+        else:
+            print("Invalid option")
+main()</pre>
+<p><b>Hours 1 to 2.5: one module at a time,</b> test each from the menu before the next. Book first, then show, then cancel, then reports.</p>
+<p><b>Last 30 minutes:</b> bad input everywhere, then read the code top to bottom and rename anything unclear.</p>
+<p><b>The change request.</b> At about 2 hours the evaluator changes a rule. If your logic lives in small methods, it is a 10-minute change. If it is in one giant function, you are done. Keep methods under 25 lines.</p>
+<p><b>What they score:</b> working core flows, modularity, invalid input handled, how fast you absorb the change, and whether you can explain the design.</p>`},
+];
+LESSONS.push(
+{id:"linux", t:"7. Linux essentials", min:60, pri:"Days 13 and 16. A DevOps interviewer may ask; the written test will not.", h:`
+<p>Linux is the operating system almost every server and every GPU box runs. A DevOps engineer lives in its terminal. You already use a Unix shell on your Mac; the commands are the same.</p>
+<p><b>Files and directories.</b></p>
+<pre>pwd                # where am I
+ls -l              # list with details
+cd /var/log        # move
+cp a.txt b.txt     # copy      cp -r dir1 dir2 for directories
+mv a.txt c.txt     # move or rename
+rm a.txt           # delete    rm -r dir (careful)
+mkdir logs
+cat file  |  head -20 file  |  tail -f file   # tail -f follows a growing log
+find / -name "*.log"
+which python3      # path of a command</pre>
+<p><b>ls -l fields</b>: <code>-rwxr-xr-- 1 sreya staff 4096 Sep 22 10:00 run.sh</code> → type and permissions, link count, owner, group, size, modified time, name. Hidden files start with a dot; <code>ls -a</code> shows them.</p>
+<p><b>Permissions.</b> Three groups (owner, group, others) × three rights (read 4, write 2, execute 1). <code>chmod 755 run.sh</code> = owner rwx, others r-x. <code>chmod +x</code> makes executable. <code>chown user:group file</code> changes owner. <code>sudo</code> runs one command as root.</p>
+<p><b>Pipes and redirection.</b> <code>|</code> sends one command's output into the next. <code>&gt;</code> writes output to a file (overwrite), <code>&gt;&gt;</code> appends, <code>2&gt;</code> redirects errors, <code>2&gt;&amp;1</code> sends errors to the same place as output.</p>
+<pre>grep -i error app.log | wc -l          # count error lines
+ps aux | grep python                    # find a running process
+python3 train.py > out.log 2>&1 &       # run in background, log everything</pre>
+<p><b>Processes.</b> <code>ps aux</code> lists them, <code>top</code> or <code>htop</code> shows live CPU and memory, <code>kill PID</code> stops one, <code>kill -9</code> forces. <code>nvidia-smi</code> is the GPU equivalent of top: utilisation, memory, which process holds the GPU. Say that in the interview; it is exactly the job post's "monitor GPU utilisation".</p>
+<p><b>"The system is slow."</b> Check in order: <code>top</code> for CPU and memory, <code>df -h</code> for disk full, <code>iostat</code> for disk wait, <code>free -h</code> for swap. Load vs utilisation: load is how many processes want CPU; utilisation is how busy it is.</p>
+<p><b>Services and logs.</b> <code>systemctl start|stop|status nginx</code>. Logs under <code>/var/log</code>; <code>journalctl -u nginx</code> for a service. <code>cron</code> schedules tasks: <code>crontab -e</code>, line <code>0 2 * * * /path/backup.sh</code> runs at 2 AM daily.</p>
+<p><b>SSH.</b> <code>ssh user@host</code> logs into a remote machine over an encrypted channel; <code>scp file user@host:/path</code> copies. Better than telnet because telnet sends passwords in plain text. SSH key pairs replace passwords. "Host key verification failed" means the server's identity changed since you last connected.</p>
+<p><b>Environment.</b> <code>echo $PATH</code>, <code>export VAR=value</code>, <code>env</code>. A shell script is a file of commands starting with <code>#!/bin/bash</code>.</p>
+<p><b>Do now:</b> CS MCQ tab, Linux questions.</p>`},
+
+{id:"osnet", t:"8. Operating systems and networking basics", min:45, pri:"Day 13. Interview questions, one line each.", h:`
+<p><b>Process vs thread.</b> A process is a running program with its own memory. A thread runs inside a process and shares its memory with other threads. Threads are cheaper to create and can talk through shared variables, but need locks.</p>
+<p><b>Deadlock.</b> Two threads each hold a lock the other needs; neither proceeds. Four conditions: mutual exclusion, hold and wait, no preemption, circular wait. Break any one to prevent it, usually by always acquiring locks in the same order.</p>
+<p><b>Memory.</b> Stack: function calls and local variables, freed automatically. Heap: objects that outlive a function, freed by the garbage collector in Python or by <code>free()</code> in C. Virtual memory lets each process think it has the whole RAM; the OS pages to disk when RAM runs out, which is why swap makes machines crawl.</p>
+<p><b>Scheduling.</b> The OS switches the CPU between processes (context switch). Round robin gives each a time slice.</p>
+<p><b>Kernel vs user space.</b> The kernel talks to hardware; programs ask it through system calls (open, read, write).</p>
+<p><b>Networking, layer by layer.</b> IP address identifies a machine; a port identifies a program on it (80 HTTP, 443 HTTPS, 22 SSH). DNS turns a name into an IP. TCP guarantees delivery and order with a handshake (web, SSH). UDP just sends, faster, may drop (video, DNS). HTTP is request/response text on top of TCP: a client sends GET or POST to a URL, the server returns a status (200 ok, 404 not found, 500 server error) and a body, often JSON.</p>
+<p><b>REST API.</b> URLs are nouns (<code>/models/3</code>), HTTP verbs are actions (GET read, POST create, PUT update, DELETE). Your deployed ML model would be a POST to <code>/predict</code> with JSON in and JSON out.</p>
+<p><b>SSH vs SSL/TLS.</b> SSH is for logging into machines; TLS encrypts HTTP to make HTTPS. Both use public-key cryptography.</p>
+<p><b>Latency vs bandwidth.</b> Latency is delay per request; bandwidth is how much data per second. A model server cares about latency (p95, the slowest 5%) and throughput (requests per second).</p>`},
+
+{id:"devops", t:"9. DevOps and MLOps concepts, and why each exists", min:45, pri:"Day 16. Understand the why; do not try to install everything on the 2015 Air.", h:`
+<p>DevOps is the practice of making code go from a laptop to production reliably and repeatedly. Each tool solves one failure that used to happen by hand.</p>
+<p><b>Git</b> solves "which version is this?". Commit is a snapshot, push sends it to GitHub, pull fetches others' work, branch is a parallel line of work, merge joins it. You use this already for study-room.</p>
+<p><b>Docker</b> solves "it works on my machine". A <i>Dockerfile</i> lists the OS, dependencies and code; building it makes an <i>image</i>; running the image makes a <i>container</i>, an isolated process that behaves the same on any machine. For ML: the image holds Python, PyTorch, the model file and the serving code, so the GPU server runs exactly what you tested.</p>
+<pre>FROM python:3.11
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY app.py model.pt .
+CMD ["python", "app.py"]</pre>
+<p><b>CI/CD</b> solves "someone forgot to run the tests". CI (continuous integration): every push triggers an automatic build and test run (GitHub Actions, Jenkins). CD (continuous delivery/deployment): if tests pass, the build is deployed automatically. For ML add: retrain on new data, evaluate, deploy only if the metric did not drop.</p>
+<p><b>Kubernetes</b> solves "run 50 copies of this container and restart the ones that die". It schedules containers across machines and scales them. One sentence is enough for this interview.</p>
+<p><b>Terraform</b> solves "we built the servers by clicking and nobody remembers how". Infrastructure as code: a text file describes the servers, network and storage, and Terraform creates them. Repeatable, reviewable in Git.</p>
+<p><b>Monitoring</b> solves "we found out from the users". Prometheus collects metrics (latency, error rate, GPU utilisation), Grafana graphs them, alerts fire on thresholds. For ML add data drift: the input distribution today vs training time.</p>
+<p><b>MLOps specifically</b>, matching the job post line by line: data preparation pipelines (versioned datasets), model registry (which model file is in production), serving (vLLM, Triton, or a FastAPI app), optimisation (quantisation, batching, caching), monitoring (latency, throughput, GPU, drift, failures).</p>
+<p><b>How to answer "have you used Docker?"</b> honestly: "Not in production. I understand it packages the app and its dependencies into an image so the model server runs identically anywhere, and I have used the same idea with Ollama model files and a pinned requirements file. I would learn the Dockerfile for my RAG app in my first week."</p>`},
+
+{id:"ml", t:"10. ML and NLP for the ZLabs round", min:60, pri:"Days 15 and 16. This is where you outscore the room.", h:`
+<p><b>What a model is.</b> A function with millions of numbers (weights) tuned so that input → correct output on training data. <b>Training</b> adjusts the weights by gradient descent to lower a loss. <b>Inference</b> runs the trained function on new input. The job is mostly about inference.</p>
+<p><b>The pipeline.</b> Collect data → clean and label → split into train / validation / test → choose features or a model → train → evaluate on validation, tune → test once → deploy → monitor. Your gastric-cancer work is this pipeline in R; say so.</p>
+<p><b>Overfitting.</b> Model memorises training data, fails on new data. Detect: training score high, validation low. Fix: more data, regularisation (your LASSO), simpler model, early stopping.</p>
+<p><b>Metrics.</b> Accuracy misleads on imbalanced data. Precision: of the ones I flagged, how many were right. Recall: of the real positives, how many I found. F1 is their harmonic mean. Confusion matrix holds all four counts. For survival models, C-index (you have 0.61).</p>
+<p><b>Classic NLP.</b> Tokenise → remove stop words → stem or lemmatise → bag of words or TF-IDF vector → logistic regression or naive Bayes. Still a strong baseline and fast.</p>
+<p><b>Embeddings.</b> Dense vectors where meaning is geometry: similar texts are close (cosine similarity). word2vec for words; sentence-transformers for sentences. You used all-MiniLM-L6-v2: 384 dimensions, fast on CPU.</p>
+<p><b>Transformer.</b> Reads all tokens at once. <i>Attention</i> lets each token weigh every other token, so "it" can attend to the noun it refers to. Stacked layers of attention + feed-forward. Encoder models (BERT) understand: classification, NER. Decoder models (GPT, Llama) generate: next token prediction. Fine-tuning adjusts a pretrained model on your labelled task.</p>
+<p><b>NER and extraction</b>, likely ZLabs' real task: label spans in text (PERSON, DATE, AMOUNT) as B/I/O tags per token, fine-tune BERT as token classification, evaluate with F1 per entity type.</p>
+<p><b>RAG</b>, your project: chunk documents → embed → store in a vector index → embed the question → retrieve top-k chunks → put them in the prompt → LLM answers with citations. Why: private data, fewer hallucinations, no retraining. Design choices you made: chunk size, k, embedding model, provider-agnostic generation.</p>
+<p><b>Deployment vocabulary from the job post.</b> Latency (time per request, report p50 and p95), throughput (requests/second), batching (group requests to use the GPU fully), quantisation (int8/int4 weights for less memory and faster inference; your Ollama GGUF files are this), GPU utilisation (nvidia-smi), data drift (inputs shift from training distribution; monitor input statistics), failures (timeouts, out-of-memory, alert on error rate).</p>
+<p><b>Seminar prep.</b> Be able to talk for 10 minutes with a paper diagram on either "how RAG works" or "how a transformer works". Practise aloud twice.</p>`},
+
+{id:"projects", t:"11. Your projects, explained the way an interviewer wants", min:60, pri:"Day 15. Twenty minutes of the technical interview is your resume.", h:`
+<p>For each project, the shape is: problem, your role, how it works, one design decision and why, one thing that broke, what you would do next. Two minutes each. Practise aloud.</p>
+<h3>RAG Document Q&A Assistant</h3>
+<p><b>Problem:</b> answer questions over a user's own PDFs with citations, without sending data to a hosted model if they do not want to. <b>Role:</b> sole developer. <b>How:</b> ingest PDF/text → split into chunks → embed each with all-MiniLM-L6-v2 → store vectors → embed question → cosine similarity top-k → build a prompt with those passages → stream the answer with [n] citations. <b>Decision:</b> a provider-agnostic LLM layer, so Ollama locally or vLLM hosted is a config change; chosen because users have different privacy and cost needs. <b>Broke:</b> be ready with a real one: chunks that split mid-sentence gave irrelevant retrieval, or long PDFs made ingestion slow; explain the fix you made. <b>Next:</b> evaluation set of question/answer pairs to measure retrieval recall, Docker image, batching embeddings.</p>
+<p><b>Likely follow-ups:</b> why that embedding model (small, CPU-friendly, good enough for English); what chunk size and why; how would 100 users at once work (queue, batch embeddings, cache, more workers); how do you know the answer is grounded (citations, and a check that the answer's sentences map to retrieved chunks).</p>
+<h3>Gastric cancer multi-omics pipeline</h3>
+<p><b>Problem:</b> find a prognostic gene signature and a fibroblast programme in gastric cancer that hold up across cohorts. <b>Role:</b> led it end to end. <b>How:</b> eight public datasets (TCGA, GTEx, GEO cohorts, single-cell, microbiome, GWAS) pulled and harmonised in one R pipeline; LASSO-Cox with nested cross-validation for a 25-gene signature; WGCNA for co-expression modules; external validation. <b>Decision:</b> nested CV so the reported C-index is honest, not tuned on the test set. <b>Broke:</b> a microbiome signal looked biological and was a sequencing-batch artefact; you detected it by comparing distributions across batches. Frame it as data drift and QA. <b>Next:</b> submit the manuscript.</p>
+<p><b>Follow-ups:</b> what is LASSO (L1 penalty shrinks weak coefficients to zero: feature selection + regularisation); why C-index 0.61 is modest and what that means; how you would productionise the pipeline (containerise, version data, schedule).</p>
+<h3>KRAS G12D de novo design</h3>
+<p><b>Problem:</b> generate novel small molecules for a hard cancer target. <b>Role:</b> solo. <b>How:</b> generate candidates, dock with DiffDock against the pocket, filter by drug-likeness and novelty against ChEMBL, with an approved drug as positive control at every step. <b>Decision:</b> the positive control, so every filter had a sanity check. <b>Broke:</b> some molecules docked outside the pocket; you excluded them explicitly. <b>Next:</b> more docking runs, MD validation.</p>
+<h3>Unalone and DuoGrow</h3>
+<p>Say exactly what you built: Unalone frontend (chat interface, peer connect, actions) in JavaScript; DuoGrow team lead (concept, split work, drove submission). Do not claim the backend. If asked what you would do differently: write tests, define the API contract first.</p>
+<p><b>Do now:</b> Interview tab, write all project answers, then record yourself saying them.</p>`},
+
+{id:"sql", t:"12. SQL in one hour", min:45, pri:"Day 16. One or two queries in the technical interview.", h:`
+<pre>-- tables: customers(id, name, city)   orders(id, customer_id, amount, order_date)
+SELECT name, city FROM customers WHERE city = 'Chennai';
+SELECT COUNT(*) FROM orders;
+SELECT customer_id, SUM(amount) AS total
+FROM orders
+GROUP BY customer_id
+ORDER BY total DESC
+LIMIT 3;                                  -- top 3 customers by spend
+SELECT c.name, o.amount
+FROM customers c
+JOIN orders o ON o.customer_id = c.id;    -- inner join: only matching rows
+SELECT c.name, o.amount
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id;  -- left join: all customers, NULL if no order
+SELECT city, COUNT(*) FROM customers GROUP BY city HAVING COUNT(*) > 1;
+SELECT * FROM orders WHERE amount > (SELECT AVG(amount) FROM orders);   -- subquery</pre>
+<p><b>Order of clauses:</b> SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT. WHERE filters rows before grouping; HAVING filters groups after.</p>
+<p><b>Keys.</b> Primary key: unique id per row. Foreign key: a column that references another table's primary key (orders.customer_id).</p>
+<p><b>Normalisation</b> in one line each. 1NF: one value per cell, no lists. 2NF: every non-key column depends on the whole primary key. 3NF: non-key columns do not depend on other non-key columns. Purpose: no duplicated facts, so an update happens in one place.</p>
+<p><b>Index.</b> A sorted structure on a column that makes WHERE and JOIN on it fast, at the cost of slower writes.</p>`},
+
+{id:"apt", t:"13. Aptitude shortcuts", min:30, pri:"Days 3 to 6 alongside the drills.", h:`
+<p><b>Percentages.</b> x% of y = xy/100. Increase by 20% then decrease by 20% is not back to start: ×1.2×0.8 = 0.96, a 4% loss. Successive discounts a% and b%: total = a + b − ab/100.</p>
+<p><b>Profit and loss.</b> Profit% = (SP − CP)/CP × 100. Always on cost price unless told otherwise.</p>
+<p><b>Ratio.</b> Split total T in ratio a:b → parts T·a/(a+b) and T·b/(a+b).</p>
+<p><b>Averages.</b> Sum = average × count. Removing one number: new average = (sum − x)/(n − 1).</p>
+<p><b>Time and work.</b> Convert to rates: A does 1/10 per day, B 1/15 → together 1/6 → 6 days. Men × days = constant for the same work.</p>
+<p><b>Speed.</b> Distance = speed × time. km/h to m/s: multiply by 5/18. Train passing a pole: distance = its own length. Average speed = total distance / total time, never the average of speeds. Boats: downstream speed = boat + river, upstream = boat − river.</p>
+<p><b>Interest.</b> Simple: PRT/100. Compound: P(1 + R/100)^T − P. Two-year CI at 10% on 1000 = 210.</p>
+<p><b>Counting.</b> nPr = n!/(n−r)! (order matters). nCr = n!/(r!(n−r)!) (order does not). Handshakes among n people = nC2.</p>
+<p><b>Probability.</b> Favourable / total. Two dice: 36 outcomes; sum 7 is the most likely (6 ways). Without replacement: multiply successive fractions with the denominator shrinking.</p>
+<p><b>Number tricks.</b> Unit digit cycles (7: 7,9,3,1). Sum 1..n = n(n+1)/2. First n odd numbers sum to n². Numbers divisible by 3: digit sum divisible by 3. HCF × LCM = product of the two numbers.</p>
+<p><b>Clock.</b> Hour hand 0.5° per minute, minute hand 6° per minute. Angle at h:m = |30h − 5.5m|.</p>
+<p><b>Series.</b> Check differences, then differences of differences, then ratios, then squares/cubes, then alternating two series.</p>`}
+);
+// ---------- CS MCQ (Linux / OS / Networking / DevOps) ----------
+const MCQ = [
+["Which command shows the current directory?",["pwd","ls","cd","dir"],0,"pwd prints the working directory."],
+["What does chmod 755 file give the owner?",["read, write, execute","read only","read and write","execute only"],0,"7 = 4+2+1 for the owner; 5 = read + execute for group and others."],
+["Which symbol appends output to a file?",[">>",">","|","<"],0,"> overwrites; >> appends."],
+["What does 2>&1 do?",["sends stderr to the same place as stdout","sends stdout to stderr","runs two commands","redirects to file 1"],0,"2 is stderr, 1 is stdout."],
+["Which command follows a growing log file?",["tail -f","head","cat","less -n"],0,"tail -f keeps printing new lines."],
+["Which command lists running processes?",["ps aux","ls -p","proc","jobs -a"],0,"ps shows processes; top shows them live."],
+["kill -9 PID does what?",["forces the process to stop immediately","asks it to exit politely","pauses it","restarts it"],0,"-9 is SIGKILL, cannot be caught."],
+["Where are system logs usually stored?",["/var/log","/etc/log","/home/log","/tmp"],0,"/var/log holds syslog, auth.log and service logs."],
+["Which command shows GPU utilisation on an NVIDIA machine?",["nvidia-smi","top","gpustat --linux","lsgpu"],0,"nvidia-smi shows utilisation, memory and processes."],
+["What does grep do?",["searches text for a pattern","copies files","changes permissions","compresses files"],0,"grep -i for case-insensitive, -r recursive."],
+["Which line runs a script every day at 2 AM in cron?",["0 2 * * * /path/s.sh","2 0 * * * /path/s.sh","* * 2 * * /path/s.sh","0 0 2 * * /path/s.sh"],0,"Fields: minute hour day month weekday."],
+["What is the purpose of the pipe | ?",["send one command's output to another's input","run commands in parallel","redirect to a file","comment out"],0,"grep error log | wc -l counts matches."],
+["Which is true of a hidden file in Linux?",["its name starts with a dot","it has no permissions","only root can see it","it is in /hidden"],0,"ls -a shows them."],
+["ssh is preferred over telnet because",["ssh encrypts the session","telnet is slower","ssh needs no password","telnet is Windows-only"],0,"telnet sends passwords in plain text."],
+["Which command shows free disk space?",["df -h","du -a","free -h","ls -s"],0,"df for filesystems; du for directory sizes; free for RAM."],
+["systemctl status nginx shows",["whether the nginx service is running","nginx config","nginx logs only","nginx version"],0,"systemctl manages services under systemd."],
+["What is a kernel?",["the core of the OS that talks to hardware","a shell","a text editor","a package manager"],0,"Programs use system calls to ask the kernel for hardware access."],
+["A process and a thread differ because",["threads share the process's memory","processes are faster to create","threads cannot run in parallel","processes share memory"],0,"Threads are lightweight and share memory, so they need locks."],
+["Deadlock requires all of the following EXCEPT",["preemption","mutual exclusion","hold and wait","circular wait"],0,"The condition is NO preemption. Allowing preemption breaks deadlock."],
+["Virtual memory allows",["each process to use more memory than physical RAM via paging","faster CPUs","no swap","only 4 GB RAM"],0,"The OS pages to disk; heavy paging is why machines crawl."],
+["Which memory is freed automatically when a function returns?",["stack","heap","disk","cache"],0,"Locals live on the stack; heap objects persist until freed."],
+["Which port does HTTPS use by default?",["443","80","22","21"],0,"80 HTTP, 22 SSH, 21 FTP."],
+["DNS does what?",["turns a domain name into an IP address","encrypts traffic","assigns ports","routes packets"],0,"Name resolution."],
+["TCP differs from UDP in that TCP",["guarantees delivery and order","is faster","is used for video streaming","has no ports"],0,"UDP is fire-and-forget."],
+["HTTP status 404 means",["not found","server error","ok","unauthorised"],0,"200 ok, 500 server error, 401 unauthorised."],
+["In REST, which verb creates a resource?",["POST","GET","DELETE","HEAD"],0,"GET reads, PUT updates, DELETE removes."],
+["Latency is",["time taken for one request","requests per second","data per second","CPU usage"],0,"Throughput is requests per second."],
+["A Docker image is",["a packaged, immutable template for running a container","a running process","a virtual machine","a Git branch"],0,"Running an image gives a container."],
+["Continuous Integration means",["every push is automatically built and tested","code is deployed daily","developers integrate manually","tests run once a month"],0,"CI catches breakage early."],
+["Terraform is used for",["defining infrastructure as code","container orchestration","monitoring","version control"],0,"Kubernetes orchestrates; Prometheus monitors; Git versions."],
+["Kubernetes does what?",["schedules and scales containers across machines","builds images","stores code","edits configs"],0,"It restarts dead containers and scales replicas."],
+["Data drift is",["input distribution changing after deployment","a slow disk","a network delay","a Git conflict"],0,"Monitor input statistics vs training time."],
+["Quantisation of a model",["stores weights in fewer bits to cut memory and speed inference","adds layers","increases accuracy","removes tokens"],0,"int8/int4; small accuracy loss."],
+["Batching requests to a GPU mainly improves",["throughput","latency of each request","accuracy","disk usage"],0,"It can raise individual latency slightly."],
+["git pull does what?",["fetches remote changes and merges them","uploads commits","creates a branch","deletes history"],0,"push uploads; pull downloads and merges."],
+["Which file lists a Python project's dependencies?",["requirements.txt","package.json","Makefile","Dockerfile"],0,"package.json is Node."],
+["export PATH=$PATH:/opt/bin does what?",["adds /opt/bin to the command search path","runs /opt/bin","deletes PATH","prints PATH"],0,"PATH is where the shell looks for commands."],
+["What does a shebang #!/bin/bash line do?",["tells the OS which interpreter runs the script","comments the file","exports variables","makes it executable"],0,"Still needs chmod +x."],
+["Which tool collects metrics like latency and error rate?",["Prometheus","Docker","Terraform","Git"],0,"Grafana graphs them."],
+["A context switch is",["the CPU switching from one process to another","a network handoff","a Git checkout","a disk swap"],0,"Costly if too frequent."],
+];
+
 // ---------- ENGINE ----------
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -343,11 +696,11 @@ function fmt(s){ const m=Math.floor(s/60), r=s%60; return (m<10?"0":"")+m+":"+(r
 // days left
 (function(){ const d = Math.ceil((new Date("2026-10-09") - new Date())/86400000); $("#days").textContent = d>0 ? d+" days to go." : "Drive day."; })();
 
-const TABS = [["home","Start"],["c","C output"],["apt","Aptitude"],["mock","Mock R1"],["code","Coding"],["build","Build"],["nlp","NLP / ML"],["interview","Interview"],["progress","Progress"]];
+const TABS = [["home","Start"],["learn","Learn"],["c","C output"],["apt","Aptitude"],["mock","Mock R1"],["code","Coding"],["build","Build"],["nlp","NLP / ML"],["mcq","CS MCQ"],["interview","Interview"],["progress","Progress"]];
 function nav(id){
   $("#nav").innerHTML = TABS.map(([k,l]) => `<button class="${k===id?'on':''}" onclick="nav('${k}')">${l}</button>`).join("");
   clearInterval(window._t);
-  ({home, c:drillC, apt:drillApt, mock, code:coding, build, nlp, interview, progress})[id]();
+  ({home, learn, c:drillC, apt:drillApt, mock, code:coding, build, nlp, mcq, interview, progress})[id]();
   window.scrollTo(0,0);
 }
 
@@ -357,7 +710,8 @@ function home(){
   $("#view").innerHTML = `
   <div class="card ok"><b>How to use this in 17 days.</b>
   <ol>
-  <li><b>Every day:</b> 15 C output, 15 aptitude, 3 coding problems. About 2.5 hours.</li>
+  <li><b>First:</b> Learn tab, lessons 1 and 2 today, then one lesson a day in the order shown. Each is 30 to 90 minutes and tells you which drill to do after.</li>
+  <li><b>Every day:</b> 15 C output, 15 aptitude, 3 coding problems. About 2.5 hours on top of the lesson.</li>
   <li><b>Days 7 and 14:</b> Mock R1 (timed, 20 questions, no notes).</li>
   <li><b>Days 9 and 12:</b> one Build brief each, full 3 hours, with the timer here.</li>
   <li><b>Days 15 and 16:</b> NLP cards until you can say every one aloud, then Interview drills.</li>
@@ -527,22 +881,57 @@ function interview(){
   document.querySelectorAll("textarea[data-k]").forEach(t=>t.oninput=()=>{ store.iv=store.iv||{}; store.iv[t.dataset.k]=t.value; store.days=store.days||{}; store.days[today()]=1; save(); });
 }
 
+
+// ---- LEARN ----
+function learn(){
+  const done = store.lessons || {};
+  $("#view").innerHTML = `<div class="card"><b>Lessons, in the order to read them</b><p class="small">Read one, do the drill it points to, tick it. Lessons 1 to 6 are the rounds that eliminate people. Lessons 7 to 13 are for the interviews. Do not read 7 to 10 before you have finished 1 to 5.</p></div>` +
+    LESSONS.map((l,i)=>`<div class="card" style="cursor:pointer" onclick="openLesson(${i})"><div class="row" style="justify-content:space-between"><b>${done[l.id]?'✓ ':''}${esc(l.t)}</b><span class="small">${l.min} min</span></div><div class="small">${esc(l.pri)}</div></div>`).join("");
+}
+function openLesson(i){
+  const l = LESSONS[i];
+  $("#view").innerHTML = `<button class="b s" onclick="nav('learn')">← lessons</button><h2>${esc(l.t)}</h2><div class="small">${esc(l.pri)}</div><div class="card">${l.h}</div>
+  <div class="row"><button class="b" id="done">Mark as read</button>${i+1<LESSONS.length?`<button class="b s" onclick="openLesson(${i+1})">Next lesson</button>`:''}</div>`;
+  $("#done").onclick = ()=>{ store.lessons=store.lessons||{}; store.lessons[l.id]=today(); store.days=store.days||{}; store.days[today()]=1; save(); nav('learn'); };
+}
+// ---- CS MCQ ----
+function mcq(){
+  let items = shuffle(MCQ.map((x,i)=>({q:x[0],opts:x[1],ans:x[2],ex:x[3],id:i})));
+  const redo = Object.keys(store.wrong||{}).filter(k=>k.startsWith("mcq:")).map(k=>+k.split(":")[1]);
+  items = [...items.filter(x=>redo.includes(x.id)), ...items.filter(x=>!redo.includes(x.id))].slice(0,15);
+  let i=0, score=0;
+  function show(){
+    if(i>=items.length){ $("#view").innerHTML=`<div class="card ok"><b>Set done: ${score}/${items.length}</b><button class="b" onclick="nav('mcq')">Another set</button></div>`; return; }
+    const it = items[i];
+    const order = shuffle([0,1,2,3]);
+    $("#view").innerHTML = `<div class="small">Linux / OS / networking / DevOps · ${i+1}/${items.length}</div><div class="card"><div style="font-size:16px;margin-bottom:8px">${esc(it.q)}</div>${order.map(k=>`<button class="b s" style="display:block;width:100%;text-align:left" data-k="${k}">${esc(it.opts[k])}</button>`).join("")}<div id="fb"></div></div>`;
+    document.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{
+      const ok = +b.dataset.k===it.ans; if(ok) score++; log("mcq", it.id, ok);
+      document.querySelectorAll("[data-k]").forEach(x=>x.disabled=true);
+      $("#fb").innerHTML=`<div class="card ${ok?'ok':'warn'}"><b>${ok?'Correct':'Answer: '+esc(it.opts[it.ans])}</b><div>${esc(it.ex)}</div><button class="b" id="next" style="margin-top:8px">Next</button></div>`;
+      $("#next").onclick=()=>{i++;show();}; $("#next").focus();
+    });
+  }
+  show();
+}
+
 // ---- PROGRESS ----
 function progress(){
   const L = store.log||[];
   const by = k => { const a=L.filter(x=>x.k===k); return [a.length, a.filter(x=>x.ok).length]; };
-  const rows = [["c","C output"],["apt","Aptitude"],["code","Coding"],["nlp","NLP cards"]].map(([k,l])=>{ const [n,ok]=by(k); const pct=n?Math.round(ok/n*100):0; return `<div class="stat"><span class="small">${l}</span><b>${pct}%</b><span class="small">${ok}/${n}</span><div class="bar"><i style="width:${pct}%"></i></div></div>`; }).join("");
+  const rows = [["c","C output"],["apt","Aptitude"],["code","Coding"],["nlp","NLP cards"],["mcq","CS MCQ"]].map(([k,l])=>{ const [n,ok]=by(k); const pct=n?Math.round(ok/n*100):0; return `<div class="stat"><span class="small">${l}</span><b>${pct}%</b><span class="small">${ok}/${n}</span><div class="bar"><i style="width:${pct}%"></i></div></div>`; }).join("");
   const wrong = Object.keys(store.wrong||{});
   const mocks = (store.mocks||[]).map(m=>`<li>${m.d}: ${m.s}/20</li>`).join("") || "<li>None yet. Day 7 and day 14.</li>";
   const last7 = [...Array(7)].map((_,i)=>{ const d=new Date(); d.setDate(d.getDate()-i); const s=d.toISOString().slice(0,10); return (store.days||{})[s]?"■":"□"; }).reverse().join(" ");
   $("#view").innerHTML = `<div class="grid">${rows}</div>
   <div class="card"><b>Last 7 days</b><div style="font-size:20px;letter-spacing:4px">${last7}</div><span class="small">A missed day is the only real failure mode of this plan.</span></div>
   <div class="card"><b>Mock R1 scores</b><ul>${mocks}</ul></div>
-  <div class="card"><b>To redo (${wrong.length})</b><p class="small">These come first in every drill until you get them right.</p>${wrong.slice(0,30).map(w=>{ const [k,id]=w.split(":"); const it = k==='c'?C[id]:k==='apt'?APT[id]:k==='code'?CODE[id]:NLP[id]; const label = k==='c'? (it.c.split("\n").slice(-1)[0]) : k==='apt'? it.q : k==='code'? it.t : it[0]; return `<div class="small">• [${k}] ${esc(label).slice(0,90)}</div>`; }).join("")}</div>
+  <div class="card"><b>To redo (${wrong.length})</b><p class="small">These come first in every drill until you get them right.</p>${wrong.slice(0,30).map(w=>{ const [k,id]=w.split(":"); const it = k==='c'?C[id]:k==='apt'?APT[id]:k==='code'?CODE[id]:k==='mcq'?MCQ[id]:NLP[id]; const label = k==='c'? (it.c.split("\n").slice(-1)[0]) : k==='apt'? it.q : k==='code'? it.t : it[0]; return `<div class="small">• [${k}] ${esc(label).slice(0,90)}</div>`; }).join("")}</div>
   <div class="card"><b>Readiness check</b><ul>
   <li>C output accuracy over last 30: ${(()=>{const a=L.filter(x=>x.k==='c').slice(-30); return a.length?Math.round(a.filter(x=>x.ok).length/a.length*100)+'%':'—';})()} (target 80%)</li>
   <li>Level-2 coding problems solved: ${CODE.map((p,i)=>({p,i})).filter(x=>x.p.lv===2 && L.some(l=>l.k==='code'&&l.id===x.i&&l.ok)).length}/${CODE.filter(p=>p.lv===2).length} (target 8)</li>
   <li>Build briefs completed: ${Object.keys(store.builds||{}).length} (target 2)</li>
+  <li>Lessons read: ${Object.keys(store.lessons||{}).length}/${LESSONS.length}</li>
   <li>NLP cards known: ${Object.keys(store.nlpKnown||{}).length}/${NLP.length} (target all)</li></ul>
   <button class="b s" onclick="if(confirm('Erase all progress on this device?')){localStorage.removeItem('zoho-prep');location.reload();}">Reset progress</button></div>`;
 }

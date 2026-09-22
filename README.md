@@ -42,12 +42,14 @@ features, RNNs, BPTT, LSTM, GRU, time-series forecasting and bidirectional RNNs.
 
 Round-by-round practice matching Zoho's actual process:
 
+- **Learn** — 13 lessons from zero: Python, reading C, OOP, DSA, problem method, machine-round method, Linux, OS and networking, DevOps/MLOps concepts, ML/NLP for ZLabs, her projects as interview answers, SQL, aptitude shortcuts
 - **C output** — 60 predict-the-output questions (every deterministic answer verified with gcc), written-answer format like the real paper
 - **Aptitude** — 40 questions with worked solutions
 - **Mock R1** — 10 C + 10 aptitude in 60 minutes, scored against Zoho's likely cutoff
 - **Coding** — 55 problems in three levels with tests, run in the browser via Pyodide (Python). 17 come from the community `Zoho_Preparation` round-2 set.
 - **Build** — 10 machine-round briefs (railway, taxi, bank, inventory, social media, library, hotel, elevator, food delivery, family tree) with a 3-hour timer, design notes, self-check list and a change request that unlocks at 2 hours
 - **NLP / ML** — 32 flashcards tied to the ZLabs role and Sreya's own projects
+- **CS MCQ** — 40 Linux / OS / networking / DevOps multiple-choice questions, sourced from the bregman-arie/devops-exercises topics
 - **Interview** — 38 project, technical and HR questions with saved answers
 
 Wrong answers resurface first in every drill until cleared. Progress in localStorage.
