@@ -55,6 +55,7 @@ Wrong answers resurface first in every drill until cleared. Progress in localSto
 ## Resume — `Sreya_Resume_Zoho.html`
 
 Resume targeted at the Zoho DevOps/MLOps role. Print to PDF from the browser.
+`Sreya_Resume_Zoho.tex` is the same content in the Jake's Resume LaTeX template: upload to Overleaf and compile with pdfLaTeX.
 
 ## Zoho drive plan — `Zoho_2027_Plan.html`
 

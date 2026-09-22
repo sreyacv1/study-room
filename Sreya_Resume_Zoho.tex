@@ -1,0 +1,132 @@
+%-------------------------
+% Resume in LaTeX (Jake's Resume template, Overleaf-compatible)
+% Upload this file to overleaf.com -> New Project -> Upload Project, compile with pdfLaTeX
+%-------------------------
+\documentclass[letterpaper,10.5pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.55in}
+\addtolength{\evensidemargin}{-0.55in}
+\addtolength{\textwidth}{1.1in}
+\addtolength{\topmargin}{-.6in}
+\addtolength{\textheight}{1.2in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\pdfgentounicode=1
+
+\newcommand{\resumeItem}[1]{\item\small{{#1 \vspace{-2pt}}}}
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+\begin{center}
+    \textbf{\Huge \scshape Sreya C V} \\ \vspace{1pt}
+    \small Malappuram, Kerala $|$ +91 90741 22676 $|$ \href{mailto:sreyacv636@gmail.com}{\underline{sreyacv636@gmail.com}} $|$
+    \href{https://github.com/sreyacv1}{\underline{github.com/sreyacv1}} $|$
+    \href{https://linkedin.com/in/sreya-cv-680617393}{\underline{linkedin.com/in/sreya-cv-680617393}}
+\end{center}
+
+\section{Summary}
+\small{B.Tech Bioinformatics student (Class of 2027) who builds data and machine-learning pipelines end to end: acquiring public datasets, cleaning and representing them, training and validating models, and packaging the result so it runs with one command. Built a retrieval-augmented generation service with a provider-agnostic inference layer, and a reproducible multi-omics analysis pipeline now prepared for journal submission. Seeking a DevOps / MLOps role where reliable data preparation, deployment and model monitoring matter.}
+
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Python (primary), R, C, JavaScript/TypeScript, SQL, shell} \\
+     \textbf{ML / NLP}{: scikit-learn, sentence-transformers, LangChain, vector search, embeddings, RAG, evaluation (CV, C-index, decision curves), PyTorch basics} \\
+     \textbf{Data \& pipelines}{: reproducible one-command pipelines, public-data ingestion (TCGA, GEO, GTEx, ChEMBL), batch-effect diagnosis, Git, Linux} \\
+     \textbf{Serving}{: Streamlit, OpenAI-compatible LLM endpoints (Ollama, vLLM), streaming responses} \\
+     \textbf{Fundamentals}{: OOP, data structures \& algorithms, biostatistics}
+    }}
+ \end{itemize}
+
+\section{Projects}
+    \resumeSubHeadingListStart
+      \resumeProjectHeading
+          {\textbf{RAG-Based Document Q\&A Assistant} $|$ \emph{Python, LangChain, sentence-transformers, Ollama / vLLM, Streamlit}}{\href{https://github.com/sreyacv1/q-n-a-assistant}{github.com/sreyacv1/q-n-a-assistant}}
+          \resumeItemListStart
+            \resumeItem{Built the full pipeline: PDF/text ingestion, chunking, embedding (all-MiniLM-L6-v2), semantic retrieval, and streamed grounded answers with inline [n] citations and relevance-scored sources.}
+            \resumeItem{Designed a provider-agnostic LLM layer so the same code serves from a local Ollama model or a hosted vLLM endpoint, switching by configuration only.}
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{Gastric Cancer Multi-Omics Pipeline} $|$ \emph{R 4.3, TCGA-STAD, GTEx, 5 GEO cohorts, scRNA-seq, 16S, LASSO-Cox, WGCNA}}{\href{https://github.com/sreyacv1/GASTRIC-CANCER}{github.com/sreyacv1/GASTRIC-CANCER}}
+          \resumeItemListStart
+            \resumeItem{Acquired, harmonised and versioned eight public datasets into a reproducible one-command R pipeline; trained a 25-gene LASSO-Cox prognostic model with nested cross-validation (C-index 0.61) and validated it on independent external cohorts.}
+            \resumeItem{Diagnosed an apparent microbiome ``dysbiosis'' signal as a sequencing-batch artefact through drift analysis across cohorts; reported an honest null from two-sample Mendelian randomisation. Manuscript prepared for journal submission.}
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{Cracking KRAS G12D: AI-Guided De Novo Inhibitor Design} $|$ \emph{Python, DiffDock, RDKit, ChEMBL}}{Boltzmann AI Hackathon 2026, individual entry}
+          \resumeItemListStart
+            \resumeItem{Sole author. Generated and filtered 46 de novo molecules against the KRAS G12D switch II pocket with an approved inhibitor (MRTX1133) as positive control through every stage; 8 of 15 candidates beat the reference's in-pocket pose confidence, reproduced across two independent runs.}
+            \resumeItem{Automated the screen as a scripted pipeline: docking, drug-likeness (Lipinski / QED), and novelty checks against ChEMBL (Tanimoto 0.43--0.67).}
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{Unalone: AI-Powered Emotional Wellness Companion} $|$ \emph{JavaScript, Node.js, LLM chatbot with voice}}{\href{https://github.com/sreyacv1/Unalone}{github.com/sreyacv1/Unalone}}
+          \resumeItemListStart
+            \resumeItem{Smart India Hackathon, cleared internal college selection. Built the frontend: mood-adaptive chatbot interface, anonymous peer connect and one-click personalised actions.}
+          \resumeItemListEnd
+      \resumeProjectHeading
+          {\textbf{DuoGrow: AI Accountability OS for Two} $|$ \emph{TypeScript}}{\href{https://github.com/SaiK1105/duogrow}{github.com/SaiK1105/duogrow}}
+          \resumeItemListStart
+            \resumeItem{OpenAI Hackathon, ``AI in Daily Life'' track. Team lead: owned the concept, split the work across the team and drove the build to a working hackathon submission.}
+          \resumeItemListEnd
+    \resumeSubHeadingListEnd
+
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {SASTRA Deemed to be University}{Thanjavur, Tamil Nadu}
+      {B.Tech, Bioinformatics. Coursework: Data Structures \& Algorithms, Machine Learning, Deep Learning, Big Data, Biostatistics}{Expected 2027}
+    \resumeSubheading
+      {MES Central School}{Tirur, Kerala}
+      {Class XII, 78.4\% (2021); Class X, 89.4\% (2019)}{}
+  \resumeSubHeadingListEnd
+
+\section{Languages}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{English (fluent), Malayalam (native), Tamil, Hindi}}
+ \end{itemize}
+
+\end{document}
