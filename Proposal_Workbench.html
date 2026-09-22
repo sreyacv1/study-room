@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proposal Workbench</title>
+<meta name="description" content="Planning workbench for the Big Data mini research proposal on drug-target interaction mining for drug repurposing: reference data, honesty checks, rubric, and your own draft.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root{--paper:#F0F1F4;--card:#fff;--ink:#1C1D22;--ink2:#5C6070;--line:#D9DCE4;--accent:#2D4B9A;--accent2:#E8EDF9;--warn:#B3261E;--warnbg:#FDECEA;--ok:#1E7A46;--okbg:#E6F4EC;--code:#F6F7FA}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#131419;--card:#1C1E26;--ink:#E7E8ED;--ink2:#9AA0B0;--line:#2C2F3A;--accent:#7B96E8;--accent2:#232A42;--warn:#F28B82;--warnbg:#3A1F1E;--ok:#7DD3A0;--okbg:#1B3327;--code:#15171E}}
+:root[data-theme="dark"]{--paper:#131419;--card:#1C1E26;--ink:#E7E8ED;--ink2:#9AA0B0;--line:#2C2F3A;--accent:#7B96E8;--accent2:#232A42;--warn:#F28B82;--warnbg:#3A1F1E;--ok:#7DD3A0;--okbg:#1B3327;--code:#15171E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",-apple-system,Helvetica,Arial,sans-serif;line-height:1.55}
+.wrap{max-width:820px;margin:0 auto;padding:20px 16px 80px}
+h1{font-family:Archivo,sans-serif;font-size:26px;font-weight:800;margin:8px 0 2px;letter-spacing:-.02em}
+h2{font-family:Archivo,sans-serif;font-size:19px;font-weight:600;margin:20px 0 8px}
+h3{font-size:15px;font-weight:600;margin:14px 0 6px}
+.lede{color:var(--ink2);margin:0 0 12px;font-size:14px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 16px;position:sticky;top:0;background:var(--paper);padding:8px 0;z-index:5}
+nav button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+nav button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.warn{background:var(--warnbg);border-color:var(--warn)}.ok{background:var(--okbg);border-color:var(--ok)}.note{background:var(--accent2);border-color:var(--accent)}
+button.b{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 15px;font:inherit;font-size:14px;cursor:pointer;margin:4px 6px 4px 0}
+button.b.s{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+textarea{font:inherit;font-size:15px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%;min-height:150px;resize:vertical;line-height:1.5}
+input[type=number],select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:8px 0}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--ink2)}
+code,pre{font-family:"IBM Plex Mono",Menlo,monospace;font-size:13px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto;white-space:pre-wrap}
+code{background:var(--code);padding:1px 5px;border-radius:4px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.small{font-size:13px;color:var(--ink2)}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:12px;background:var(--accent2);color:var(--accent);margin:2px 4px 2px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
+.stat b{font-family:Archivo,sans-serif;font-size:22px;display:block}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--accent)}
+ul,ol{padding-left:20px}li{margin:3px 0}
+label.ck{display:block;padding:4px 0;cursor:pointer}
+details{margin:6px 0}summary{cursor:pointer;font-weight:500}
+.hidden{display:none}
+@media print{nav,button,.noprint{display:none!important}body{background:#fff;color:#000}.card{border:0;padding:0}textarea{border:0;min-height:0;height:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Proposal Workbench</h1>
+<p class="lede">Big Data for a Biological Problem: mini research proposal. Topic fixed: mining drug-target interaction data to propose drug repurposing candidates. <span id="wc"></span></p>
+<nav id="nav"></nav>
+<div id="view"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+let store={}; try{store=JSON.parse(localStorage.getItem("proposal-wb")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("proposal-wb",JSON.stringify(store))}catch(e){}}
+const SECTIONS=[
+ {id:"title",t:"1. Title",marks:"part of 3",target:[10,25],
+  ask:["Does it name the disease, the data type, and the method? Pattern: <i>Verb + candidates + for DISEASE + by METHOD on DATA</i>.","Would a reader know what one result looks like from the title alone?"],
+  weak:"Drug repurposing using big data.", strong:"(write your own) e.g. shape: 'Ranking approved drugs as repurposing candidates for X by network proximity between drug targets and X-associated genes across ChEMBL, Open Targets and STRING'."},
+ {id:"problem",t:"2. The biological problem",marks:"3 (clarity and significance)",target:[150,250],
+  ask:["What is the unsolved question, in one sentence a clinician would recognise?","Why do existing treatments fall short for this disease? Name them.","Why repurposing rather than new drugs: cost, time, safety data already exist. One sentence, with a number you can cite.","What is the gap: not 'no one has done repurposing', but what specifically is missing (for example, no systematic ranking across all approved drugs for this disease using evidence-weighted targets).","What is the single output you promise?"],
+  weak:"Many diseases have no cure. Drug repurposing can help.", strong:"A specific disease, its specific unmet need, and a specific gap in how candidates are currently found."},
+ {id:"bigdata",t:"3. Why this is a big data problem",marks:"2 (justification)",target:[120,200],
+  ask:["Which of the four Vs apply, with a number for each you claim. Do not claim all four unless you can back all four.","Use the Scale Check tab. If your pipeline is a join of two tables under 1 GB, say honestly that the core join is small and the big-data part is elsewhere (network propagation over millions of edges, expression signatures, or literature).","Name the step that breaks a laptop and why: memory (a 20-million-edge graph with scores), compute (all-pairs shortest paths), or I/O (terabytes of expression profiles)."],
+  weak:"There are millions of records so it is big data.", strong:"'The drug-target join is 2 GB and fits in memory. The bottleneck is network propagation of 4,000 disease genes across 12 million STRING edges for 2,700 drugs, which is 2,700 random-walk runs; on Spark GraphX this partitions across workers.'"},
+ {id:"data",t:"4. Data",marks:"part of 3 (data and approach)",target:[150,250],
+  ask:["Each source: name, what it contains, how you download it, approximate size, and what ONE record looks like. Copy the record shapes from the Data tab, but write the description yourself.","Which source gives drugs, which gives targets, which gives disease genes, which gives the network. Four roles, four sources minimum.","How do identifiers map across sources (UniProt accession, Ensembl gene ID, ChEMBL ID, DrugBank ID)? This is where real projects break."],
+  weak:"I will use DrugBank and other databases.", strong:"A table: source, role, size, format, one example record, licence."},
+ {id:"approach",t:"5. Approach (the pipeline)",marks:"part of 3",target:[250,400],
+  ask:["Numbered steps. For each: input, operation, output, tool.","Mark each step with where it runs: laptop, or cluster/Spark, and why.","How are candidates scored? Pick one method and be able to defend it (see Method tab).","How do you avoid trivial answers: drugs already approved for the disease must be held out as a validation set, not reported as discoveries.","A diagram: boxes for sources, arrows into an integration step, a scoring step, a ranked list. Draw it by hand if submitting on paper."],
+  weak:"Collect data, integrate, analyse with machine learning, get results.", strong:"Each step has a named input file, a named operation, and a reason it sits on the laptop or the cluster."},
+ {id:"outcome",t:"6. Expected outcome",marks:"2 (with challenges)",target:[100,180],
+  ask:["What is the deliverable: a ranked list of N drugs with scores and the evidence path for each.","How do you know it worked: hold out drugs already known to be repurposed or in trials for the disease; measure how highly your method ranks them (recall at top 50, or AUROC). Give the number you would call success.","What is the negative result that would still be informative?"],
+  weak:"A list of drugs that might work.", strong:"'A ranked list of approved drugs; success = at least 3 of the 8 drugs currently in phase 2/3 trials for the disease appear in my top 50, versus under 1 expected by chance.'"},
+ {id:"challenges",t:"7. Challenges and limitations",marks:"part of 2",target:[100,160],
+  ask:["The hardest technical part: identifier mapping, or evidence quality (predicted vs experimental interactions), or graph scale.","One honest limitation of the plan: computational predictions need experimental validation; network methods favour well-studied proteins (literature bias); data leakage if known drugs are not held out.","What you would do about each, in one line."],
+  weak:"Data may be noisy.", strong:"A named limitation, why it matters for this disease, and the mitigation you chose or could not afford."},
+];
+const TABS=[["start","Start"],["disease","Disease choice"],["data","Data sources"],["scale","Scale check"],["method","Method"],["draft","Your draft"],["rubric","Rubric"],["expand","Expansions"]];
+function nav(id){$("#nav").innerHTML=TABS.map(([k,l])=>`<button class="${k===id?'on':''}" onclick="nav('${k}')">${l}</button>`).join("");({start,disease,data,scale,method,draft,rubric,expand})[id]();window.scrollTo(0,0);updateWC();}
+function words(s){return (s||"").trim().split(/\s+/).filter(Boolean).length}
+function updateWC(){const n=SECTIONS.reduce((a,s)=>a+words((store.draft||{})[s.id]),0);$("#wc").textContent=n?`Draft: ${n} words (2 to 3 pages is roughly 900 to 1400).`:"";}
+
+function start(){$("#view").innerHTML=`
+<div class="card note"><b>How this works.</b> The brief says AI-written text gets no credit, and you will be asked to defend the choices. So this page gives you facts, questions and checks, and you write every sentence. Nothing here is a template to copy.</div>
+<div class="card"><b>The assessment, and where marks are lost</b>
+<table><tr><th>Criterion</th><th>Marks</th><th>Usually lost by</th></tr>
+<tr><td>Problem clarity and significance</td><td>3</td><td>Vague disease, no named gap, no number.</td></tr>
+<tr><td>Justification as a big data problem</td><td>2</td><td>Claiming four Vs with no sizes. Proposing a join that fits in Excel.</td></tr>
+<tr><td>Data and approach</td><td>3</td><td>No record example. No identifier mapping. 'Machine learning' with no method.</td></tr>
+<tr><td>Outcome and challenges</td><td>2</td><td>No success measure. 'Data may be noisy.'</td></tr></table></div>
+<div class="card"><b>Order of work</b><ol>
+<li><b>Disease choice</b>: decide today. Everything else depends on it.</li>
+<li><b>Data sources</b>: pick four roles, note sizes and record shapes.</li>
+<li><b>Scale check</b>: find the step that truly needs big data, or admit which part does not.</li>
+<li><b>Method</b>: choose one scoring method you can explain on a whiteboard.</li>
+<li><b>Your draft</b>: write section by section against the questions. Export and hand-write or type up.</li>
+<li><b>Rubric</b>: self-score before submitting.</li></ol></div>
+<div class="card"><b>What was already decided in your ChatGPT thread</b><ul><li>Topic: mine drug-target interaction data to propose repurposing candidates. Keep it.</li><li>Open: PCOS vs Alzheimer's vs type 2 diabetes. The thread leaned PCOS for originality and Alzheimer's for data. See Disease choice for a reasoned pick.</li><li>It listed DrugBank, ChEMBL, UniProt, DisGeNET, KEGG, STRING. Two of those have licence problems for bulk use; see Data sources.</li></ul></div>`}
+
+function disease(){const pick=store.disease||"";$("#view").innerHTML=`
+<div class="card"><b>Pick one and commit.</b> The topic stays the same; the disease is what makes it concrete.</div>
+<table><tr><th></th><th>Alzheimer's disease</th><th>PCOS</th><th>Type 2 diabetes</th></tr>
+<tr><td>Disease genes available</td><td>~75 GWAS loci (Bellenguez 2022); thousands of gene-disease associations in Open Targets; AMP-AD brain RNA-seq (hundreds of samples, many GB).</td><td>~19 to 20 GWAS loci (Day 2018); a few hundred associations in Open Targets/DisGeNET, many low-evidence; small GEO expression sets.</td><td>~500+ GWAS loci; very many associations; large expression and clinical resources.</td></tr>
+<tr><td>Big-data justification</td><td>Easy and honest: multi-source evidence, brain expression signatures, large network propagation.</td><td>Hard. The disease gene set is small; the volume must come from the drug side (all ChEMBL/BindingDB activities, full STRING, LINCS signatures). Doable, but you must argue it explicitly.</td><td>Easy, but crowded: metformin and others are already repurposed, so 'known' overlaps are large and the novelty is harder to show.</td></tr>
+<tr><td>Known repurposing to validate against</td><td>Many trials (e.g. GLP-1 agonists, losartan, several in AlzPED). Good hold-out set.</td><td>Metformin, statins, spironolactone, letrozole are used off-label. Small but real hold-out set.</td><td>Large.</td></tr>
+<tr><td>Originality for a class</td><td>Common choice; needs a sharper angle (e.g. restrict to blood-brain-barrier-permeable drugs, or to microglial targets).</td><td>Rare choice; reads as your own interest. Assessors reward that if the scale argument holds.</td><td>Common.</td></tr>
+<tr><td>Fit with your background</td><td>Neither.</td><td>Your earlier PCOS biomarker interest; endocrinology pathways (insulin, androgen).</td><td>Neither.</td></tr></table>
+<div class="card ok"><b>Recommendation.</b> If you want the safest 2 marks on 'big data justification', choose Alzheimer's and narrow it (for example, blood-brain-barrier-permeable approved drugs targeting microglial or synaptic gene sets). If you want the proposal to be yours, choose PCOS and make the scale argument on the drug and network side: all 20 million ChEMBL activities, the full human STRING network, and LINCS expression signatures, with PCOS genes as the seed set. Both are defensible. The mistake is choosing PCOS and then justifying big data with 'DrugBank has many records'.</div>
+<div class="card"><b>Your choice</b><div class="row">${["Alzheimer's disease","PCOS","Type 2 diabetes"].map(d=>`<button class="b ${pick===d?'':'s'}" onclick="store.disease='${d}';save();disease()">${d}</button>`).join("")}</div>
+<textarea placeholder="Why this disease, in your words. Which unmet need, which gap. This becomes the core of section 2." oninput="store.why=this.value;save()">${esc(store.why||"")}</textarea></div>`}
+
+const SOURCES=[
+ {n:"ChEMBL (v34/35)",role:"Drug-target bioactivities",size:"~2.4 million compounds, ~20 million activity measurements, ~15,000 targets. Full SQL/SQLite dump ~4 GB compressed, ~25 GB loaded. Also Parquet via the ChEMBL FTP.",rec:"molecule_chembl_id=CHEMBL25 (aspirin), target_chembl_id=CHEMBL2094253 (PTGS1), standard_type=IC50, standard_value=32, standard_units=nM, assay_id, pchembl_value=7.5, document_id",lic:"CC BY-SA. Bulk download allowed.",note:"Your main volume on the drug side. Filter to approved drugs via molecule_dictionary.max_phase = 4."},
+ {n:"DrugBank",role:"Approved drugs, targets, indications",size:"~16,500 drug entries (~2,800 approved small molecules), ~20,000 drug-target links. XML ~1.5 GB.",rec:"drugbank_id=DB00945, name=Aspirin, groups=[approved], targets=[{uniprot=P23219, actions=[inhibitor]}], indication text",lic:"Free for academic use after registration; redistribution restricted.",note:"Good for indications and 'approved' flag. Say you will use the academic licence."},
+ {n:"BindingDB",role:"Measured binding affinities",size:"~2.9 million binding measurements, ~1.3 million compounds, ~9,000 targets. TSV ~1 GB.",rec:"BindingDB Reactant_set_id, Ligand SMILES, UniProt ID, Ki/Kd/IC50 (nM), PubMed ID",lic:"CC BY 3.0.",note:"Adds variety and veracity: experimental affinities to cross-check ChEMBL."},
+ {n:"Open Targets Platform (24.x)",role:"Disease-gene associations with evidence scores",size:"~63,000 targets, ~28,000 diseases, ~18 million evidence strings from 20+ sources. Distributed as Parquet on FTP, ~50 GB total; the associations slice is ~2 GB.",rec:"targetId=ENSG00000142192 (APP), diseaseId=MONDO_0004975 (Alzheimer disease), datasourceId=ot_genetics_portal, score=0.71, datatypeId=genetic_association",lic:"CC0.",note:"Use this instead of DisGeNET: open licence, Parquet format is literally made for Spark, evidence-weighted scores. Strongest single choice for the disease side."},
+ {n:"DisGeNET",role:"Gene-disease associations",size:"~1.1 million associations, ~21,000 genes, ~30,000 diseases (v7).",rec:"geneId=351 (APP), diseaseId=C0002395, score=0.9, source=CTD_human, pmid",lic:"Now requires a licence for bulk download; free tier is limited.",note:"Cite as a cross-check, do not build on it."},
+ {n:"STRING v12",role:"Protein-protein interaction network",size:"Human (9606): ~19,600 proteins, ~12 million scored links (all scores), ~1 million at score >= 700. All-organism file is ~20 billion links.",rec:"protein1=9606.ENSP00000284981, protein2=9606.ENSP00000262607, combined_score=912",lic:"CC BY 4.0.",note:"Where network propagation runs. Say which score cut-off you use and why."},
+ {n:"LINCS L1000 (CMap 2020)",role:"Drug-induced gene expression signatures",size:"~3 million profiles, ~34,000 perturbagens, 978 landmark genes. Level 5 data ~ 100+ GB as GCTX.",rec:"sig_id, pert_iname=metformin, cell_id=A549, pert_dose=10 uM, 978 z-scores",lic:"Open (clue.io / GEO GSE92742, GSE70138).",note:"The honest big-data axis if the disease side is small: signature reversal against a disease expression signature. Optional but powerful."},
+ {n:"GWAS Catalog",role:"Variant-trait associations",size:"~700,000 associations, ~7,000 studies. TSV ~300 MB.",rec:"rsId, mapped_gene, disease/trait, p-value, study accession",lic:"Open.",note:"Seed genes with genetic evidence, the strongest evidence type for target validity."},
+ {n:"UniProt / Ensembl ID mapping",role:"Identifier bridge",size:"Swiss-Prot ~570,000 reviewed proteins; human ~20,000. Mapping file ~ hundreds of MB.",rec:"UniProt P05067 <-> Ensembl ENSG00000142192 <-> STRING 9606.ENSP00000284981 <-> gene symbol APP",lic:"CC BY 4.0.",note:"Every source uses a different ID. State this step explicitly; assessors know it is where projects die."},
+ {n:"ClinicalTrials.gov / AlzPED / literature",role:"Validation set of known repurposing",size:"~500,000 trials; AlzPED ~ hundreds of AD repurposing trials.",rec:"NCT id, intervention=semaglutide, condition=Alzheimer disease, phase=3",lic:"Open.",note:"Hold these drugs out and test whether your ranking recovers them."},
+ {n:"KEGG",role:"Pathways",size:"~550 pathway maps.",rec:"hsa04910 Insulin signaling pathway -> gene list",lic:"Bulk download requires a paid licence; web API limited.",note:"Use Reactome (open) instead if you need pathways."},
+];
+function data(){const sel=store.sources||{};$("#view").innerHTML=`<div class="card"><b>Pick sources for four roles</b>: drugs and targets, disease genes, network, validation. Tick the ones you will use. Sizes are approximate as of 2025 releases; check the current release note and cite the version you use.</div>`+
+ SOURCES.map((s,i)=>`<div class="card"><label class="ck"><input type="checkbox" ${sel[i]?'checked':''} onchange="(store.sources=store.sources||{})[${i}]=this.checked;save()"> <b>${esc(s.n)}</b> <span class="pill">${esc(s.role)}</span></label>
+ <div class="small"><b>Size:</b> ${esc(s.size)}</div><div class="small"><b>One record:</b> <code>${esc(s.rec)}</code></div><div class="small"><b>Licence:</b> ${esc(s.lic)}</div><div class="small"><b>Use it for:</b> ${esc(s.note)}</div></div>`).join("")+
+ `<div class="card warn"><b>Two corrections to the ChatGPT list.</b> KEGG bulk data is licensed, so name Reactome for pathways. DisGeNET now restricts bulk download, so build the disease side on Open Targets and cite DisGeNET as a cross-check only. Saying this in the proposal shows you checked, which is what 'veracity' means.</div>`}
+
+function scale(){const v=store.scale||{drugs:2800,genes:500,edges:12000000,cut:700,lincs:0,walk:1};
+ const edgesUsed=v.cut>=700?1000000:v.cut>=400?4000000:12000000;
+ const graphMB=edgesUsed*2*8/1e6; const joinRows=v.drugs*20; const walks=v.drugs; const walkOps=walks*edgesUsed*20;
+ const lincsGB=v.lincs? 100:0;
+ const laptopOK = graphMB<2000 && walkOps<2e11 && !v.lincs;
+ $("#view").innerHTML=`<div class="card"><b>Is your pipeline honestly big data?</b> Adjust the numbers to your plan. The check is rough; the point is to find the step that breaks a laptop and name it in section 3.</div>
+ <div class="card"><div class="row">
+ <label>Approved drugs scored <input type="number" value="${v.drugs}" oninput="setS('drugs',this.value)"></label>
+ <label>Disease seed genes <input type="number" value="${v.genes}" oninput="setS('genes',this.value)"></label>
+ <label>STRING score cut-off <select onchange="setS('cut',this.value)"><option ${v.cut==150?'selected':''} value="150">150 (all, ~12M edges)</option><option ${v.cut==400?'selected':''} value="400">400 (~4M)</option><option ${v.cut==700?'selected':''} value="700">700 (~1M)</option></select></label>
+ <label><input type="checkbox" ${v.lincs?'checked':''} onchange="setS('lincs',this.checked?1:0)"> Include LINCS L1000 signatures</label></div></div>
+ <div class="grid">
+ <div class="stat"><span class="small">Drug-target join</span><b>~${(joinRows/1000).toFixed(0)}k rows</b><span class="small">fits in memory on any laptop</span></div>
+ <div class="stat"><span class="small">Network in memory</span><b>~${graphMB.toFixed(0)} MB</b><span class="small">${edgesUsed.toLocaleString()} edges × 2 ints</span></div>
+ <div class="stat"><span class="small">Propagation work</span><b>${(walkOps/1e9).toFixed(0)} G ops</b><span class="small">${walks.toLocaleString()} drugs × ${edgesUsed.toLocaleString()} edges × 20 iterations</span></div>
+ <div class="stat"><span class="small">Expression data</span><b>${lincsGB} GB</b><span class="small">${v.lincs?'Level 5 GCTX; cannot load on 8 GB RAM':'not used'}</span></div></div>
+ <div class="card ${laptopOK?'warn':'ok'}"><b>${laptopOK?'A laptop can do this.':'This needs distributed compute.'}</b> ${laptopOK?'With these settings the whole pipeline runs in pandas and networkx in under an hour. If you submit this as a big data proposal you lose the 2 justification marks. Either lower the STRING cut-off to use the full scored network, score every drug rather than a subset, add LINCS signatures, or say plainly that the join is small and the big-data step is the one you add.':'Name the specific step in section 3: '+(v.lincs?'loading and comparing 3 million LINCS profiles (100+ GB) against the disease signature, which needs chunked or Spark processing; and ':'')+'running network propagation for every approved drug across '+edgesUsed.toLocaleString()+' edges, which is embarrassingly parallel across drugs and maps to Spark map-reduce over drug partitions, with the graph broadcast to each worker.'}</div>
+ <div class="card"><b>How to write the Spark justification honestly</b><ul><li><b>Storage:</b> Open Targets ships Parquet; ChEMBL can be exported to Parquet. Columnar storage lets Spark read only the columns you need (ids and scores).</li><li><b>Join:</b> ChEMBL activities (20 M rows) joined to approved-drug list and to UniProt mapping: a Spark join because the full activity table is larger than RAM on your machine, even if the filtered result is small.</li><li><b>Propagation:</b> one random-walk-with-restart per drug is a map task; the graph is a broadcast variable; results reduce to a ranked table. Say why not MapReduce: iterative algorithms need in-memory state, which Spark keeps and Hadoop MapReduce writes to disk each iteration.</li><li><b>ML (optional):</b> a link-prediction model on the heterogeneous graph; training is the big step, scoring is cheap.</li></ul></div>`}
+function setS(k,v){store.scale=store.scale||{drugs:2800,genes:500,edges:12000000,cut:700,lincs:0};store.scale[k]=+v;save();scale();}
+
+function method(){$("#view").innerHTML=`<div class="card"><b>Pick one scoring method.</b> Assessors want a method you can explain and defend, not a list of buzzwords. Each has a reference to cite.</div>
+<div class="card"><h3>A. Direct target overlap (baseline)</h3><p>Score each drug by how many of its targets are disease-associated genes, weighted by the Open Targets association score. Simple, explainable, and the baseline you compare against. Limitation: only finds drugs whose targets are already known disease genes.</p></div>
+<div class="card"><h3>B. Network proximity (recommended)</h3><p>For each drug, compute the shortest-path distance between its target set and the disease gene set on the STRING network, and compare it with the distance expected for random target sets of the same size and degree, giving a z-score. Drugs whose targets sit close to the disease module are candidates. Reference: Guney et al., Nature Communications 2016, 'Network-based in silico drug efficacy screening'. Explainable, needs the full network, parallel across drugs.</p></div>
+<div class="card"><h3>C. Random walk with restart (network propagation)</h3><p>Start random walkers on the disease genes, let them diffuse over STRING, and read the steady-state score at each drug's targets. Captures multi-step effects. Reference: Cowen et al., Nature Reviews Genetics 2017, 'Network propagation: a universal amplifier of genetic associations'. Iterative, so Spark rather than MapReduce.</p></div>
+<div class="card"><h3>D. Signature reversal (if you add LINCS)</h3><p>Build a disease expression signature (up and down genes from a GEO/AMP-AD dataset), then find drugs whose L1000 signature anti-correlates with it. Reference: Lamb et al., Science 2006, the Connectivity Map; Subramanian et al., Cell 2017 for L1000. This is the method that genuinely needs big data.</p></div>
+<div class="card"><h3>E. Knowledge-graph link prediction</h3><p>Build a heterogeneous graph (drug, target, gene, disease, pathway) and predict missing drug-treats-disease edges with an embedding model. Reference: Himmelstein et al., eLife 2017 (Hetionet / Rephetio). Powerful but hard to explain and easy to get wrong in 3 pages. Mention as an extension, not the core.</p></div>
+<div class="card ok"><b>Validation that assessors accept.</b> Hold out the drugs already in trials or off-label use for the disease. Run the pipeline without them. Report recall at top 50 and AUROC against that hold-out. Give the number you would call success and the chance baseline. This one paragraph earns most of the 'outcome' marks.</div>
+<div class="card"><b>Your pick and why</b><textarea placeholder="Method letter, one sentence on why it fits the disease and data you chose, one sentence on its main weakness." oninput="store.method=this.value;save()">${esc(store.method||"")}</textarea></div>`}
+
+function draft(){store.draft=store.draft||{};$("#view").innerHTML=`<div class="card note"><b>Write in your own words.</b> Each section shows the questions it must answer and a weak-versus-strong contrast. Word targets are for a 2 to 3 page total. Answers save on this device. Export at the bottom.</div>`+
+ SECTIONS.map(s=>{const n=words(store.draft[s.id]);const [lo,hi]=s.target;return `<div class="card"><div class="row" style="justify-content:space-between"><b>${esc(s.t)}</b><span class="small">${s.marks} · ${n} / ${lo}–${hi} words</span></div>
+ <details><summary>Questions this section must answer</summary><ul>${s.ask.map(a=>`<li>${a}</li>`).join("")}</ul><div class="small"><b>Weak:</b> "${esc(s.weak)}"</div><div class="small"><b>Strong looks like:</b> ${esc(s.strong)}</div></details>
+ <textarea oninput="store.draft['${s.id}']=this.value;save();updateWC()" placeholder="Your text">${esc(store.draft[s.id]||"")}</textarea></div>`}).join("")+
+ `<div class="card noprint"><button class="b" onclick="exportTxt()">Download draft as .txt</button><button class="b s" onclick="window.print()">Print / save as PDF</button><button class="b s" onclick="if(confirm('Erase draft on this device?')){store.draft={};save();draft();}">Clear draft</button></div>`}
+function exportTxt(){const t=SECTIONS.map(s=>s.t.toUpperCase()+"\n"+(store.draft[s.id]||"")).join("\n\n");const b=new Blob([t],{type:"text/plain"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="proposal_draft.txt";a.click();}
+
+const RUBRIC=[
+ ["Problem (3)",["Disease named and the unmet need stated with a number or citation","The specific gap is named, not just 'repurposing is useful'","One sentence says exactly what the output is"]],
+ ["Big data (2)",["Each V claimed has a size next to it","The step that breaks a laptop is named, with memory or compute reason","Spark/MapReduce/distributed storage named at a specific step, with why"]],
+ ["Data and approach (3)",["Every source has size, format, licence and one example record","Identifier mapping step is explicit","Steps are numbered with input, operation, output, tool","Known drugs are held out for validation, not reported as discoveries","A diagram is included"]],
+ ["Outcome and challenges (2)",["Deliverable is concrete (ranked list of N with evidence paths)","Success measure is a number with a chance baseline","Hardest technical challenge named with mitigation","One honest limitation of the plan"]],
+];
+function rubric(){const r=store.rubric||{};let tot=0,got=0;$("#view").innerHTML=`<div class="card"><b>Self-score before you submit.</b> Tick only what your draft actually contains.</div>`+RUBRIC.map(([t,items],i)=>{tot+=items.length;return `<div class="card"><b>${t}</b>${items.map((it,j)=>{const k=i+"-"+j;if(r[k])got++;return `<label class="ck"><input type="checkbox" ${r[k]?'checked':''} onchange="(store.rubric=store.rubric||{})['${k}']=this.checked;save();rubric()"> ${it}</label>`}).join("")}</div>`}).join("")+`<div class="card ${got>=tot-2?'ok':'warn'}"><b>${got}/${tot} checks.</b> ${got>=tot-2?'Ready to write up clean.':'Each unticked line is a mark at risk. Go back to that section.'}<div class="bar"><i style="width:${Math.round(got/tot*100)}%"></i></div></div>`}
+
+function expand(){$("#view").innerHTML=`<div class="card"><b>Fields of expansion.</b> Same topic, larger scope. Use one as the 'future work' line of section 6, or as a sharper angle if the basic version feels thin. Do not add more than one to a 3-page proposal.</div>
+<div class="card"><h3>1. Signature reversal with LINCS L1000</h3>Adds the expression axis: drugs that reverse the disease signature. Big data in the literal sense (100+ GB). Combines with network proximity as two independent lines of evidence.</div>
+<div class="card"><h3>2. Multi-evidence disease module</h3>Instead of one gene list, weight seeds by evidence type (genetics, expression, literature) from Open Targets and test whether genetically supported seeds give better recovery of known drugs. Directly addresses veracity.</div>
+<div class="card"><h3>3. Safety and side-effect filtering</h3>Use SIDER or FAERS (FDA adverse event reports, ~20 million reports) to down-rank candidates with adverse events relevant to the disease population. Adds a clinically meaningful filter and another large source.</div>
+<div class="card"><h3>4. Real-world evidence</h3>Where a candidate drug is widely prescribed for another condition, check whether patients on it have lower disease incidence in open cohort data (UK Biobank is access-controlled; mention as validation route). Frame as future work.</div>
+<div class="card"><h3>5. Drug combinations</h3>Score pairs of drugs whose combined target sets cover the disease module better than either alone. Combinatorial (~4 million pairs of approved drugs) so it genuinely needs distributed compute.</div>
+<div class="card"><h3>6. Structural validation of top hits</h3>Dock the top 10 candidates against their disease-relevant targets to check binding plausibility. This is your KRAS G12D skill set and makes the outcome section concrete.</div>
+<div class="card"><h3>7. Literature mining for evidence paths</h3>Use PubTator (36 million abstracts with entity tags) to find published drug-gene-disease co-mentions supporting or contradicting each top candidate. Adds variety and a veracity check.</div>
+<div class="card"><h3>8. Knowledge-graph learning</h3>Hetionet or PrimeKG (4 million edges, 30 relation types) with a link-prediction model. The 'machine learning' box, done properly. Extension only.</div>
+<div class="card"><h3>9. Cross-disease generalisation</h3>Run the same pipeline for two related diseases (PCOS and type 2 diabetes share insulin-resistance biology) and look for shared candidates. Turns the tool into a framework.</div>
+<div class="card"><h3>10. Blood-brain-barrier or tissue filter</h3>For Alzheimer's: restrict to drugs predicted to cross the barrier. For PCOS: weight targets by ovarian and adipose expression (GTEx). A cheap, defensible narrowing that makes the ranking biologically sensible.</div>`}
+nav("start");
+</script>
+</body>
+</html>

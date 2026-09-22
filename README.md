@@ -38,6 +38,15 @@ Covers activations, loss functions, backpropagation, regression and classificati
 designs, optimizers, convolution, pooling, CNN architecture, random and unsupervised
 features, RNNs, BPTT, LSTM, GRU, time-series forecasting and bidirectional RNNs.
 
+## Proposal Workbench — `Proposal_Workbench.html`
+
+Planning tool for the Big Data "mini research proposal" (drug-target interaction
+mining for drug repurposing). It does not write the proposal: it gives the rubric,
+a disease-choice comparison, eleven real data sources with sizes, record shapes and
+licences, a scale check that says whether the pipeline honestly needs distributed
+compute, five scoring methods with references, ten expansion directions, and a
+section-by-section draft area (saved locally, exportable as text or PDF).
+
 ## Zoho Prep Room — `Zoho_Prep.html`
 
 Round-by-round practice matching Zoho's actual process:
