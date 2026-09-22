@@ -38,6 +38,14 @@ Covers activations, loss functions, backpropagation, regression and classificati
 designs, optimizers, convolution, pooling, CNN architecture, random and unsupervised
 features, RNNs, BPTT, LSTM, GRU, time-series forecasting and bidirectional RNNs.
 
+## Ancient AMP resurrection — `ancient_amp/`
+
+Google Colab notebook (`Stage1-6_hepcidin_ASR.ipynb`) for the ancestral-protein
+antimicrobial project: fetches hepcidin sequences across vertebrates, curates,
+aligns (MAFFT), builds a tree and reconstructs ancestral sequences (IQ-TREE),
+and extracts confidence-ranked ancestral hepcidins. Runs in the browser, not on
+the laptop. Stage 7 (activity + structure, needs a GPU) is a later notebook.
+
 ## PCOS Repurposing Brief — `PCOS_Repurposing_Brief.html` / `.pdf`
 
 Read-only team brief fixed on PCOS: assignment rubric, why PCOS, ten data sources with
