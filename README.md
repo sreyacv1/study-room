@@ -38,6 +38,12 @@ Covers activations, loss functions, backpropagation, regression and classificati
 designs, optimizers, convolution, pooling, CNN architecture, random and unsupervised
 features, RNNs, BPTT, LSTM, GRU, time-series forecasting and bidirectional RNNs.
 
+## Zoho drive plan — `Zoho_2027_Plan.html`
+
+17-day preparation schedule for the Zoho DevOps Engineer (ZLabs) campus drive
+at SASTRA, 9–10 October 2026. Round-by-round format, elimination numbers from
+real reports, a day-by-day plan, and the rules distilled from rejection stories.
+
 ## Running them
 
 Either open the `.html` files directly from disk, or enable GitHub Pages

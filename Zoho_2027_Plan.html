@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zoho Drive Plan</title>
+<meta name="description" content="17-day preparation plan for the Zoho DevOps Engineer (ZLabs) campus drive at SASTRA, 9-10 October 2026.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--paper:#F0F1F4;--card:#fff;--ink:#1C1D22;--ink2:#5C6070;--line:#D9DCE4;--accent:#2D4B9A;--warn:#B3261E;--warnbg:#FDECEA;--ok:#1E7A46;--okbg:#E6F4EC}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#131419;--card:#1C1E26;--ink:#E7E8ED;--ink2:#9AA0B0;--line:#2C2F3A;--accent:#7B96E8;--warn:#F28B82;--warnbg:#3A1F1E;--ok:#7DD3A0;--okbg:#1B3327}}
+:root[data-theme="dark"]{--paper:#131419;--card:#1C1E26;--ink:#E7E8ED;--ink2:#9AA0B0;--line:#2C2F3A;--accent:#7B96E8;--warn:#F28B82;--warnbg:#3A1F1E;--ok:#7DD3A0;--okbg:#1B3327}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",-apple-system,Helvetica,Arial,sans-serif;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:48px 16px 64px}
+h1{font-family:Archivo,sans-serif;font-size:30px;font-weight:800;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-family:Archivo,sans-serif;font-size:20px;font-weight:600;margin:36px 0 10px}
+h3{font-size:16px;font-weight:600;margin:20px 0 6px}
+p.lede{color:var(--ink2);margin:0 0 24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+.warn{background:var(--warnbg);border-color:var(--warn)}
+.ok{background:var(--okbg);border-color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--ink2)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--line);padding:1px 5px;border-radius:4px}
+pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-size:13px}
+ul,ol{padding-left:22px}li{margin:4px 0}
+a{color:var(--accent)}
+.day{display:grid;grid-template-columns:76px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.day b{font-family:Archivo,sans-serif}
+small{color:var(--ink2)}
+label.chk{display:block;padding:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Zoho drive plan</h1>
+<p class="lede">DevOps Engineer (ZLabs), SASTRA Thanjavur, 9 and 10 October 2026. Apply by 10 AM, Friday 25 September. Written 22 September, 17 days out.</p>
+
+<div class="card ok">
+<b>You are eligible.</b> This drive allows 5.5 CGPA and up to 3 standing arrears. Your 6.8 CGPA and one arrear clear both bars. This is one of the few drives where the arrear does not matter, so it deserves full effort.
+</div>
+
+<h2>Reality check</h2>
+<div class="card warn">
+<ul>
+<li>Zoho's funnel is brutal. Reported numbers from campus drives: 1500 sat the written test, 250 cleared. In another, 600 applied, 32 reached the coding round, 5 reached interviews, 1 got the offer.</li>
+<li>The written round is not MCQ. You write the answer. C output questions on pointers and arrays eliminate most people, and you have never written C for this purpose.</li>
+<li>Round 3 (build a working console app in 3 to 4 hours) eliminates more people than every other round combined.</li>
+<li>17 days is not enough to become a strong programmer from scratch. It is enough to clear round 1 and give round 2 a real shot, if you do 4 to 5 focused hours every day.</li>
+<li>Your realistic goal: clear the written test, solve 2 of the 5 round-2 problems cleanly, and be able to explain your code. That alone puts you ahead of most of the room.</li>
+</ul>
+</div>
+
+<h2>What the rounds actually are</h2>
+<table>
+<tr><th>Round</th><th>Format</th><th>What kills people</th></tr>
+<tr><td>1. Written</td><td>Paper, 60 to 90 min. About 10 C "predict the output" questions plus 10 aptitude, fill in the blank, no options, no negative marking.</td><td>Pointer arithmetic, pre/post increment inside printf, static variables, string functions. Aptitude is moderate, not the bottleneck.</td></tr>
+<tr><td>2. Basic programming</td><td>3 to 6 problems, 3 hours, any language, company laptop, no internet. Problems solved in order.</td><td>Not being able to start. Using library shortcuts. Not explaining your approach when the evaluator walks over.</td></tr>
+<tr><td>3. Advanced / machine round</td><td>Build a console app (railway reservation, taxi booking, inventory, social media) with 4+ modules over 3 to 4 hours. Requirements change midway.</td><td>No design before typing. Monolithic code. Crashes on bad input.</td></tr>
+<tr><td>4. Technical interview</td><td>30 to 40 min. Resume projects in depth, OOP, DSA variations, SQL, sometimes puzzles on paper.</td><td>Not knowing your own project's design decisions. For ZLabs, weak ML basics.</td></tr>
+<tr><td>5. HR</td><td>Why Zoho, relocation to Chennai, how long you will stay, salary.</td><td>Almost nobody fails here.</td></tr>
+</table>
+
+<h2>Language decision</h2>
+<div class="card">
+<p><b>Python for rounds 2, 3 and 4. C only for reading output questions in round 1.</b></p>
+<p>The job post lists Python first, and ZLabs is an ML team. Python is the fastest way for a beginner to get working code in 3 hours. You still need to <i>read</i> C because round 1 is C output. You do not need to write C programs.</p>
+<p>Install before the drive, on your Mac: Python 3 (already there), VS Code. Zoho asks for Windows, JDK, Eclipse, Turbo C, Dev C++. Ask the placement cell whether a Mac with VS Code is accepted. If not, borrow a Windows laptop for the two days. Do not try to make the 2015 Air run Windows.</p>
+</div>
+
+<h2>The 17-day plan</h2>
+<p><small>Each day: 1 h C output, 2 h Python problems, 1 h aptitude. Mornings for the hard part. Rest on the day 14 evening only.</small></p>
+
+<h3>Week 1: Sept 22 to 28. Foundations, round 1 and 2 basics</h3>
+<div class="day"><b>Day 1, Sep 22</b><div>Apply on the form today. Python: variables, loops, lists, strings, functions. Solve 10 easy problems: reverse string, count vowels, FizzBuzz, factorial, prime check. C: read how printf, arrays and pointers work, GeeksforGeeks "C output" set 1.</div></div>
+<div class="day"><b>Day 2</b><div>Python: dictionaries, sets, nested loops, 2D lists. Problems: frequency count, anagram check, matrix transpose, pattern printing (diamond, pyramid). C output set 2 and 3, 15 questions, write the answer before checking.</div></div>
+<div class="day"><b>Day 3</b><div>Strings deep: string compression (aaabb to a3b2), reverse words keeping punctuation, longest palindromic substring by brute force. C: pointers and arrays, <code>*p++</code> vs <code>(*p)++</code>, <code>a[i]</code> equals <code>*(a+i)</code>. Aptitude: percentages, ratios, 20 questions timed.</div></div>
+<div class="day"><b>Day 4</b><div>Sorting and searching by hand: bubble, selection, binary search. Problem: alternate sorting (max, min, second max, second min), merge two sorted arrays without duplicates. C: static variables, recursion output, pre/post increment. Aptitude: time and work, speed and distance.</div></div>
+<div class="day"><b>Day 5</b><div>Matrices: spiral print, rotate 90 degrees, search a small matrix inside a big one. C output set 4 and 5. Aptitude: averages, ages, number series.</div></div>
+<div class="day"><b>Day 6</b><div>Recursion and stack: balanced parentheses, remove unbalanced parentheses, decode "3[a2[bc]]". C: strings and <code>strlen</code>, <code>sizeof</code> traps. Aptitude: probability, permutations.</div></div>
+<div class="day"><b>Day 7</b><div><b>Mock round 1.</b> 10 C output plus 10 aptitude, 60 minutes, on paper, no notes. Score it. Redo every wrong C question until you can explain it. Evening: 3 Zoho set-1 problems from the GitHub repo, 3 hours, timed.</div></div>
+
+<h3>Week 2: Sept 29 to Oct 5. Round 2 speed, round 3 design, OOP</h3>
+<div class="day"><b>Day 8</b><div>OOP in Python: class, object, <code>__init__</code>, methods, inheritance, encapsulation. Explain the four pillars aloud. Build a tiny Bank Account class with deposit, withdraw, error on overdraft.</div></div>
+<div class="day"><b>Day 9</b><div><b>First machine-round project: Railway reservation.</b> Modules: book ticket, check availability, cancel, waiting list, report. 20 minutes of design on paper first (entities, functions), then 3 hours coding. Save it in this repo.</div></div>
+<div class="day"><b>Day 10</b><div>Refactor day 9 project: split into functions and classes, handle invalid input, add a menu loop. Then a change request: add RAC quota. Time how long the change takes. Aptitude 20 questions.</div></div>
+<div class="day"><b>Day 11</b><div>Round 2 mock: 5 problems, 3 hours (group anagrams, spiral matrix, string decoder, alternate sort, pattern). C output 15 questions.</div></div>
+<div class="day"><b>Day 12</b><div><b>Second project: Call taxi booking.</b> Taxis at points A to F, assign nearest free taxi, fare 100 for first 5 km plus 10 per km, earnings report. Same routine: design, happy path, then edge cases.</div></div>
+<div class="day"><b>Day 13</b><div>Data structures you must be able to explain and use: list vs linked list, stack, queue, dictionary (hash map), tree basics, BFS. Big-O of each operation. C output 15 questions.</div></div>
+<div class="day"><b>Day 14</b><div>Full day-1 simulation: round 1 (60 min) then round 2 (3 h). Evening off.</div></div>
+
+<h3>Week 3: Oct 6 to 8. Interview prep and polish</h3>
+<div class="day"><b>Day 15</b><div>Resume deep dive. For each project (gastric cancer multi-omics, KRAS G12D design, DuoGrow, RAG assistant, SIH frontend) write: problem, your exact role, tools, one design decision and why, one thing that broke and how you fixed it. Practise saying each in 2 minutes.</div></div>
+<div class="day"><b>Day 16</b><div>ZLabs basics: what is training vs inference, overfitting, train/test split, what a model file is, what latency and throughput mean, what a GPU does, what data drift is. Link every answer to your RAG assistant and the omics work. SQL: select, where, group by, join, 10 queries.</div></div>
+<div class="day"><b>Day 17, Oct 8</b><div>Light: 10 C output, 10 aptitude, re-run one project from memory. Pack laptop, charger (battery is failing, sit near a socket), pen, ID, printed resume. Sleep.</div></div>
+
+<h2>Rules that come from the failure stories</h2>
+<div class="card">
+<ol>
+<li><b>Write answers, do not guess.</b> Round 1 has no options. Trace the C code line by line on paper.</li>
+<li><b>Talk while you code.</b> Evaluators walk around in rounds 2 and 3 and score your explanation. Silence reads as confusion.</li>
+<li><b>Design first in round 3.</b> 20 minutes on paper: entities, functions, data structures. Then happy path. Then input validation. Then extras.</li>
+<li><b>Never use a library where a loop is expected.</b> <code>sorted()</code>, <code>reversed()</code>, <code>str.split()</code> may be disallowed. Know how to do them by hand.</li>
+<li><b>Know your projects better than your DSA.</b> The candidate who reached the ZLabs technical round and failed was a strong Java developer who could not go deep on ML.</li>
+<li><b>Solve 2 problems fully rather than 5 half-done.</b> Candidates with 2 clean solutions advanced; partial solutions to all 5 did not.</li>
+</ol>
+</div>
+
+<h2>Sources used</h2>
+<ul>
+<li><a href="https://www.geeksforgeeks.org/interview-experiences/zoho-interview-experience-software-developer-intern-fte-2025/">GfG 2025: 600 to 32 to 5 to 1 funnel, exact round-2 problems</a></li>
+<li><a href="https://www.geeksforgeeks.org/interview-experiences/zoho-interview-experience-for-software-developer-on-campus-2024/">GfG 2024 on-campus: 1500 to 250, social-media app in round 3, rejected in tech round</a></li>
+<li><a href="https://www.geeksforgeeks.org/zoho-machine-learning-interview-experience-zlabs/">GfG ZLabs ML interview: round-1 problems, failed on ML depth</a></li>
+<li><a href="https://www.crackinterviewai.in/blog/zoho-interview-questions-freshers-2026">2026 freshers guide: machine round eliminates the most, design-first strategy</a></li>
+<li><a href="https://prepinsta.com/zoho/recruitment-process/">PrepInsta round structure</a> and <a href="https://prepinsta.com/zoho/advance-programming/">advanced problems</a></li>
+<li><a href="https://github.com/amalpoulose/Zoho-Interview-questions">GitHub: past Zoho question sets</a></li>
+<li><a href="https://www.youtube.com/watch?v=HfuXCnA7P3Q">Railway reservation round-3 walkthrough (Tamil)</a>, <a href="https://www.youtube.com/watch?v=zG7UjOtCvYI">Taxi booking walkthrough (Tamil)</a></li>
+</ul>
+<p><small>Reddit could not be fetched directly; the failure reasons above come from LeetCode Discuss, GeeksforGeeks and Code360 posts, which say the same things Reddit threads do: round 3 and the technical interview are where people fall.</small></p>
+</div>
+</body>
+</html>
