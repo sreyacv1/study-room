@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PCOS Repurposing Proposal</title>
+<meta name="description" content="Big Data mini research proposal: ranking approved drugs against PCOS biology by network proximity on ChEMBL, Open Targets and STRING using Spark.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+:root{--paper:#EDEDEA;--page:#FFFFFF;--ink:#111111;--ink2:#444444;--line:#8A8A8A;--rule:#111111;--shade:#F2F2F2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#1A1A1C;--page:#26262A;--ink:#ECECEC;--ink2:#B8B8BC;--line:#77777C;--rule:#ECECEC;--shade:#2F2F34}}
+:root[data-theme="dark"]{--paper:#1A1A1C;--page:#26262A;--ink:#ECECEC;--ink2:#B8B8BC;--line:#77777C;--rule:#ECECEC;--shade:#2F2F34}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Source Serif 4",Georgia,"Times New Roman",serif;font-size:11pt;line-height:1.4}
+.page{max-width:210mm;margin:0 auto;background:var(--page);padding:18mm 20mm 22mm;box-shadow:0 1px 6px rgba(0,0,0,.12)}
+@media (max-width:600px){.page{padding:24px 16px}}
+.inst{text-align:center;font-family:"Source Sans 3",Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:10.5pt;color:var(--ink2);line-height:1.4}
+.inst b{display:block;font-size:12pt;color:var(--ink);letter-spacing:.06em}
+.doctype{text-align:center;font-family:"Source Sans 3",Arial,sans-serif;font-size:11pt;letter-spacing:.12em;text-transform:uppercase;margin:16px 0 6px;color:var(--ink2)}
+h1{font-size:18pt;font-weight:700;text-align:center;margin:0 0 14px;line-height:1.3;text-wrap:balance}
+.details{width:auto;margin:0 auto 6px;border-collapse:collapse;font-size:11pt}
+.details td{padding:2px 10px;vertical-align:top}
+.details td:first-child{font-family:"Source Sans 3",Arial,sans-serif;font-weight:600;color:var(--ink2);text-transform:uppercase;font-size:9.5pt;letter-spacing:.05em;padding-top:4px}
+hr.title{border:0;border-top:1.5px solid var(--rule);margin:14px 0 4px}
+h2{font-size:13pt;font-weight:700;margin:16px 0 4px}
+h3{font-size:12pt;font-weight:600;font-style:italic;margin:8px 0 2px}
+p{margin:0 0 7px;text-align:justify;hyphens:auto}
+ul,ol{margin:0 0 7px;padding-left:22px}li{margin:0 0 3px;text-align:justify}
+.abstract{margin:8px 24px 4px;font-size:11pt}
+.abstract p{text-align:justify}
+.kw{font-size:11pt;margin:0 24px 6px}
+table.data{width:100%;border-collapse:collapse;font-size:9pt;margin:6px 0 4px;font-family:"Source Sans 3",Arial,sans-serif;line-height:1.3}
+table.data th,table.data td{border:1px solid var(--line);padding:4px 5px;vertical-align:top;text-align:left}
+table.data th{background:var(--shade);font-weight:600}
+.tw{overflow-x:auto}
+@media print{.tw,table.data{break-inside:avoid}.sig{break-inside:avoid}}
+.cap{font-size:10pt;text-align:center;margin:2px 0 10px;color:var(--ink2)}
+.cap b{color:var(--ink)}
+.mono{font-family:Menlo,Consolas,monospace;font-size:9pt}
+figure{margin:10px 0 4px}
+svg{width:100%;height:auto;display:block}
+.refs{font-size:9.5pt;padding-left:0;list-style:none}
+.refs li{padding-left:2em;text-indent:-2em;margin:0 0 4px;text-align:left}
+.sig{display:flex;justify-content:space-between;gap:24px;margin-top:28px;font-size:11pt;flex-wrap:wrap}
+.sig div{flex:1;min-width:160px;border-top:1px solid var(--rule);padding-top:4px;text-align:center}
+@media print{body{background:#fff;color:#000}.page{box-shadow:none;max-width:none;padding:0}h2{page-break-after:avoid}tr,figure,li{break-inside:avoid}@page{size:A4;margin:16mm 18mm}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="inst"><b>SASTRA Deemed to be University</b>School of Chemical and Biotechnology<br>Department of Bioinformatics</div>
+<div class="doctype">Mini Research Project Proposal · Big Data Analytics</div>
+
+<h1>Repurposing Approved Drugs for Polycystic Ovary Syndrome by Network Proximity Analysis of Large-Scale Drug-Target and Protein-Interaction Data</h1>
+
+<table class="details">
+<tr><td>Submitted by</td><td>Sreya C V</td></tr>
+<tr><td>Register No.</td><td>127013054</td></tr>
+<tr><td>Programme</td><td>B.Tech. Bioinformatics</td></tr>
+<tr><td>Course</td><td>Big Data Analytics</td></tr>
+<tr><td>Date</td><td>September 2026</td></tr>
+</table>
+<hr class="title">
+
+<h2>Abstract</h2>
+<div class="abstract">
+<p>Polycystic ovary syndrome (PCOS) affects about one in ten women of reproductive age, yet no drug has been approved specifically for it. Current therapy borrows drugs from diabetes, hypertension and infertility, each identified by clinical intuition rather than systematic search. This proposal describes a computational pipeline that ranks all approximately 2,800 approved small-molecule drugs by the network proximity of their protein targets to the PCOS disease module in the human interactome. The pipeline integrates ChEMBL bioactivity data (20 million measurements), Open Targets and GWAS Catalog disease evidence, and the STRING protein-interaction network (12 million links). The proximity computation, about 2.8 million shortest-path evaluations with degree-matched randomisation, exceeds single-machine memory and is implemented as a distributed Apache Spark job. Drugs already used for PCOS are held out and used to validate the ranking. The deliverable is an evidence-annotated candidate list with a stated numeric success criterion.</p>
+</div>
+<p class="kw"><b>Keywords:</b> drug repurposing, PCOS, network medicine, Apache Spark, ChEMBL, Open Targets, STRING.</p>
+
+<h2>1. Introduction and Biological Problem</h2>
+<p>Polycystic ovary syndrome is the most common endocrine disorder in women of reproductive age, with a pooled prevalence of roughly 10% (Bozdag et al., 2016). It presents through three interacting biological axes: insulin resistance, hyperandrogenism and chronic low-grade inflammation (Escobar-Morreale, 2018). Despite this burden, no drug carries a regulatory approval for PCOS. The 2023 international guideline recommends metformin (a diabetes drug), spironolactone (an antihypertensive), combined oral contraceptives, and letrozole or clomiphene for ovulation induction (Teede et al., 2023). All of these are borrowed, symptomatic treatments.</p>
+<p><b>The gap.</b> Each borrowed drug was identified individually, from clinical observation. There has been no systematic, evidence-weighted screen of the entire approved pharmacopoeia against PCOS biology. Because de novo drug development takes 10 to 15 years and costs over one billion US dollars (DiMasi et al., 2016), while an approved drug already has human safety and pharmacokinetic data (Pushpakom et al., 2018), a data-driven repurposing screen is the fastest route to new PCOS treatment options.</p>
+<p><b>Objective.</b> To produce a ranked, evidence-annotated list of approved drugs whose protein targets are significantly closer than chance to the PCOS gene module in the human protein-interaction network, and to validate that ranking against drugs already in PCOS use.</p>
+
+<h2>2. Why This Is a Big Data Problem</h2>
+<p>The PCOS gene set itself is modest, about 20 genome-wide significant loci (Day et al., 2018) and a few hundred Open Targets associations. The scale of this project arises from the drug side and the network side, and can be stated in terms of the four Vs.</p>
+<ul>
+<li><b>Volume.</b> ChEMBL contains 20 million bioactivity measurements over 2.4 million compounds and 15,000 targets (about 25 GB loaded). STRING human contains 12 million scored protein links. Open Targets distributes 18 million evidence strings, about 50 GB in Parquet.</li>
+<li><b>Variety.</b> Relational bioactivity tables, disease-evidence JSON, a weighted graph, drug-annotation XML and clinical-trial records, each using a different identifier system (ChEMBL, UniProt, Ensembl, STRING, EFO).</li>
+<li><b>Veracity.</b> Experimental versus predicted interactions, evidence scores on a 0 to 1 scale, and sources with restrictive licences (KEGG, DisGeNET bulk) that must be excluded and substituted.</li>
+<li><b>Velocity.</b> ChEMBL and Open Targets are released quarterly, so the pipeline must be reproducible and re-runnable rather than a one-off analysis.</li>
+</ul>
+<p><b>The step that exceeds a single machine.</b> Network proximity must be computed for each of about 2,800 drugs against a 19,600-node, 12-million-edge graph, and each drug's score must be compared with 1,000 degree-matched random target sets. This amounts to roughly 2.8 million shortest-path computations. The graph plus per-drug state exceeds 8 GB of RAM, and a single core would need days. The problem is embarrassingly parallel across drugs, which maps naturally to a Spark <i>map</i> over drug partitions with the graph as a broadcast variable. Spark is preferred to Hadoop MapReduce because the computation is iterative and Spark retains intermediate state in memory rather than writing to disk each round (Zaharia et al., 2016; Dean &amp; Ghemawat, 2008). Open Targets already ships Parquet, Spark's native columnar format.</p>
+
+<h2>3. Data Sources</h2>
+<div class="tw">
+<table class="data">
+<tr><th>Source</th><th>Role</th><th>Size and format</th><th>Example record</th><th>Licence</th></tr>
+<tr><td>ChEMBL v35 (Zdrazil et al., 2023)</td><td>Drug-target bioactivities</td><td>20 M activities, 15 k targets; ~4 GB compressed, Parquet</td><td class="mono">CHEMBL25 (aspirin) → PTGS1, IC50 = 32 nM, pchembl 7.5</td><td>CC BY-SA</td></tr>
+<tr><td>DrugBank (Knox et al., 2023)</td><td>Approval status, indications</td><td>16.5 k drugs, 2.8 k approved; XML 1.5 GB</td><td class="mono">DB00331 metformin, approved, target PRKAB1, indication T2D</td><td>Academic</td></tr>
+<tr><td>Open Targets Platform (Buniello et al., 2024)</td><td>PCOS-gene associations, evidence scores</td><td>18 M evidence strings; associations ~2 GB Parquet</td><td class="mono">ENSG00000105329 (TGFB1), EFO_0000660, score 0.42</td><td>CC0</td></tr>
+<tr><td>GWAS Catalog (Sollis et al., 2022)</td><td>Genetic seed genes</td><td>700 k associations; TSV ~300 MB</td><td class="mono">rs11031006, FSHB, PCOS, p = 1×10⁻¹²</td><td>Open</td></tr>
+<tr><td>STRING v12, human (Szklarczyk et al., 2022)</td><td>Protein-interaction network</td><td>19.6 k proteins, 12 M links; TSV</td><td class="mono">9606.ENSP00000284981 – 9606.ENSP00000262607, score 912</td><td>CC BY 4.0</td></tr>
+<tr><td>UniProt / Ensembl (The UniProt Consortium, 2025)</td><td>Identifier mapping</td><td>20 k human proteins; mapping files, hundreds of MB</td><td class="mono">P37231 ↔ ENSG00000132170 ↔ PPARG</td><td>CC BY 4.0</td></tr>
+<tr><td>ClinicalTrials.gov (NLM)</td><td>Validation set</td><td>500 k trials; JSON/CSV</td><td class="mono">NCT id, metformin, condition PCOS, phase 3</td><td>Open</td></tr>
+</table>
+</div>
+<p class="cap"><b>Table 1.</b> Public data sources, their role in the pipeline, approximate size, one example record and licence.</p>
+<p>Two substitutions were made after a licence check. KEGG bulk download is licensed, so Reactome is used for pathway context. DisGeNET now restricts bulk access, so the disease side is built on Open Targets and DisGeNET is cited only as a cross-check.</p>
+
+<h2>4. Methodology</h2>
+<figure>
+<svg viewBox="0 0 760 250" role="img" aria-label="Pipeline diagram">
+<defs><marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--ink)"/></marker></defs>
+<g font-family="Source Sans 3, Arial, sans-serif" font-size="12" fill="var(--ink)">
+<rect x="10" y="30" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="80" y="52" text-anchor="middle" font-weight="600">ChEMBL + DrugBank</text><text x="80" y="70" text-anchor="middle" font-size="11">approved drugs → targets</text>
+<rect x="190" y="30" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="260" y="52" text-anchor="middle" font-weight="600">Identifier mapping</text><text x="260" y="70" text-anchor="middle" font-size="11">UniProt ↔ Ensembl ↔ STRING</text>
+<rect x="370" y="30" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="440" y="52" text-anchor="middle" font-weight="600">Drug target sets</text><text x="440" y="70" text-anchor="middle" font-size="11">~2,800 drugs, ~55 k rows</text>
+<rect x="10" y="150" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="80" y="172" text-anchor="middle" font-weight="600">Open Targets + GWAS</text><text x="80" y="190" text-anchor="middle" font-size="11">PCOS seed genes, weighted</text>
+<rect x="190" y="150" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="260" y="172" text-anchor="middle" font-weight="600">Hold-out</text><text x="260" y="190" text-anchor="middle" font-size="11">known PCOS drugs removed</text>
+<rect x="370" y="105" width="160" height="80" rx="3" fill="var(--shade)" stroke="var(--ink)" stroke-width="2"/>
+<text x="450" y="130" text-anchor="middle" font-weight="600">Network proximity</text><text x="450" y="148" text-anchor="middle" font-size="11">Apache Spark, map per drug</text><text x="450" y="164" text-anchor="middle" font-size="11">STRING graph broadcast</text>
+<rect x="570" y="30" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="640" y="52" text-anchor="middle" font-weight="600">Ranked candidates</text><text x="640" y="70" text-anchor="middle" font-size="11">z-score, evidence path</text>
+<rect x="570" y="150" width="140" height="56" rx="3" fill="var(--page)" stroke="var(--ink)" stroke-width="1.2"/>
+<text x="640" y="172" text-anchor="middle" font-weight="600">Validation</text><text x="640" y="190" text-anchor="middle" font-size="11">recall@50, AUROC</text>
+<g stroke="var(--ink)" stroke-width="1.2" fill="none" marker-end="url(#ah)">
+<path d="M150,58 L188,58"/><path d="M330,58 L368,58"/><path d="M440,86 L440,103"/>
+<path d="M150,178 L188,178"/><path d="M330,178 L368,160"/>
+<path d="M530,145 L600,145 L600,88"/><path d="M680,86 L680,148"/>
+</g>
+</g>
+</svg>
+<p class="cap"><b>Figure 1.</b> Pipeline overview. The shaded step is the distributed computation; all other steps produce small outputs.</p>
+</figure>
+<ol>
+<li><b>Ingestion.</b> Download ChEMBL, DrugBank, Open Targets associations, GWAS Catalog and STRING; store all tables as Parquet in HDFS or local object storage.</li>
+<li><b>Approved drug set.</b> Select ChEMBL molecules with <span class="mono">max_phase = 4</span>, cross-checked against the DrugBank "approved" flag. Expected output: about 2,800 drugs.</li>
+<li><b>Drug target sets.</b> Spark join over 20 million ChEMBL activity rows, retaining human single-protein targets with <span class="mono">pchembl ≥ 6</span> (potency ≤ 1 µM). Output: each drug mapped to a set of UniProt accessions.</li>
+<li><b>PCOS seed set.</b> Open Targets associations for <span class="mono">EFO_0000660</span> with overall score ≥ 0.1, plus GWAS Catalog mapped genes, each weighted by its evidence score. Expected 300 to 500 genes.</li>
+<li><b>Identifier mapping.</b> Map UniProt to Ensembl to STRING protein identifiers. Every unmapped identifier is logged and the loss rate reported.</li>
+<li><b>Hold-out.</b> Before scoring, drugs already used or in trials for PCOS (metformin, spironolactone, letrozole, clomiphene, pioglitazone, liraglutide, statins) are removed from seed construction and reserved as the validation set.</li>
+<li><b>Network proximity.</b> Following Guney et al. (2016), compute for each drug the mean shortest-path distance from its targets to the seed set on STRING (combined score ≥ 400), and compare it with 1,000 degree-matched random target sets to obtain a z-score. Implemented as a Spark map over drug partitions with the graph broadcast to each executor.</li>
+<li><b>Ranking and annotation.</b> Sort drugs by z-score and attach current indication, the closest PCOS genes and the evidence type supporting each link.</li>
+<li><b>Validation.</b> Measure recall of the held-out PCOS drugs in the top 50 and the AUROC against all other approved drugs, following the trial-based validation of Cheng et al. (2018).</li>
+</ol>
+
+<h2>5. Expected Outcome</h2>
+<p><b>Deliverable.</b> A ranked table of approved drugs with proximity z-score, current indication, nearest PCOS genes and evidence type, together with a network figure of the top ten candidates and their paths into the PCOS module.</p>
+<p><b>Success criterion.</b> At least four of the approximately eight held-out PCOS drugs should appear in the top 50 of about 2,800 (fewer than 0.2 expected by chance), with AUROC above 0.7. Should the hold-out not be recovered, the negative result still establishes whether PCOS biology is reachable through the currently druggable target space, which is itself a useful finding.</p>
+
+<h2>6. Challenges and Limitations</h2>
+<ul>
+<li><b>Identifier mapping</b> across five sources is the hardest engineering step. A 5 to 10% loss of targets is typical and will be measured and reported rather than hidden.</li>
+<li><b>Small, noisy disease gene set.</b> Seeds are weighted by evidence type, and an ablation tests whether genetic seeds alone recover the hold-out better than all seeds combined.</li>
+<li><b>Literature bias.</b> Well-studied proteins have more edges and more evidence, so raw proximity favours them. Degree-matched randomisation controls for this.</li>
+<li><b>Data leakage.</b> If known PCOS drugs remained in seed construction, validation would be circular. Holding them out before scoring removes this risk.</li>
+<li><b>Limitation.</b> The output is a computational prioritisation. Any candidate requires experimental and clinical validation before it has any bearing on patient care.</li>
+</ul>
+
+<h2>References</h2>
+<ol class="refs">
+<li>Bozdag, G., Mumusoglu, S., Zengin, D., Karabulut, E., &amp; Yildiz, B. O. (2016). The prevalence and phenotypic features of polycystic ovary syndrome: a systematic review and meta-analysis. <i>Human Reproduction, 31</i>(12), 2841–2855. https://doi.org/10.1093/humrep/dew218</li>
+<li>Buniello, A., Suveges, D., Cruz-Castillo, C., et al. (2024). Open Targets Platform: facilitating therapeutic hypotheses building in drug discovery. <i>Nucleic Acids Research, 53</i>(D1), D1467–D1475. https://doi.org/10.1093/nar/gkae1128</li>
+<li>Cheng, F., Desai, R. J., Handy, D. E., Wang, R., Schneeweiss, S., Barabási, A.-L., &amp; Loscalzo, J. (2018). Network-based approach to prediction and population-based validation of in silico drug repurposing. <i>Nature Communications, 9</i>, 2691. https://doi.org/10.1038/s41467-018-05116-5</li>
+<li>Day, F., Karaderi, T., Jones, M. R., et al. (2018). Large-scale genome-wide meta-analysis of polycystic ovary syndrome suggests shared genetic architecture for different diagnosis criteria. <i>PLOS Genetics, 14</i>(12), e1007813. https://doi.org/10.1371/journal.pgen.1007813</li>
+<li>Dean, J., &amp; Ghemawat, S. (2008). MapReduce: simplified data processing on large clusters. <i>Communications of the ACM, 51</i>(1), 107–113. https://doi.org/10.1145/1327452.1327492</li>
+<li>DiMasi, J. A., Grabowski, H. G., &amp; Hansen, R. W. (2016). Innovation in the pharmaceutical industry: New estimates of R&amp;D costs. <i>Journal of Health Economics, 47</i>, 20–33. https://doi.org/10.1016/j.jhealeco.2016.01.012</li>
+<li>Escobar-Morreale, H. F. (2018). Polycystic ovary syndrome: definition, aetiology, diagnosis and treatment. <i>Nature Reviews Endocrinology, 14</i>(5), 270–284. https://doi.org/10.1038/nrendo.2018.24</li>
+<li>Guney, E., Menche, J., Vidal, M., &amp; Barábasi, A.-L. (2016). Network-based in silico drug efficacy screening. <i>Nature Communications, 7</i>, 10331. https://doi.org/10.1038/ncomms10331</li>
+<li>Knox, C., Wilson, M., Klinger, C., et al. (2023). DrugBank 6.0: the DrugBank Knowledgebase for 2024. <i>Nucleic Acids Research, 52</i>(D1), D1265–D1275. https://doi.org/10.1093/nar/gkad976</li>
+<li>Pushpakom, S., Iorio, F., Eyers, P. A., et al. (2018). Drug repurposing: progress, challenges and recommendations. <i>Nature Reviews Drug Discovery, 18</i>(1), 41–58. https://doi.org/10.1038/nrd.2018.168</li>
+<li>Sollis, E., Mosaku, A., Abid, A., et al. (2022). The NHGRI-EBI GWAS Catalog: knowledgebase and deposition resource. <i>Nucleic Acids Research, 51</i>(D1), D977–D985. https://doi.org/10.1093/nar/gkac1010</li>
+<li>Szklarczyk, D., Kirsch, R., Koutrouli, M., et al. (2022). The STRING database in 2023: protein–protein association networks and functional enrichment analyses for any sequenced genome of interest. <i>Nucleic Acids Research, 51</i>(D1), D638–D646. https://doi.org/10.1093/nar/gkac1000</li>
+<li>Teede, H. J., Tay, C. T., Laven, J. J. E., et al. (2023). Recommendations from the 2023 international evidence-based guideline for the assessment and management of polycystic ovary syndrome. <i>European Journal of Endocrinology, 189</i>(2), G43–G64. https://doi.org/10.1093/ejendo/lvad096</li>
+<li>The UniProt Consortium. (2025). UniProt: The Universal Protein Knowledgebase in 2025. <i>Nucleic Acids Research, 53</i>(D1), D609–D617. https://doi.org/10.1093/nar/gkae1010</li>
+<li>Zaharia, M., Xin, R. S., Wendell, P., et al. (2016). Apache Spark: a unified engine for big data processing. <i>Communications of the ACM, 59</i>(11), 56–65. https://doi.org/10.1145/2934664</li>
+<li>Zdrazil, B., Felix, E., Hunter, F., et al. (2023). The ChEMBL Database in 2023: a drug discovery platform spanning multiple bioactivity data types and time periods. <i>Nucleic Acids Research, 52</i>(D1), D1180–D1192. https://doi.org/10.1093/nar/gkad1004</li>
+</ol>
+
+<div class="sig"><div>Signature of Student</div><div>Signature of Course Faculty</div></div>
+
+</div>
+</body>
+</html>
