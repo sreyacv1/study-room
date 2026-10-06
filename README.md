@@ -80,6 +80,12 @@ Resume targeted at the Zoho DevOps/MLOps role. Print to PDF from the browser.
 at SASTRA, 9–10 October 2026. Round-by-round format, elimination numbers from
 real reports, a day-by-day plan, and the rules distilled from rejection stories.
 
+## CS fundamentals — `CS_Fundamentals_Cheatsheet.html`
+
+One-page revision sheet for Zoho Round 2 (100 MCQs): Operating Systems, Computer
+Networks, OOPS, DBMS, 8085/8086 microprocessors, and Digital Principles & COA,
+each ending with the traps that wrong options are built from.
+
 ## Running them
 
 Either open the `.html` files directly from disk, or enable GitHub Pages

@@ -1,0 +1,499 @@
+<title>CS Fundamentals Cheat Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one reading column, sticky subject bar, each subject = tables + a "traps" box */
+:root{
+  --bg:#f4f6f8; --card:#ffffff; --ink:#18212b; --muted:#56616e; --line:#d9dfe6;
+  --accent:#0b6e69; --accent-soft:#e0f0ee; --trap:#9a4a00; --trap-bg:#fff3e2;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11161c; --card:#19212a; --ink:#e6ebf0; --muted:#9aa6b2; --line:#2c3743;
+  --accent:#4cc3b8; --accent-soft:#16312f; --trap:#ffb766; --trap-bg:#2e2213; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11161c; --card:#19212a; --ink:#e6ebf0; --muted:#9aa6b2; --line:#2c3743;
+  --accent:#4cc3b8; --accent-soft:#16312f; --trap:#ffb766; --trap-bg:#2e2213; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:24px 64px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,6vw,40px);line-height:1.1;margin:0 0 6px;text-wrap:balance}
+.lede{color:var(--muted);margin:0 0 18px;max-width:65ch}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:6px;overflow-x:auto;padding-block:10px;margin-bottom:8px}
+nav a{flex:none;font-size:14px;font-weight:700;color:var(--accent);background:var(--accent-soft);text-decoration:none;padding:6px 12px;border-radius:999px}
+nav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section{padding-top:28px;scroll-margin-top:64px}
+h2{font-family:var(--display);font-weight:800;font-size:26px;margin:0 0 4px;color:var(--accent)}
+h2 small{font-family:var(--body);font-weight:400;font-size:14px;color:var(--muted);margin-left:8px}
+h3{font-family:var(--display);font-weight:600;font-size:18px;margin:22px 0 8px}
+p,li{max-width:68ch}
+ul{padding-left:20px;margin:6px 0}
+li{margin:3px 0}
+.tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;margin:8px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+code,.m{font-family:var(--mono);font-size:.9em;font-variant-numeric:tabular-nums}
+b{font-weight:700}
+.trap{background:var(--trap-bg);border-left:4px solid var(--trap);border-radius:6px;padding:10px 14px;margin:14px 0}
+.trap strong{color:var(--trap);display:block;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.trap ul{margin:0}
+.hook{color:var(--muted);font-style:italic}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+<h1>CS Fundamentals Cheat Sheet</h1>
+<p class="lede">Everything the Zoho Round 2 MCQs keep coming back to, in six subjects. Read one subject, then do a 10-question set on it. The orange boxes are the traps that wrong options are built from.</p>
+
+<nav aria-label="Subjects">
+  <a href="#os">Operating Systems</a><a href="#cn">Networks</a><a href="#oops">OOPS</a><a href="#dbms">DBMS</a><a href="#mp">8085 / 8086</a><a href="#dig">Digital &amp; COA</a>
+</nav>
+
+<!-- ============ OS ============ -->
+<section id="os">
+<h2>Operating Systems<small>the manager between programs and hardware</small></h2>
+
+<h3>Basic words</h3>
+<div class="tbl"><table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td><b>Program</b></td><td>Code saved on disk, not running</td></tr>
+<tr><td><b>Process</b></td><td>A program <b>while it runs</b>. Has its own memory. Described by a <b>PCB</b> (Process Control Block: ID, state, registers, priority)</td></tr>
+<tr><td><b>Thread</b></td><td>Smallest unit of CPU work, <b>inside</b> a process. Threads of one process <b>share</b> its memory</td></tr>
+<tr><td><b>Kernel</b></td><td>Core of the OS; runs with full control of the hardware</td></tr>
+<tr><td><b>System call</b></td><td>How a program asks the kernel for a service (e.g. <code>fork()</code>, <code>read()</code>)</td></tr>
+<tr><td><b>Context switch</b></td><td>Saving one process's state and loading another's. Pure overhead</td></tr>
+<tr><td><b>Shell</b></td><td>The command-line interface to the OS (bash, zsh)</td></tr>
+</table></div>
+
+<h3>Process states</h3>
+<p><b>New → Ready → Running → Waiting (Blocked) → Ready … → Terminated</b></p>
+<ul>
+<li>Running → Ready: time slice ended (preempted)</li>
+<li>Running → Waiting: needs I/O</li>
+<li>Waiting → Ready: I/O finished</li>
+<li>A <b>zombie</b> process has finished but its parent has not collected it. An <b>orphan</b> has lost its parent.</li>
+</ul>
+
+<h3>CPU scheduling</h3>
+<div class="tbl"><table>
+<tr><th>Algorithm</th><th>Rule</th><th>Note</th></tr>
+<tr><td><b>FCFS</b></td><td>First come, first served</td><td>Non-preemptive. Convoy effect (short jobs stuck behind a long one)</td></tr>
+<tr><td><b>SJF</b></td><td>Shortest job first</td><td><b>Minimum average waiting time</b>. Can starve long jobs</td></tr>
+<tr><td><b>SRTF</b></td><td>Shortest remaining time first</td><td>Preemptive version of SJF</td></tr>
+<tr><td><b>Priority</b></td><td>Highest priority first</td><td>Starvation, fixed by <b>aging</b> (raise priority over time)</td></tr>
+<tr><td><b>Round Robin</b></td><td>Each gets a fixed <b>time quantum</b> in turn</td><td>Preemptive, fair, used in time-sharing systems</td></tr>
+</table></div>
+<ul>
+<li><b>Turnaround time</b> = Completion − Arrival</li>
+<li><b>Waiting time</b> = Turnaround − Burst</li>
+<li><b>Response time</b> = First run − Arrival</li>
+</ul>
+
+<h3>Deadlock</h3>
+<p>Two or more processes each waiting for a resource another holds, forever. <b>All four</b> conditions must hold together (Coffman):</p>
+<ol>
+<li><b>Mutual exclusion</b>: a resource can be held by one process only</li>
+<li><b>Hold and wait</b>: holding one, waiting for another</li>
+<li><b>No preemption</b>: a resource can't be taken away</li>
+<li><b>Circular wait</b>: P1 waits for P2, P2 waits for P1</li>
+</ol>
+<ul>
+<li><b>Banker's algorithm</b> = deadlock <b>avoidance</b> (checks for a safe state before granting)</li>
+<li>Prevention = break one of the four conditions. Detection = let it happen, then find it (wait-for graph)</li>
+</ul>
+
+<h3>Synchronization</h3>
+<ul>
+<li><b>Critical section</b>: code that touches shared data; only one process at a time</li>
+<li><b>Race condition</b>: result depends on the order threads happen to run</li>
+<li><b>Semaphore</b>: an integer with <code>wait()</code> (P, decrement) and <code>signal()</code> (V, increment). <b>Binary semaphore</b> (0/1) ≈ <b>mutex</b> (lock)</li>
+<li>Classic problems: Producer–Consumer (bounded buffer), Readers–Writers, Dining Philosophers</li>
+</ul>
+
+<h3>Memory</h3>
+<div class="tbl"><table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td><b>Paging</b></td><td>Memory split into fixed-size <b>pages</b> (logical) and <b>frames</b> (physical). Causes <b>internal</b> fragmentation, no external</td></tr>
+<tr><td><b>Segmentation</b></td><td>Variable-size pieces by meaning (code, stack). Causes <b>external</b> fragmentation</td></tr>
+<tr><td><b>Virtual memory</b></td><td>Uses disk as extra RAM, so programs bigger than RAM can run</td></tr>
+<tr><td><b>Page fault</b></td><td>The page needed is not in RAM; OS loads it from disk</td></tr>
+<tr><td><b>Thrashing</b></td><td>So many page faults the CPU does almost no real work</td></tr>
+<tr><td><b>TLB</b></td><td>Fast cache for page-table lookups</td></tr>
+</table></div>
+<p><b>Page replacement:</b> <b>FIFO</b> (oldest out; suffers <b>Belady's anomaly</b>: more frames can give more faults), <b>LRU</b> (least recently used out), <b>Optimal</b> (replace the page used furthest in future; best but impossible in practice, used as a benchmark).</p>
+<p><b>Allocation:</b> First fit (first hole big enough), Best fit (smallest hole that fits), Worst fit (largest hole).</p>
+
+<h3>Disk scheduling</h3>
+<p>FCFS, <b>SSTF</b> (nearest track first), <b>SCAN</b> (elevator, goes end to end), <b>C-SCAN</b> (one direction, jumps back), LOOK / C-LOOK (like SCAN but turns at the last request).</p>
+
+<div class="trap"><strong>Traps</strong><ul>
+<li>Threads share memory; processes don't.</li>
+<li>Minimum average waiting time = <b>SJF</b>, not Round Robin.</li>
+<li>Belady's anomaly belongs to <b>FIFO</b> only.</li>
+<li>Banker's = <b>avoidance</b>, not prevention.</li>
+<li>Paging → internal fragmentation. Segmentation → external.</li>
+<li><code>fork()</code> called n times creates <b>2ⁿ</b> processes in total (2ⁿ − 1 children).</li>
+</ul></div>
+</section>
+
+<!-- ============ CN ============ -->
+<section id="cn">
+<h2>Computer Networks<small>also your DevOps interview round</small></h2>
+
+<h3>OSI model (7 layers), bottom to top</h3>
+<p class="hook">"Please Do Not Throw Sausage Pizza Away"</p>
+<div class="tbl"><table>
+<tr><th>#</th><th>Layer</th><th>Job</th><th>Unit</th><th>Device / protocol</th></tr>
+<tr><td>1</td><td><b>Physical</b></td><td>Bits on wire / radio</td><td>Bit</td><td>Hub, repeater, cable</td></tr>
+<tr><td>2</td><td><b>Data Link</b></td><td>Delivery on the same network, error detection</td><td>Frame</td><td><b>Switch</b>, bridge, <b>MAC</b> address, Ethernet</td></tr>
+<tr><td>3</td><td><b>Network</b></td><td>Routing between networks</td><td>Packet</td><td><b>Router</b>, <b>IP</b>, ICMP (ping)</td></tr>
+<tr><td>4</td><td><b>Transport</b></td><td>End-to-end delivery, ports</td><td>Segment</td><td><b>TCP</b>, <b>UDP</b></td></tr>
+<tr><td>5</td><td><b>Session</b></td><td>Open / manage / close sessions</td><td>Data</td><td>RPC</td></tr>
+<tr><td>6</td><td><b>Presentation</b></td><td>Encryption, compression, format</td><td>Data</td><td>SSL/TLS, JPEG</td></tr>
+<tr><td>7</td><td><b>Application</b></td><td>What the user's app speaks</td><td>Data</td><td>HTTP, FTP, DNS, SMTP</td></tr>
+</table></div>
+<p><b>TCP/IP model</b> has <b>4</b> layers: Network Access (Link), Internet, Transport, Application.</p>
+
+<h3>TCP vs UDP</h3>
+<div class="tbl"><table>
+<tr><th></th><th>TCP</th><th>UDP</th></tr>
+<tr><td>Connection</td><td>Connection-oriented (<b>3-way handshake</b>: SYN → SYN-ACK → ACK)</td><td>Connectionless</td></tr>
+<tr><td>Reliable?</td><td>Yes: ordering, retransmission, flow + congestion control</td><td>No guarantee</td></tr>
+<tr><td>Speed</td><td>Slower</td><td>Faster, lower overhead</td></tr>
+<tr><td>Used by</td><td>HTTP/HTTPS, FTP, SMTP, SSH</td><td>DNS queries, video calls, streaming, gaming, DHCP</td></tr>
+</table></div>
+
+<h3>Ports to memorise</h3>
+<div class="tbl"><table>
+<tr><th>Port</th><th>Service</th><th>Port</th><th>Service</th></tr>
+<tr><td class="m">20/21</td><td>FTP</td><td class="m">53</td><td>DNS</td></tr>
+<tr><td class="m">22</td><td>SSH</td><td class="m">67/68</td><td>DHCP</td></tr>
+<tr><td class="m">23</td><td>Telnet</td><td class="m">80</td><td><b>HTTP</b></td></tr>
+<tr><td class="m">25</td><td>SMTP (send mail)</td><td class="m">110 / 143</td><td>POP3 / IMAP (receive mail)</td></tr>
+<tr><td class="m">443</td><td><b>HTTPS</b></td><td class="m">3306</td><td>MySQL</td></tr>
+</table></div>
+
+<h3>Addresses</h3>
+<ul>
+<li><b>IPv4</b> = <b>32 bits</b> (4 octets, e.g. <code>192.168.1.10</code>). <b>IPv6</b> = <b>128 bits</b>. <b>MAC</b> = <b>48 bits</b> (hardware address)</li>
+<li><b>Classes:</b> A <code>1–126</code> (default mask /8), B <code>128–191</code> (/16), C <code>192–223</code> (/24), D <code>224–239</code> multicast, E <code>240–255</code> reserved. <code>127.x</code> = loopback (<code>127.0.0.1</code> = localhost)</li>
+<li><b>Private ranges:</b> <code>10.0.0.0/8</code>, <code>172.16.0.0/12</code>, <code>192.168.0.0/16</code></li>
+<li><b>CIDR</b> <code>/24</code> = 24 network bits → 2⁸ = 256 addresses, <b>254 usable hosts</b> (minus network + broadcast). Formula: usable = 2^(32−n) − 2</li>
+</ul>
+
+<h3>Key protocols</h3>
+<div class="tbl"><table>
+<tr><th>Protocol</th><th>Does</th></tr>
+<tr><td><b>DNS</b></td><td>Name → IP address (google.com → 142.x.x.x)</td></tr>
+<tr><td><b>ARP</b></td><td>IP → MAC address (RARP: MAC → IP)</td></tr>
+<tr><td><b>DHCP</b></td><td>Gives a device an IP address automatically</td></tr>
+<tr><td><b>NAT</b></td><td>Many private IPs share one public IP</td></tr>
+<tr><td><b>ICMP</b></td><td>Error / diagnostic messages (<code>ping</code>, <code>traceroute</code>)</td></tr>
+<tr><td><b>HTTP vs HTTPS</b></td><td>HTTPS = HTTP + TLS encryption. HTTP is <b>stateless</b></td></tr>
+</table></div>
+<p><b>HTTP methods:</b> GET (read), POST (create), PUT (replace), PATCH (partial update), DELETE. <b>Status codes:</b> 2xx success (200 OK, 201 Created), 3xx redirect (301), 4xx client error (400, 401 unauthorised, 403 forbidden, <b>404 not found</b>), 5xx server error (500, 502 bad gateway, 503 unavailable).</p>
+
+<h3>Devices and topologies</h3>
+<ul>
+<li><b>Hub</b> (L1) sends to everyone. <b>Switch</b> (L2) sends to the right MAC. <b>Router</b> (L3) connects different networks by IP. <b>Gateway</b> connects different protocols</li>
+<li>Topologies: Bus, Star (central hub/switch, most common), Ring, Mesh (n(n−1)/2 links), Tree</li>
+<li>LAN (building) &lt; MAN (city) &lt; WAN (country / internet)</li>
+</ul>
+
+<div class="trap"><strong>Traps</strong><ul>
+<li>IPv4 is 32 bits, IPv6 is 128, MAC is 48.</li>
+<li>Switch is Layer 2; router is Layer 3.</li>
+<li>DNS mostly uses <b>UDP</b> port 53.</li>
+<li>ARP finds the MAC from an IP, not the other way round.</li>
+<li>TCP handshake has <b>3</b> steps; closing a connection takes <b>4</b>.</li>
+</ul></div>
+</section>
+
+<!-- ============ OOPS ============ -->
+<section id="oops">
+<h2>OOPS<small>object-oriented programming</small></h2>
+
+<h3>Class and object</h3>
+<ul>
+<li><b>Class</b> = blueprint (Car). <b>Object</b> = an actual thing made from it (my red car). Memory is given to objects, not classes</li>
+<li><b>Constructor</b>: runs automatically when an object is created; same name as the class (C++/Java), <code>__init__</code> in Python; no return type</li>
+<li><b>Destructor</b>: runs when the object is destroyed (<code>~ClassName</code> in C++)</li>
+</ul>
+
+<h3>The 4 pillars</h3>
+<div class="tbl"><table>
+<tr><th>Pillar</th><th>Meaning</th><th>Example</th></tr>
+<tr><td><b>Encapsulation</b></td><td>Bundle data + methods together and <b>hide</b> the data (private fields, getters/setters)</td><td>Bank balance only changed through <code>deposit()</code></td></tr>
+<tr><td><b>Abstraction</b></td><td>Show <b>what</b> it does, hide <b>how</b></td><td>You press brake; you don't see the hydraulics. Abstract classes, interfaces</td></tr>
+<tr><td><b>Inheritance</b></td><td>A child class reuses a parent class ("is-a")</td><td><code>Dog extends Animal</code></td></tr>
+<tr><td><b>Polymorphism</b></td><td>One name, many forms</td><td><code>+</code> adds numbers and joins strings</td></tr>
+</table></div>
+
+<h3>Polymorphism types</h3>
+<div class="tbl"><table>
+<tr><th>Compile-time (static)</th><th>Run-time (dynamic)</th></tr>
+<tr><td><b>Overloading</b>: same method name, <b>different parameters</b>, same class</td><td><b>Overriding</b>: child class redefines the parent's method with the <b>same signature</b></td></tr>
+<tr><td>Also operator overloading</td><td>Uses virtual functions (C++), decided at run time</td></tr>
+</table></div>
+
+<h3>Inheritance types</h3>
+<p>Single (A→B), Multilevel (A→B→C), Hierarchical (A→B, A→C), Multiple (A,B→C), Hybrid. <b>Java does not allow multiple inheritance of classes</b> (only through interfaces) because of the <b>diamond problem</b>. C++ and Python allow it.</p>
+
+<h3>Access specifiers</h3>
+<div class="tbl"><table>
+<tr><th>Specifier</th><th>Visible to</th></tr>
+<tr><td><b>private</b></td><td>Only the same class</td></tr>
+<tr><td><b>protected</b></td><td>Same class + child classes</td></tr>
+<tr><td><b>public</b></td><td>Everyone</td></tr>
+</table></div>
+<p>Default in C++ <code>class</code> = private; in <code>struct</code> = public.</p>
+
+<h3>Other terms</h3>
+<ul>
+<li><b>Abstract class</b>: can't create objects from it; may have some implemented methods. <b>Interface</b>: only method declarations (a contract)</li>
+<li><b>Static</b> member: belongs to the class, shared by all objects</li>
+<li><b>this</b> (C++/Java) / <b>self</b> (Python): the current object</li>
+<li><b>Virtual function</b> (C++): enables run-time polymorphism. <b>Pure virtual</b> (<code>= 0</code>) makes the class abstract</li>
+<li><b>Friend function</b> (C++): non-member allowed to see private data</li>
+<li><b>Association</b> (uses-a) → <b>Aggregation</b> (has-a, can live apart: Team–Player) → <b>Composition</b> (part-of, dies together: House–Room)</li>
+<li><b>Coupling</b> should be low, <b>cohesion</b> high</li>
+</ul>
+
+<div class="trap"><strong>Traps</strong><ul>
+<li>Overloading = compile time; overriding = run time.</li>
+<li>Constructors can be overloaded but not inherited, and (in C++) can't be virtual. Destructors can be virtual.</li>
+<li>Return type alone can't overload a method.</li>
+<li>Data hiding is encapsulation; hiding implementation is abstraction.</li>
+</ul></div>
+</section>
+
+<!-- ============ DBMS ============ -->
+<section id="dbms">
+<h2>DBMS<small>databases and SQL</small></h2>
+
+<h3>Keys</h3>
+<div class="tbl"><table>
+<tr><th>Key</th><th>Meaning</th></tr>
+<tr><td><b>Super key</b></td><td>Any set of columns that uniquely identifies a row</td></tr>
+<tr><td><b>Candidate key</b></td><td>A <b>minimal</b> super key (no extra columns)</td></tr>
+<tr><td><b>Primary key</b></td><td>The candidate key chosen. <b>Unique + NOT NULL</b>, one per table</td></tr>
+<tr><td><b>Alternate key</b></td><td>Candidate keys not chosen as primary</td></tr>
+<tr><td><b>Foreign key</b></td><td>Column that refers to another table's primary key (links tables)</td></tr>
+<tr><td><b>Unique key</b></td><td>Unique, but <b>can be NULL</b>; many per table</td></tr>
+<tr><td><b>Composite key</b></td><td>Key made of 2+ columns</td></tr>
+</table></div>
+
+<h3>ACID (transactions)</h3>
+<ul>
+<li><b>Atomicity</b>: all or nothing</li>
+<li><b>Consistency</b>: database stays valid before and after</li>
+<li><b>Isolation</b>: parallel transactions don't interfere</li>
+<li><b>Durability</b>: once committed, survives a crash</li>
+</ul>
+
+<h3>Normalization (remove redundancy)</h3>
+<div class="tbl"><table>
+<tr><th>Form</th><th>Rule</th></tr>
+<tr><td><b>1NF</b></td><td>Atomic values: one value per cell, no repeating groups</td></tr>
+<tr><td><b>2NF</b></td><td>1NF + no <b>partial</b> dependency (non-key column depends on the <b>whole</b> key)</td></tr>
+<tr><td><b>3NF</b></td><td>2NF + no <b>transitive</b> dependency (non-key → non-key)</td></tr>
+<tr><td><b>BCNF</b></td><td>Every determinant is a candidate key (stricter 3NF)</td></tr>
+</table></div>
+
+<h3>SQL command groups</h3>
+<div class="tbl"><table>
+<tr><th>Group</th><th>Commands</th></tr>
+<tr><td><b>DDL</b> (structure)</td><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td></tr>
+<tr><td><b>DML</b> (data)</td><td>SELECT, INSERT, UPDATE, DELETE</td></tr>
+<tr><td><b>DCL</b> (permissions)</td><td>GRANT, REVOKE</td></tr>
+<tr><td><b>TCL</b> (transactions)</td><td>COMMIT, ROLLBACK, SAVEPOINT</td></tr>
+</table></div>
+
+<h3>DELETE vs TRUNCATE vs DROP</h3>
+<div class="tbl"><table>
+<tr><th></th><th>DELETE</th><th>TRUNCATE</th><th>DROP</th></tr>
+<tr><td>Removes</td><td>Chosen rows (WHERE)</td><td>All rows</td><td>Whole table + structure</td></tr>
+<tr><td>Type</td><td>DML</td><td>DDL</td><td>DDL</td></tr>
+<tr><td>Rollback</td><td>Yes</td><td>Usually no</td><td>No</td></tr>
+</table></div>
+
+<h3>Queries and joins</h3>
+<p>Order you write: <code>SELECT … FROM … WHERE … GROUP BY … HAVING … ORDER BY …</code></p>
+<ul>
+<li><b>WHERE</b> filters rows <b>before</b> grouping; <b>HAVING</b> filters groups <b>after</b> (can use COUNT, SUM…)</li>
+<li>Aggregates: COUNT, SUM, AVG, MIN, MAX. <code>COUNT(*)</code> counts all rows; <code>COUNT(col)</code> skips NULLs</li>
+<li><b>INNER JOIN</b>: only matching rows. <b>LEFT JOIN</b>: all left + matches (NULL if none). <b>RIGHT</b>: all right. <b>FULL</b>: all from both. <b>CROSS</b>: every pair (m × n rows). <b>Self join</b>: table with itself</li>
+<li><code>LIKE 'a%'</code> starts with a; <code>'_a%'</code> second letter a. <code>IS NULL</code>, never <code>= NULL</code></li>
+<li>Second highest salary: <code>SELECT MAX(salary) FROM emp WHERE salary &lt; (SELECT MAX(salary) FROM emp);</code></li>
+</ul>
+
+<h3>Other terms</h3>
+<ul>
+<li><b>ER diagram</b>: entity (rectangle), attribute (oval), relationship (diamond)</li>
+<li><b>Index</b>: speeds up search, slows insert/update. <b>View</b>: a saved query, a virtual table</li>
+<li>Relational algebra: σ select (rows), π project (columns), ⋈ join, ∪ ∩ −</li>
+<li>Degree = number of columns; cardinality = number of rows</li>
+</ul>
+
+<div class="trap"><strong>Traps</strong><ul>
+<li>Primary key: no NULLs. Unique key: allows NULL.</li>
+<li>TRUNCATE is DDL even though it removes data.</li>
+<li>HAVING works on groups; WHERE can't use aggregate functions.</li>
+<li>2NF is about partial dependency; 3NF is about transitive.</li>
+</ul></div>
+</section>
+
+<!-- ============ MP ============ -->
+<section id="mp">
+<h2>Microprocessors<small>8085 and 8086</small></h2>
+
+<div class="tbl"><table>
+<tr><th></th><th>8085</th><th>8086</th></tr>
+<tr><td>Data bus</td><td><b>8-bit</b></td><td><b>16-bit</b></td></tr>
+<tr><td>Address bus</td><td><b>16-bit</b> → 2¹⁶ = <b>64 KB</b> memory</td><td><b>20-bit</b> → 2²⁰ = <b>1 MB</b> memory</td></tr>
+<tr><td>Pins</td><td>40</td><td>40</td></tr>
+<tr><td>Supply</td><td>+5 V</td><td>+5 V</td></tr>
+<tr><td>Flags</td><td>5</td><td>9 (6 status + 3 control)</td></tr>
+<tr><td>Special</td><td>Address/data lines multiplexed (AD0–AD7), ALE separates them</td><td>Pipelining via 6-byte instruction queue; BIU + EU; segmented memory</td></tr>
+</table></div>
+
+<h3>8085 registers</h3>
+<ul>
+<li><b>Accumulator (A)</b>: 8-bit, holds one operand and the ALU result</li>
+<li>General purpose: <b>B, C, D, E, H, L</b> (8-bit), usable as pairs <b>BC, DE, HL</b> (16-bit). HL often holds a memory address</li>
+<li><b>PC</b> (Program Counter, 16-bit): address of the <b>next</b> instruction</li>
+<li><b>SP</b> (Stack Pointer, 16-bit): top of the stack</li>
+</ul>
+
+<h3>8085 flags (5)</h3>
+<div class="tbl"><table>
+<tr><th>Flag</th><th>Set (1) when</th></tr>
+<tr><td><b>S</b> Sign</td><td>Result's bit 7 is 1 (negative)</td></tr>
+<tr><td><b>Z</b> Zero</td><td>Result is 0</td></tr>
+<tr><td><b>AC</b> Auxiliary carry</td><td>Carry from bit 3 to bit 4 (used for BCD)</td></tr>
+<tr><td><b>P</b> Parity</td><td>Result has an <b>even</b> number of 1s</td></tr>
+<tr><td><b>CY</b> Carry</td><td>Carry/borrow out of bit 7</td></tr>
+</table></div>
+
+<h3>8085 interrupts</h3>
+<p>Priority high → low: <b>TRAP</b> (non-maskable, highest), <b>RST 7.5</b>, <b>RST 6.5</b>, <b>RST 5.5</b>, <b>INTR</b> (lowest, non-vectored). TRAP vector = <code>0024H</code>.</p>
+
+<h3>Common instructions</h3>
+<div class="tbl"><table>
+<tr><th>Instruction</th><th>Does</th></tr>
+<tr><td><code>MVI A, 05H</code></td><td>Move immediate 05H into A</td></tr>
+<tr><td><code>MOV B, A</code></td><td>Copy A into B (destination first)</td></tr>
+<tr><td><code>LDA 2050H</code> / <code>STA 2050H</code></td><td>Load A from / store A to memory address</td></tr>
+<tr><td><code>ADD B</code> / <code>SUB B</code></td><td>A = A + B / A = A − B</td></tr>
+<tr><td><code>INR A</code> / <code>DCR A</code></td><td>Increment / decrement</td></tr>
+<tr><td><code>JMP</code>, <code>JZ</code>, <code>JNZ</code>, <code>JC</code></td><td>Jump always / if zero / if not zero / if carry</td></tr>
+<tr><td><code>CALL</code> / <code>RET</code></td><td>Call subroutine / return (uses the stack)</td></tr>
+<tr><td><code>PUSH</code> / <code>POP</code></td><td>Stack operations on register pairs</td></tr>
+<tr><td><code>HLT</code></td><td>Halt</td></tr>
+</table></div>
+
+<h3>Addressing modes</h3>
+<p><b>Immediate</b> (data in instruction: <code>MVI A,05H</code>), <b>Register</b> (<code>MOV A,B</code>), <b>Direct</b> (address in instruction: <code>LDA 2050H</code>), <b>Register indirect</b> (address in a register pair: <code>MOV A,M</code> with HL), <b>Implied</b> (<code>CMA</code>).</p>
+
+<h3>8086 segments</h3>
+<p>CS (code), DS (data), SS (stack), ES (extra). Physical address = <b>segment × 10H + offset</b> (shift segment left by 4 bits, then add).</p>
+
+<div class="trap"><strong>Traps</strong><ul>
+<li>8085 = 8-bit data, but 16-bit address (64 KB).</li>
+<li>8086 = 16-bit data, 20-bit address (1 MB).</li>
+<li>TRAP is the only non-maskable interrupt in 8085.</li>
+<li>Parity flag = 1 for <b>even</b> parity.</li>
+<li>In <code>MOV B, A</code> the destination comes first.</li>
+</ul></div>
+</section>
+
+<!-- ============ DIGITAL ============ -->
+<section id="dig">
+<h2>Digital Principles &amp; COA<small>gates, numbers, the computer inside</small></h2>
+
+<h3>Logic gates</h3>
+<div class="tbl"><table>
+<tr><th>Gate</th><th>Output 1 when</th><th>Expression</th></tr>
+<tr><td><b>AND</b></td><td>all inputs 1</td><td>A·B</td></tr>
+<tr><td><b>OR</b></td><td>any input 1</td><td>A+B</td></tr>
+<tr><td><b>NOT</b></td><td>input is 0</td><td>A'</td></tr>
+<tr><td><b>NAND</b></td><td>NOT all 1 (output 0 only when all inputs 1)</td><td>(A·B)'</td></tr>
+<tr><td><b>NOR</b></td><td>all inputs 0</td><td>(A+B)'</td></tr>
+<tr><td><b>XOR</b></td><td>inputs <b>different</b></td><td>A⊕B</td></tr>
+<tr><td><b>XNOR</b></td><td>inputs <b>same</b></td><td>(A⊕B)'</td></tr>
+</table></div>
+<p><b>NAND and NOR are universal gates</b>: any circuit can be built from only NANDs (or only NORs).</p>
+
+<h3>Boolean rules</h3>
+<ul>
+<li>A + 0 = A, A · 1 = A, A + 1 = 1, A · 0 = 0</li>
+<li>A + A = A, A · A = A, A + A' = 1, A · A' = 0</li>
+<li><b>De Morgan:</b> (A·B)' = A' + B' and (A+B)' = A' · B'</li>
+<li>Absorption: A + AB = A, A(A + B) = A</li>
+<li><b>K-map</b>: groups of 1, 2, 4, 8 cells to simplify expressions</li>
+</ul>
+
+<h3>Number systems</h3>
+<div class="tbl"><table>
+<tr><th>System</th><th>Base</th><th>Example</th></tr>
+<tr><td>Binary</td><td>2</td><td>1101₂ = 8+4+0+1 = 13</td></tr>
+<tr><td>Octal</td><td>8</td><td>group binary in 3s: 101 011 = 53₈</td></tr>
+<tr><td>Decimal</td><td>10</td><td>43</td></tr>
+<tr><td>Hexadecimal</td><td>16</td><td>group binary in 4s: 0010 1011 = 2B₁₆ (A=10 … F=15)</td></tr>
+</table></div>
+<ul>
+<li>Decimal → binary: keep dividing by 2, read remainders <b>bottom to top</b> (13 → 1101)</li>
+<li><b>1's complement</b>: flip every bit. <b>2's complement</b>: flip every bit, then add 1. Used for negative numbers</li>
+<li>n bits signed (2's complement) range: −2ⁿ⁻¹ to 2ⁿ⁻¹ − 1 (8 bits: −128 to 127)</li>
+<li><b>BCD</b>: each decimal digit as 4 bits (25 → 0010 0101). <b>Gray code</b>: only one bit changes between consecutive numbers</li>
+</ul>
+
+<h3>Combinational vs sequential</h3>
+<div class="tbl"><table>
+<tr><th>Combinational (no memory)</th><th>Sequential (has memory, uses a clock)</th></tr>
+<tr><td>Half adder (Sum = A⊕B, Carry = A·B), full adder, MUX, DEMUX, encoder, decoder</td><td>Flip-flops, registers, counters</td></tr>
+</table></div>
+<ul>
+<li><b>MUX</b>: many inputs → 1 output, chosen by select lines (2ⁿ inputs need n select lines). <b>DEMUX</b>: 1 → many</li>
+<li><b>Decoder</b>: n inputs → 2ⁿ outputs. <b>Encoder</b>: 2ⁿ → n</li>
+</ul>
+
+<h3>Flip-flops</h3>
+<div class="tbl"><table>
+<tr><th>Type</th><th>Behaviour</th></tr>
+<tr><td><b>SR</b></td><td>Set / Reset. S = R = 1 is <b>invalid</b></td></tr>
+<tr><td><b>JK</b></td><td>Like SR, but J = K = 1 <b>toggles</b> (fixes the invalid state)</td></tr>
+<tr><td><b>D</b></td><td>Output = input D (delay / data). Used in registers</td></tr>
+<tr><td><b>T</b></td><td>T = 1 toggles, T = 0 holds. Used in counters</td></tr>
+</table></div>
+<p>A flip-flop stores <b>1 bit</b>. An n-bit register = n flip-flops. A mod-N counter needs ⌈log₂N⌉ flip-flops.</p>
+
+<h3>Computer organization</h3>
+<ul>
+<li><b>CPU</b> = ALU (arithmetic and logic) + CU (control unit) + registers</li>
+<li>Registers: <b>PC</b> (next instruction address), <b>IR</b> (current instruction), <b>MAR</b> (memory address to access), <b>MDR/MBR</b> (data going to/from memory), <b>ACC</b></li>
+<li><b>Instruction cycle</b>: Fetch → Decode → Execute (→ store)</li>
+<li><b>Memory hierarchy</b>, fastest/smallest to slowest/biggest: Registers → Cache (L1, L2, L3) → RAM → SSD/HDD</li>
+<li>RAM is volatile; ROM is non-volatile. <b>SRAM</b> (flip-flops, fast, used in cache) vs <b>DRAM</b> (capacitors, needs refresh, main memory)</li>
+<li><b>Cache mapping</b>: direct, associative, set-associative. Hit ratio = hits ÷ total accesses</li>
+<li><b>Von Neumann</b>: one memory for program + data. <b>Harvard</b>: separate memories</li>
+<li><b>RISC</b> (few simple instructions, one cycle each, ARM) vs <b>CISC</b> (many complex instructions, x86)</li>
+<li><b>Pipelining</b>: overlap stages of several instructions to raise throughput. Hazards: structural, data, control</li>
+<li><b>Bus</b>: address bus (one-way, CPU → memory), data bus (two-way), control bus</li>
+<li><b>DMA</b>: devices move data to memory without the CPU</li>
+</ul>
+
+<div class="trap"><strong>Traps</strong><ul>
+<li>XOR = different, XNOR = same.</li>
+<li>Universal gates: NAND and NOR (not XOR).</li>
+<li>Half adder carry is AND; sum is XOR.</li>
+<li>JK with J = K = 1 toggles; SR with S = R = 1 is invalid.</li>
+<li>Flip-flops make circuits <b>sequential</b>; MUX/decoder are <b>combinational</b>.</li>
+<li>Address bus is one-way; data bus is two-way.</li>
+</ul></div>
+</section>
+</div>
