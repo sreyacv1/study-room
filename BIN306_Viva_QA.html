@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BIN306 Viva Questions</title>
+<style>
+  :root {
+    --ink: #1a1a1a; --muted: #555; --line: #d6d6d6; --bg: #ffffff;
+    --concept: #1f5fa8; --concept-bg: #e8f0fb;
+    --proc: #2f7a3b; --proc-bg: #e9f5eb;
+    --say-bg: #fff6d9; --say-line: #e0b93a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #ececec; --muted: #b0b0b0; --line: #444; --bg: #161616;
+      --concept: #8db8ee; --concept-bg: #1d2a3b;
+      --proc: #8fd19a; --proc-bg: #1c2e20;
+      --say-bg: #332b12; --say-line: #a8871f;
+    }
+  }
+  @page { size: A4; margin: 16mm 15mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 12pt/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 22pt; margin: 0 0 4px; }
+  h2 { font-size: 17pt; margin: 0 0 4px; padding-bottom: 6px; border-bottom: 3px solid var(--ink); }
+  .sub { color: var(--muted); margin: 0 0 14px; }
+  .ex { break-before: page; }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 12px 0;
+    break-inside: avoid; }
+  .tag { display: inline-block; font-size: 9.5pt; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 8px; border-radius: 10px; margin-right: 6px; vertical-align: 1px; }
+  .c { color: var(--concept); background: var(--concept-bg); }
+  .p { color: var(--proc); background: var(--proc-bg); }
+  .q { font-weight: 700; margin: 4px 0 6px; }
+  .card ul, .card ol { margin: 4px 0 6px; padding-left: 22px; }
+  .card li { margin: 2px 0; }
+  .say { background: var(--say-bg); border-left: 4px solid var(--say-line); padding: 6px 10px;
+    border-radius: 4px; margin-top: 6px; }
+  .say b { display: block; font-size: 9.5pt; letter-spacing: .04em; }
+  .facts { border: 2px solid var(--ink); border-radius: 8px; padding: 10px 14px; break-inside: avoid; }
+  .facts ol { margin: 4px 0; padding-left: 22px; }
+  code { font: 10.5pt/1.4 Menlo, Consolas, monospace; background: rgba(127,127,127,.15);
+    padding: 0 3px; border-radius: 3px; overflow-wrap: anywhere; }
+  .extra { font-size: 11pt; color: var(--muted); }
+  .extra b { color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+
+<h1>BIN306 Drug Design Lab: Viva Questions</h1>
+<p class="sub">6 questions for each exercise, Ex 1 to Ex 6. Each question is marked <span class="tag c">CONCEPT</span> or <span class="tag p">PROCEDURE</span>. The yellow box is the short answer to say in the viva.</p>
+
+<div class="card">
+<p class="q">How to use this</p>
+<ol>
+<li>Read the question. Cover the answer.</li>
+<li>Say your answer out loud.</li>
+<li>Check it against the yellow box.</li>
+<li>If you have only 10 minutes, read only the 10 facts below and the yellow boxes.</li>
+</ol>
+</div>
+
+<div class="facts">
+<p class="q">The 10 most important facts</p>
+<ol>
+<li><b>2D</b> = connectivity only. <b>3D</b> = x, y, z coordinates, shape. Docking needs 3D.</li>
+<li><b>Energy minimization</b> uses a force field to remove strain and clashes. It reaches a <b>local</b> minimum.</li>
+<li><b>Redocking</b> = remove the crystal ligand, dock it back, compare. It validates the protocol.</li>
+<li><b>RMSD ≤ 2 Å</b> = redocking successful.</li>
+<li><b>1HSG</b> = HIV protease + indinavir, X-ray, 1.9 Å. Homodimer (chains A and B). Active site is between the chains. Catalytic <b>Asp25 / Asp25′</b>.</li>
+<li><b>PDBQT</b> = PDB + <b>Q</b> (partial charge) + <b>T</b> (AutoDock atom type) + torsion tree for the ligand.</li>
+<li><b>Grid</b>: centred on the crystal ligand, spacing <b>0.375 Å</b>. AutoGrid4 makes the maps (GPF → GLG). AutoDock4 docks (DPF → DLG).</li>
+<li><b>LGA</b> = genetic algorithm (global search) + local search. 100 runs. Poses within 2 Å are one <b>cluster</b>.</li>
+<li><b>Flexible docking</b>: ARG8 of chains A and B can move. Two receptor files: rigid and flex.</li>
+<li><b>MD order</b>: pdb2gmx → editconf → solvate → genion → EM → NVT → NPT → production → analysis (RMSD, Rg, RMSF, H-bonds).</li>
+</ol>
+</div>
+
+<!-- ================= EX 1 ================= -->
+<section class="ex">
+<h2>Ex 1: Drawing 2D and 3D Structures</h2>
+<p class="sub">Software: ChemSketch (ACD/Labs), MarvinSketch (ChemAxon), Avogadro</p>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q1. What is the difference between a 2D and a 3D structure?</p>
+<ul>
+<li>2D shows only which atoms are connected (connectivity). It is flat. No real bond lengths, angles or shape.</li>
+<li>3D has real x, y, z coordinates, so it has bond lengths, bond angles, shape and conformations.</li>
+<li>Docking needs 3D because the molecule must physically fit into the protein pocket.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>2D gives connectivity only. 3D gives coordinates, bond lengths, angles and shape. Docking needs 3D so the molecule can fit into the pocket.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q2. Why is energy minimization done after converting 2D to 3D?</p>
+<ul>
+<li>After conversion, the structure is strained: wrong bond lengths and angles, and some atoms clash.</li>
+<li>A force field (for example MMFF94 or UFF in Avogadro) calculates the energy.</li>
+<li>Atoms are moved step by step to lower the energy (steepest descent or conjugate gradient).</li>
+<li>The result is a stable, realistic geometry that can be used for docking.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>To remove strain and clashes. A force field lowers the energy step by step until a stable, realistic geometry is reached.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q3. What is the difference between a local minimum and a global minimum?</p>
+<ul>
+<li>Local minimum = the lowest energy in the nearby region (the nearest valley).</li>
+<li>Global minimum = the lowest energy of all possible conformations (the deepest valley).</li>
+<li>Minimization only goes downhill. It cannot cross energy barriers, so it stops at a local minimum.</li>
+<li>Finding the global minimum needs a <b>conformational search</b>.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Local = nearest valley. Global = lowest of all. Minimization reaches only a local minimum because it cannot cross energy barriers.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q4. What are .sk2, .mol and .pdb files used for?</p>
+<ul>
+<li><b>.sk2</b>: ChemSketch's own format. Only ChemSketch opens it.</li>
+<li><b>.mol</b>: MDL Molfile. Stores atoms, coordinates and bonds (connection table). Used to move the structure from ChemSketch to Avogadro.</li>
+<li><b>.pdb</b> (or <b>.cml</b>): 3D coordinate file. Used to save the optimised 3D structure.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>.sk2 is for ChemSketch. .mol carries atoms and bonds into Avogadro. .pdb or .cml saves the final 3D structure.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q5. How do you draw paracetamol in ChemSketch and save it for Avogadro?</p>
+<ol>
+<li>Open ChemSketch in Structure mode.</li>
+<li>Draw a benzene ring with the ring tool.</li>
+<li>Add O on one carbon (gives OH).</li>
+<li>On the opposite carbon (para), add N, then C, then a double-bonded O, then CH₃ (gives NH–C(=O)–CH₃).</li>
+<li>Clean the structure. Check the formula: C₈H₉NO₂.</li>
+<li>File → Save As → .sk2. Then File → Export → MDL Molfile (.mol).</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Benzene ring, OH on one carbon, NHCOCH₃ on the para carbon, clean structure, save as .sk2, export as .mol.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q6. What are the steps in Avogadro?</p>
+<ol>
+<li>Open Avogadro. File → Open the .mol file.</li>
+<li>Add hydrogens if missing (Build → Add Hydrogens).</li>
+<li>Choose a force field (Extensions → Molecular Mechanics → Setup Force Field, for example MMFF94).</li>
+<li>Optimise the geometry (Extensions → Optimize Geometry). Watch the energy fall.</li>
+<li>Rotate and zoom to check the 3D shape.</li>
+<li>Save as .pdb or .cml.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Open the .mol, add hydrogens, set up the force field, optimise the geometry, check it in 3D, save as .pdb or .cml.</div>
+</div>
+
+<p class="extra"><b>Extra:</b> Aspirin C₉H₈O₄ (acetyloxy group −OCOCH₃ + COOH). Paracetamol C₈H₉NO₂. Ibuprofen C₁₃H₁₈O₂ (isobutyl + −CH(CH₃)COOH). Caffeine = 1,3,7-trimethylxanthine. Statins inhibit HMG-CoA reductase. Amoxicillin = β-lactam fused to thiazolidine.</p>
+</section>
+
+<!-- ================= EX 2 ================= -->
+<section class="ex">
+<h2>Ex 2: Rigid Docking (1HSG + Indinavir, AutoDock4)</h2>
+<p class="sub">Receptor is fixed. Ligand can move, rotate and twist its torsions.</p>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q1. What is redocking and why is it done first?</p>
+<ul>
+<li>Remove the co-crystallized ligand and dock it back into the same binding site.</li>
+<li>Compare the docked pose with the crystal pose: RMSD, visual overlay, key interactions.</li>
+<li>RMSD ≤ 2 Å means success.</li>
+<li>It validates the protocol (preparation, grid, parameters) before docking unknown molecules.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Redocking puts the crystal ligand back into its own site. If RMSD is ≤ 2 Å, the protocol is validated and can be trusted for new molecules.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q2. How do you prepare the receptor?</p>
+<ol>
+<li>Download 1HSG.pdb from RCSB PDB.</li>
+<li>Save the ligand separately (indinavir_crystal_pose.pdb). It is the RMSD reference.</li>
+<li>Remove the ligand, water and other heteroatoms.</li>
+<li>Keep both chains A and B (the active site is between them).</li>
+<li>In AutoDockTools: add polar hydrogens, add Kollman charges, merge non-polar hydrogens.</li>
+<li>Save as 1HSG_receptor.pdbqt.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Save the ligand, remove ligand and water, keep both chains, add polar H and charges, merge non-polar H, save as PDBQT.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q3. What is PDBQT and why are polar hydrogens and charges needed?</p>
+<ul>
+<li>PDBQT = PDB + Q (partial charge) + T (AutoDock atom type).</li>
+<li>For the ligand it also stores the torsion tree (ROOT, BRANCH, TORSDOF).</li>
+<li>X-ray structures have no hydrogens. H-bonds need H atoms on N and O.</li>
+<li>Charges are needed to calculate electrostatic energy.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>PDBQT adds charges, atom types and rotatable bonds. Polar H are needed for H-bonds and charges for electrostatics.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q4. How do you prepare the ligand?</p>
+<ol>
+<li>Use a working copy of the crystal ligand (do not change the original).</li>
+<li>Add hydrogens. Assign Gasteiger charges.</li>
+<li>Detect the root atom and the rotatable bonds.</li>
+<li>Make ring bonds and amide bonds non-rotatable.</li>
+<li>Record the number of active torsions. Save as indinavir.pdbqt.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Add H, Gasteiger charges, set root and torsions (rings and amides fixed), save as PDBQT. More torsions = bigger search space.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q5. How do you set up the grid and run the docking?</p>
+<ol>
+<li>Grid box centred on the crystal ligand. Spacing 0.375 Å. Big enough for the ligand plus space to move.</li>
+<li>Save the GPF. Run: <code>autogrid4 -p 1HSG_indinavir.gpf -l 1HSG_indinavir.glg</code></li>
+<li>AutoGrid4 makes one map per ligand atom type, plus electrostatic (e) and desolvation (d) maps.</li>
+<li>Make the DPF: Lamarckian Genetic Algorithm, 100 runs.</li>
+<li>Run: <code>autodock4 -p 1HSG_indinavir.dpf -l 1HSG_indinavir.dlg</code></li>
+</ol>
+<div class="say"><b>SAY THIS</b>Grid on the crystal ligand, 0.375 Å. AutoGrid4 makes energy maps (GPF → GLG). AutoDock4 docks with LGA, 100 runs (DPF → DLG).</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q6. How do you analyse the result?</p>
+<ul>
+<li><b>Binding energy</b>: predicted by the scoring function (kcal/mol). More negative = more favourable. Not experimental.</li>
+<li><b>Ki</b> (estimated inhibition constant) = exp(ΔG/RT). Also predicted.</li>
+<li><b>Cluster</b>: poses within 2 Å RMSD are grouped. A big cluster = the same pose was found many times = reliable.</li>
+<li><b>RMSD</b> = √(Σd²/N) over heavy atoms, compared with the crystal pose. ≤ 2 Å = success.</li>
+<li>Also check the overlay and whether key interactions are kept (central OH to Asp25/Asp25′).</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Use energy, cluster size, RMSD and interactions together. Energy alone is not enough because the scoring function is approximate.</div>
+</div>
+
+<p class="extra"><b>Extra:</b> 1HSG = X-ray, 1.9 Å, ligand ID MK1, chains A + B (99 residues each). HIV protease is an aspartyl protease. It cuts the Gag-Pol polyprotein, so blocking it gives immature, non-infectious virus. Flap residues Ile50/Ile50′. <b>LGA</b> = genetic algorithm + local search; "Lamarckian" because the improved pose is written back into the genes. <b>Why 100 runs</b>: the search is random, so many runs check convergence. <b>Limitations</b>: no receptor flexibility, simple water model, uncertain protonation, approximate scoring, poor entropy.</p>
+</section>
+
+<!-- ================= EX 3 ================= -->
+<section class="ex">
+<h2>Ex 3: Flexible Docking (ARG8 A and B)</h2>
+<p class="sub">Same system as Ex 2, but the side chains of ARG8 in both chains can move.</p>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q1. What is the difference between rigid and flexible docking?</p>
+<ul>
+<li>Rigid: the whole receptor is fixed. Only the ligand moves.</li>
+<li>Flexible: selected receptor side chains (here ARG8 A and B) can also rotate.</li>
+<li>Flexible is more realistic, but the search space is bigger and it is slower.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Rigid keeps the receptor fixed. Flexible lets chosen side chains move: more realistic, but a bigger search.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q2. How do you prepare the flexible residues?</p>
+<ol>
+<li>Clean the receptor as in Ex 2 (remove ligand and water, keep both chains, polar H, charges).</li>
+<li>In AutoDockTools: Flexible Residues → choose the receptor → select ARG8 in chains A and B.</li>
+<li>Choose which side-chain bonds can rotate.</li>
+<li>Save two files: 1HSG_rigid.pdbqt and 1HSG_flex_ARG8AB.pdbqt.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Select ARG8 of chains A and B as flexible, then save one rigid file and one flex file.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q3. Why are two receptor files needed?</p>
+<ul>
+<li>AutoGrid makes maps only for the part that does not move, so it uses only the rigid file.</li>
+<li>The flexible side chains move during docking, so they cannot be in fixed maps.</li>
+<li>The flex file is given later, in the DPF.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Maps are pre-calculated, so only the fixed part goes to AutoGrid. The moving side chains go into the DPF.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q4. Why are only a few residues made flexible?</p>
+<ul>
+<li>Every flexible residue adds torsions.</li>
+<li>More torsions = much bigger search space = slower and less reliable search.</li>
+<li>So only key binding-site residues are chosen.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Each flexible residue adds torsions, and the search space grows very fast, so only key residues are chosen.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q5. How do you set up and run flexible docking?</p>
+<ol>
+<li>Load 1HSG_rigid.pdbqt. Centre the grid on the crystal ligand. Spacing 0.375 Å.</li>
+<li>Make the box big enough for the ligand and the movement of ARG8 A and B.</li>
+<li>Run: <code>autogrid4 -p 1HSG_indinavir_flex.gpf -l 1HSG_indinavir_flex.glg</code></li>
+<li>DPF: rigid receptor + flex file + ligand, LGA, 100 runs.</li>
+<li>Run: <code>autodock4 -p 1HSG_indinavir_flex.dpf -l 1HSG_indinavir_flex.dlg</code></li>
+</ol>
+<div class="say"><b>SAY THIS</b>Grid on the rigid file, big enough for ARG8 to move. The DPF includes rigid + flex + ligand. LGA, 100 runs.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q6. Is flexible docking better if its score is more negative?</p>
+<ul>
+<li>Not automatically.</li>
+<li>Also compare RMSD, cluster size, kept interactions, and whether the ARG8 side chains look realistic.</li>
+<li>Molecular dynamics can add full protein flexibility and time.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>No. A better score alone does not prove it. Check RMSD, clustering, interactions and side-chain shape.</div>
+</div>
+</section>
+
+<!-- ================= EX 4 ================= -->
+<section class="ex">
+<h2>Ex 4: Protein–Ligand Interaction Analysis</h2>
+<p class="sub">Python (Colab) → RDKit → PyMOL (3D) → ProteinsPlus PoseView (2D)</p>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q1. What is in a DLG file and how do you choose a pose?</p>
+<ul>
+<li>The DLG has every docked pose: run number, binding energy, coordinates and the clustering histogram.</li>
+<li>Each pose starts at <code>DOCKED: MODEL</code> and ends at <code>DOCKED: ENDMDL</code>.</li>
+<li>Energy line: <code>Estimated Free Energy of Binding = … kcal/mol</code>.</li>
+<li>Choose using both the lowest energy and the cluster size.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>The DLG holds all poses, energies and clusters. Choose the pose using energy and cluster size together.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q2. What does the Python program do?</p>
+<ol>
+<li>Read the DLG file line by line.</li>
+<li>Find each model between MODEL and ENDMDL. Store its run number, energy and coordinates.</li>
+<li>Remove incomplete models. Pick the model with the most negative energy (automatically, not by hand).</li>
+<li>Remove the <code>DOCKED: </code> prefix. Write 1HSG_best_pose.pdbqt and a PDB copy.</li>
+<li>Rename the ligand residue to LIG.</li>
+<li>Combine with 1HSG_receptor.pdb → 1HSG_docked_complex.pdb. Print a summary.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Parse every model, store run, energy and coordinates, pick the lowest energy, strip "DOCKED:", rename to LIG, merge with the receptor.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q3. Why use PDB (not PDBQT) for RDKit, and why make an SDF?</p>
+<ul>
+<li>PDBQT has extra AutoDock columns (charge, atom type) that RDKit cannot read reliably.</li>
+<li>PDB has no bond orders.</li>
+<li>SDF stores bond orders, explicit hydrogens and formal charges, so PoseView reads the chemistry correctly.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>RDKit can't read PDBQT reliably. SDF keeps bond orders and hydrogens, which PDB does not.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q4. What are the RDKit steps in Colab?</p>
+<ol>
+<li>Install RDKit (<code>pip install rdkit</code>) and import it.</li>
+<li>Read 1HSG_best_pose.pdb (keep the coordinates).</li>
+<li>Check it is one molecule. Fix bond orders (for example from a SMILES template).</li>
+<li>Add hydrogens with <code>AddHs(addCoords=True)</code>, so heavy atoms stay in place.</li>
+<li>Do not run a full geometry optimisation (it would move the docked pose).</li>
+<li>Write 1HSG_best_pose_H.sdf and download it.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Read the PDB, check one molecule, fix bond orders, add H without moving heavy atoms, write SDF.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q5. What do you do in PyMOL?</p>
+<ol>
+<li>Run the script: <code>@visualize_1HSG_complex.pml</code></li>
+<li>It loads the complex, selects the ligand (resn LIG) and residues within 4 Å (binding site).</li>
+<li>Shows protein as cartoon, ligand and binding site as sticks.</li>
+<li>Shows H-bonds with <code>distance … mode=2</code> (polar contacts) as dashed lines.</li>
+<li>Labels residues, then saves the session (.pse) and a 300 dpi PNG.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>Load the complex, show the 4 Å binding site as sticks, show polar contacts with mode=2, label, save the image.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q6. How are PyMOL and PoseView different?</p>
+<ul>
+<li>PyMOL: 3D. Best for seeing where the ligand sits in space. Shows polar contacts.</li>
+<li>PoseView: 2D diagram. Best for a summary of all interactions (H-bonds, hydrophobic, aromatic).</li>
+<li>They may not match because they use different distance and angle rules and handle hydrogens differently.</li>
+<li>In 1HSG, both chains contribute, and the ligand is deeply buried under the flaps.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>PyMOL shows 3D space. PoseView summarises interactions in 2D. They can differ because their rules for interactions are different.</div>
+</div>
+</section>
+
+<!-- ================= EX 5 ================= -->
+<section class="ex">
+<h2>Ex 5: MD Simulation Setup (GROMACS)</h2>
+<p class="sub">Order: pdb2gmx → editconf → solvate → genion → EM → NVT → NPT → production</p>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q1. What is MD and why do it after docking?</p>
+<ul>
+<li>MD (molecular dynamics) moves every atom over time using Newton's laws and a force field.</li>
+<li>Docking gives one still picture. MD shows whether the complex stays stable over time.</li>
+<li>MD includes protein flexibility and water.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Docking is one snapshot. MD checks stability over time, with flexibility and water.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q2. How is the topology made?</p>
+<ol>
+<li><code>gmx pdb2gmx -f 1LZM.pdb -o 1LZM_processed.gro -water spce</code></li>
+<li>Choose force field AMBER99SB-ILDN. Output: .gro (coordinates), topol.top (topology), posre.itp (restraints).</li>
+<li>pdb2gmx only knows protein residues, so the ligand topology is made separately (PRODRG, CGenFF or ACPYPE).</li>
+<li>Add <code>#include "benzene.itp"</code> to topol.top, and add the ligand under [ molecules ].</li>
+</ol>
+<div class="say"><b>SAY THIS</b>pdb2gmx makes the protein topology with a force field and water model. The ligand topology is made separately and included in topol.top.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q3. How do you make the box, add water and add ions?</p>
+<ol>
+<li>Box: <code>gmx editconf -c -d 1.0 -bt cubic</code>. Protein centred, at least 1.0 nm from the edge, so it does not touch its own periodic image (PBC).</li>
+<li>Water: <code>gmx solvate -cs spc216.gro -p topol.top</code></li>
+<li>Ions: <code>gmx grompp -f ions.mdp</code> to make ions.tpr, then <code>gmx genion -pname NA -nname CL -neutral</code></li>
+<li>Ions make the total charge zero (neutral system).</li>
+</ol>
+<div class="say"><b>SAY THIS</b>editconf makes a cubic box with 1.0 nm space, solvate adds water, genion adds Na⁺/Cl⁻ to neutralise.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q4. Why is energy minimization done before MD?</p>
+<ul>
+<li>After adding water and ions, some atoms are too close (clashes) and forces are huge.</li>
+<li>Minimization (steepest descent) removes the clashes.</li>
+<li>It stops when the maximum force is below 1000 kJ/mol/nm (emtol).</li>
+<li>Without it, the simulation can crash.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>To remove clashes and very high forces. Steepest descent until max force &lt; 1000 kJ/mol/nm.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q5. What is the difference between NVT and NPT?</p>
+<ul>
+<li><b>NVT</b>: constant number of atoms, volume, temperature. Brings temperature to 300 K (V-rescale thermostat). 100 ps.</li>
+<li><b>NPT</b>: constant number of atoms, pressure, temperature. Brings pressure to 1 bar (Parrinello-Rahman barostat) and fixes density. 100 ps.</li>
+<li>Both use position restraints (-DPOSRES) so the protein stays still while water settles.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>NVT fixes temperature (300 K). NPT then fixes pressure (1 bar) and density. Protein is restrained during both.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q6. How is the production run done?</p>
+<ol>
+<li><code>gmx grompp -f md.mdp -c npt.gro -p topol.top -o md_0_1.tpr</code></li>
+<li><code>gmx mdrun -deffnm md_0_1</code></li>
+<li>500,000 steps × 2 fs = 1 ns. No position restraints.</li>
+<li>LINCS constrains bonds, which allows a 2 fs time step.</li>
+</ol>
+<div class="say"><b>SAY THIS</b>grompp makes the .tpr from md.mdp and npt.gro, mdrun runs it: 1 ns at 2 fs per step.</div>
+</div>
+
+<p class="extra"><b>Files:</b> .mdp = parameters, .gro = coordinates, .top/.itp = topology, .tpr = binary run input, .xtc = trajectory, .edr = energies, .log = log, .xvg = graph data. <b>Units:</b> GROMACS uses nm, ps, kJ/mol. AutoDock uses Å and kcal/mol.</p>
+</section>
+
+<!-- ================= EX 6 ================= -->
+<section class="ex">
+<h2>Ex 6: MD Analysis</h2>
+<p class="sub">All results are .xvg files, plotted with xmgrace (Grace).</p>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q1. What does RMSD tell you in MD?</p>
+<ul>
+<li>How much the protein backbone moves away from the starting structure over time.</li>
+<li>It rises at first, then should reach a plateau (stays flat). A plateau means the system is stable.</li>
+<li>Ligand RMSD shows whether the ligand stays in its pose.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>RMSD measures deviation from the start. A plateau means the complex is stable.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q2. What is radius of gyration (Rg)?</p>
+<ul>
+<li>How compact the protein is (spread of atoms around its centre).</li>
+<li>Stable Rg = protein stays folded. Rising Rg = unfolding or opening.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Rg measures compactness. A stable Rg means the protein stays folded.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q3. What is RMSF and how is it different from RMSD?</p>
+<ul>
+<li>RMSF = how much each residue moves around its average position.</li>
+<li>RMSD is over time (one value per frame). RMSF is per residue (one value per residue).</li>
+<li>Loops and the ends (termini) have high RMSF. Binding-site residues with low RMSF are held by the ligand.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>RMSD is per time, RMSF is per residue. RMSF shows which parts are flexible.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q4. What does the hydrogen-bond analysis show?</p>
+<ul>
+<li>The number of protein–ligand H-bonds in each frame.</li>
+<li>H-bonds that stay through the whole run are important for binding.</li>
+<li>Distance analysis (ligand to residue) shows whether the ligand stays in the pocket.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>It counts H-bonds over time. Bonds that persist show stable binding.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag p">PROCEDURE</span> Q5. What commands are used for the analysis?</p>
+<ol>
+<li>RMSD: <code>gmx rms -s md_0_1.tpr -f md_0_1.xtc -o rmsd.xvg -tu ns</code></li>
+<li>Rg: <code>gmx gyrate -s md_0_1.tpr -f md_0_1.xtc -o gyrate.xvg</code></li>
+<li>RMSF: <code>gmx rmsf -s md_0_1.tpr -f md_0_1.xtc -o rmsf.xvg -res</code></li>
+<li>H-bonds: <code>gmx hbond -s md_0_1.tpr -f md_0_1.xtc -num hbonds.xvg</code></li>
+<li>Distance: <code>gmx distance … -oall dist.xvg</code></li>
+<li>Plot each one: <code>xmgrace rmsd.xvg</code></li>
+</ol>
+<div class="say"><b>SAY THIS</b>gmx rms, gyrate, rmsf, hbond and distance, each with the .tpr and .xtc, giving .xvg files to plot with xmgrace.</div>
+</div>
+
+<div class="card">
+<p class="q"><span class="tag c">CONCEPT</span> Q6. Advantages and limitations of GROMACS?</p>
+<ul>
+<li><b>Advantages</b>: free and open source, very fast, uses GPUs, many force fields, many built-in analysis tools.</li>
+<li><b>Limitations</b>: command line only, ligand topology needs other tools, short time scales (ns), accuracy depends on the force field.</li>
+</ul>
+<div class="say"><b>SAY THIS</b>Fast, free and has many analysis tools. But it is command-line, needs separate ligand topology, and only reaches short time scales.</div>
+</div>
+</section>
+
+</main>
+</body>
+</html>
