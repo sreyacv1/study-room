@@ -91,3 +91,24 @@ each ending with the traps that wrong options are built from.
 Either open the `.html` files directly from disk, or enable GitHub Pages
 (Settings → Pages → Deploy from a branch → `main` → `/ (root)`) and use the
 published URLs.
+
+## NLP Text Classifier — `nlp-app/`
+
+A Streamlit app (`nlp-app/app.py`) with a sidebar to switch between two models:
+
+- **Fake News Detector** — Real vs. Fake, trained on `fake_or_real_news`
+  (6,335 articles), 94.7% held-out accuracy
+- **Sentiment Analyzer** — Positive vs. Negative, trained on IMDB reviews
+  (25,000), 90.7% held-out accuracy
+
+Type or paste text and the prediction appears immediately with a confidence score,
+class probabilities, and the words that pushed the decision. Both are TF-IDF
+(1–2 grams) + Logistic Regression pipelines. The trained models are in
+`nlp-app/models/`. If either file is missing, the app downloads the data and
+retrains it on first launch.
+
+```bash
+cd nlp-app
+pip install -r requirements.txt
+streamlit run app.py
+```
